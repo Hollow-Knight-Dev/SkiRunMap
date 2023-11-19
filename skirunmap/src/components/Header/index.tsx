@@ -17,12 +17,17 @@ const Header: React.FC = () => {
   return (
     <div className='flex justify-between bg-zinc-500 pl-8 pr-8'>
       <div className='flex items-center h-16'>
-        <img src={Logo} alt='Logo' />
-        <p className='font-bold text-2xl italic ml-2'>Ski Run Map</p>
+        <Link to='/'>
+          <img src={Logo} alt='Logo' />
+        </Link>
+        <Link className='font-bold text-2xl italic ml-2 cursor-pointer' to='/'>
+          Ski Run Map
+        </Link>
         <div className='flex items-center ml-8 gap-8 font-bold text-lg relative h-full'>
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
               name='Explore'
+              url='/'
               isHovered={hoveredItem === 'Explore'}
               onMouseEnter={() => handleItemHover('Explore')}
             />
@@ -34,6 +39,7 @@ const Header: React.FC = () => {
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
               name='Route'
+              url='/route'
               isHovered={hoveredItem === 'Route'}
               onMouseEnter={() => handleItemHover('Route')}
             />
@@ -46,15 +52,16 @@ const Header: React.FC = () => {
 
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
-              name='User'
-              isHovered={hoveredItem === 'User'}
-              onMouseEnter={() => handleItemHover('User')}
+              name='Member'
+              url='/member'
+              isHovered={hoveredItem === 'Member'}
+              onMouseEnter={() => handleItemHover('Member')}
             />
-            {hoveredItem === 'User' && (
+            {hoveredItem === 'Member' && (
               <SubNavItem
                 items={[
                   { name: 'My Page', url: '/member' },
-                  { name: 'My Friends', url: '/friend' },
+                  { name: 'My Friend', url: '/friend' },
                 ]}
               />
             )}
@@ -77,20 +84,27 @@ const Header: React.FC = () => {
 
 interface NavItemProps {
   name: string
+  url: string
   isHovered: boolean
   onMouseEnter: () => void
 }
 
-const NavItem: React.FC<NavItemProps> = ({ name, isHovered, onMouseEnter }) => {
+const NavItem: React.FC<NavItemProps> = ({
+  name,
+  isHovered,
+  url,
+  onMouseEnter,
+}) => {
   return (
-    <button
-      className={`h-full focus:outline-none transform ${
+    <Link
+      className={`flex items-center h-full focus:outline-none transform ${
         isHovered ? 'translate-y-[-2px]' : 'translate-y-0'
       } transition-transform duration-200`}
+      to={url}
       onMouseEnter={onMouseEnter}
     >
       {name}
-    </button>
+    </Link>
   )
 }
 
