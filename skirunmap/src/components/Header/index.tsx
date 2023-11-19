@@ -74,7 +74,7 @@ const Header: React.FC = () => {
           src={Notification}
           alt='Notification icon'
         />
-        <button className='w-fit h-fit bg-zinc-300 rounded-2xl pl-4 pr-4'>
+        <button className='w-fit h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 font-bold text-lg'>
           Login
         </button>
       </div>
@@ -114,7 +114,7 @@ interface SubNavItemProps {
 
 const SubNavItem: React.FC<SubNavItemProps> = ({ items }) => {
   return (
-    <div className='flex flex-col gap-2 absolute top-14 font-normal bg-white shadow-lg rounded-md'>
+    <div className='flex flex-col absolute top-12 font-normal bg-white shadow-lg rounded-md'>
       {items.map(({ name, url }, index) => (
         <Link key={index} to={url} className='bg-grey-700 p-2 w-max'>
           {name}
