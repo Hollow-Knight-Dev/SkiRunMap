@@ -114,9 +114,13 @@ interface SubNavItemProps {
 
 const SubNavItem: React.FC<SubNavItemProps> = ({ items }) => {
   return (
-    <div className='flex flex-col absolute top-12 font-normal bg-white shadow-lg rounded-md'>
+    <div className='flex flex-col absolute top-14 font-normal bg-white shadow-lg rounded-md p-2'>
       {items.map(({ name, url }, index) => (
-        <Link key={index} to={url} className='bg-grey-700 p-2 w-max'>
+        <Link
+          key={index}
+          to={url}
+          className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+        >
           {name}
         </Link>
       ))}

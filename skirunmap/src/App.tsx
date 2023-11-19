@@ -11,7 +11,11 @@ import ViewRoute from './components/ViewRoute'
 function App() {
   return (
     <BrowserRouter>
-      <Header />
+      <div className='fixed w-full top-0 z-10'>
+        <Header />
+      </div>
+      <div className='h-16' />
+
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/member' element={<Member />} />
