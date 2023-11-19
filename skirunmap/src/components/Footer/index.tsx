@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className='flex flex-wrap h-48 bg-zinc-400 justify-evenly pt-8'>
+    <div className='flex flex-wrap h-48 bg-zinc-100 justify-evenly pt-8'>
       <div className='flex flex-col'>
         <Link className='font-bold text-lg mb-2' to='/'>
           Explore

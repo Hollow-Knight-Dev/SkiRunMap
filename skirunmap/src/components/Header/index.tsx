@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Logo from './logo.png'
-import Notification from './notification_icon.png'
+import Notification from './notification-icon.png'
 
 const Header: React.FC = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <div className='flex justify-between bg-zinc-500 pl-8 pr-8'>
+    <div className='flex justify-between bg-white pl-8 pr-8'>
       <div className='flex items-center h-16'>
         <Link to='/'>
           <img src={Logo} alt='Logo' />
