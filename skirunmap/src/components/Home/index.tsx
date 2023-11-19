@@ -16,9 +16,9 @@ const Home = () => {
   return (
     <div className='flex flex-col items-center'>
       <div className='relative'>
-        <div className='w-screen flex flex-col items-center absolute top-24'>
+        <div className='flex flex-col items-center absolute top-24 left-1/3'>
           <p className='font-bold text-3xl'>Find routes</p>
-          <div className='w-2/3 relative'>
+          <div className='w-80 relative'>
             <img
               className='absolute w-7 top-2 left-4'
               src={SearchIcon}
@@ -26,7 +26,7 @@ const Home = () => {
             />
             <input
               className='w-full p-2 pl-16 border border-zinc-300 rounded-3xl'
-              placeholder='Search by ski resort, ski run, or other tag name '
+              placeholder='Ski resort, ski run, or tag name'
             />
           </div>
         </div>
