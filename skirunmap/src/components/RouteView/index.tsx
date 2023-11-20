@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Map from '../Map'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedArrow from './clicked-arrow.png'
@@ -69,31 +70,31 @@ const Route = () => {
   }
 
   return (
-    <div className='flex'>
-      <div className='w-1/3 h-screen bg-zinc-200 flex flex-col p-2'>
-        <div className='w-full relative mb-2'>
+    <div className='flex h-screen pb-16'>
+      <div className='flex w-1/3 flex-col bg-zinc-200 p-2'>
+        <div className='relative mb-2 w-full'>
           <input
-            className='w-full p-1 pl-10 border border-zinc-300 rounded-3xl'
+            className='w-full rounded-3xl border border-zinc-300 p-1 pl-10'
             placeholder='Ski resort, ski run, or tag name'
           />
           <img
-            className='absolute w-5 top-2 left-3'
+            className='absolute left-3 top-2 w-5'
             src={SearchIcon}
             alt='Search Icon'
           />
         </div>
 
         <div className='relative pb-8'>
-          <img className='w-full h-auto' src={SmallMap} alt='Small Map' />
-          <div className='absolute bottom-3 end-12 w-10 h-10 rounded-full bg-white flex justify-center items-center'>
+          <img className='h-auto w-full' src={SmallMap} alt='Small Map' />
+          <div className='absolute bottom-3 end-12 flex h-10 w-10 items-center justify-center rounded-full bg-white'>
             <img
-              className='w-3/5 h-auto'
+              className='h-auto w-3/5'
               src={BookmarkIcon}
               alt='Bookmark Icon'
             />
           </div>
-          <div className='absolute bottom-3 end-0 w-10 h-10 rounded-full bg-white flex justify-center items-center'>
-            <img className='w-3/5 h-auto' src={ShareIcon} alt='Share Icon' />
+          <div className='absolute bottom-3 end-0 flex h-10 w-10 items-center justify-center rounded-full bg-white'>
+            <img className='h-auto w-3/5' src={ShareIcon} alt='Share Icon' />
           </div>
         </div>
 
@@ -101,23 +102,23 @@ const Route = () => {
           <div className='flex items-center gap-4'>
             <div className='flex flex-col'>
               <img
-                className='w-4 h-auto'
+                className='h-auto w-4'
                 src={ClickedArrow}
                 alt='Clicked Arrow'
               />
               <p>50</p>
               <img
-                className='w-4 h-auto'
+                className='h-auto w-4'
                 src={UnclickedArrow}
                 alt='Unclicked Arrow'
               />
             </div>
-            <p className='font-bold text-2xl'>Route title</p>
+            <p className='text-2xl font-bold'>Route title</p>
           </div>
 
           <div className='flex items-center'>
             <img
-              className='w-10 h-10'
+              className='h-10 w-10'
               src={ProfileIcon}
               alt='Friend Profile Icon'
             />
@@ -131,14 +132,14 @@ const Route = () => {
                   <p className='w-fit pr-2'>{spot.spot_title}</p>
                   {spotsVisibility[spot.spot_title] ? (
                     <img
-                      className='w-6 h-auto cursor-pointer'
+                      className='h-auto w-6 cursor-pointer'
                       src={HideArrow}
                       alt='To Hide Arrow'
                       onClick={() => toggleVisibility(spot.spot_title)}
                     />
                   ) : (
                     <img
-                      className='w-6 h-auto cursor-pointer'
+                      className='h-auto w-6 cursor-pointer'
                       src={ShowArrow}
                       alt='To Show Arrow'
                       onClick={() => toggleVisibility(spot.spot_title)}
@@ -176,13 +177,13 @@ const Route = () => {
           </div>
 
           <div className='w-full border border-zinc-300' />
-          <p className='font-bold text-lg'>Comment</p>
-          <textarea className='w-full h-20' />
+          <p className='text-lg font-bold'>Comment</p>
+          <textarea className='h-20 w-full' />
         </div>
       </div>
 
-      <div className='w-2/3 h-screen bg-zinc-100 flex flex-col'>
-        <p>Google Map api</p>
+      <div className='flex w-2/3 flex-col bg-zinc-100'>
+        <Map />
       </div>
     </div>
   )
