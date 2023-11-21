@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import Map from '../Map'
 
+const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
+
 const EditRoute: React.FC = () => {
   const [accessRight, setAccessRight] = useState<string>('')
 
@@ -12,7 +14,7 @@ const EditRoute: React.FC = () => {
     <div>
       <div className='flex'>
         <div className='h-screen w-2/3 bg-zinc-500'>
-          <Map />
+          <Map gpxFileUrl={gpxFilePath} />
         </div>
         <form className='flex h-screen w-1/3 flex-col bg-zinc-200 p-4'>
           <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
@@ -28,10 +30,7 @@ const EditRoute: React.FC = () => {
               <input className='h-10' />
             </div>
             <textarea className='h-20 w-full p-2' placeholder='Add text' />
-            <textarea
-              className='h-20 w-full p-2'
-              placeholder='Add tag ex. #niseko # gondola'
-            />
+            <textarea className='h-20 w-full p-2' placeholder='Add tag ex. #niseko # gondola' />
             <div className='flex flex-wrap gap-2 '>
               <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
                 Add image

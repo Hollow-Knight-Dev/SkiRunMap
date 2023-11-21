@@ -10,6 +10,8 @@ import ShowArrow from './show_arrow.png'
 import SmallMap from './small-map.png'
 import UnclickedArrow from './unclicked-arrow.png'
 
+const gpxFilePath = 'src/components/RouteView/gpx-sample.gpx'
+
 interface Geopoint {
   latitude: number
   longitude: number
@@ -34,7 +36,7 @@ const Route = () => {
       description: 'This is spot 1',
       spot_coordinate: { latitude: 40.7128, longitude: -74.006 },
       images: ['small-map.png'],
-      videos: [],
+      videos: []
     },
     {
       spot_title: 'Spot 2',
@@ -43,29 +45,26 @@ const Route = () => {
       images: [],
       videos: [
         'https://youtube.com/shorts/8HBKH2DTmGw?feature=shared',
-        'https://youtu.be/38gk0XYwq6s?feature=shared',
-      ],
+        'https://youtu.be/38gk0XYwq6s?feature=shared'
+      ]
     },
     {
       spot_title: 'Spot 3',
       description: 'This is spot 3',
       spot_coordinate: { latitude: 40.7128, longitude: -74.006 },
       images: ['User-icon.png', 'User-icon.png'],
-      videos: [],
-    },
+      videos: []
+    }
   ]
 
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>(
-    initialSpots.reduce(
-      (acc, spot) => ({ ...acc, [spot.spot_title]: false }),
-      {},
-    ),
+    initialSpots.reduce((acc, spot) => ({ ...acc, [spot.spot_title]: false }), {})
   )
 
   const toggleVisibility = (spotTitle: string) => {
     setSpotsVisibility((prevVisibility) => ({
       ...prevVisibility,
-      [spotTitle]: !prevVisibility[spotTitle],
+      [spotTitle]: !prevVisibility[spotTitle]
     }))
   }
 
@@ -77,21 +76,13 @@ const Route = () => {
             className='w-full rounded-3xl border border-zinc-300 p-1 pl-10'
             placeholder='Ski resort, ski run, or tag name'
           />
-          <img
-            className='absolute left-3 top-2 w-5'
-            src={SearchIcon}
-            alt='Search Icon'
-          />
+          <img className='absolute left-3 top-2 w-5' src={SearchIcon} alt='Search Icon' />
         </div>
 
         <div className='relative pb-8'>
           <img className='h-auto w-full' src={SmallMap} alt='Small Map' />
           <div className='absolute bottom-3 end-12 flex h-10 w-10 items-center justify-center rounded-full bg-white'>
-            <img
-              className='h-auto w-3/5'
-              src={BookmarkIcon}
-              alt='Bookmark Icon'
-            />
+            <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
           </div>
           <div className='absolute bottom-3 end-0 flex h-10 w-10 items-center justify-center rounded-full bg-white'>
             <img className='h-auto w-3/5' src={ShareIcon} alt='Share Icon' />
@@ -101,27 +92,15 @@ const Route = () => {
         <div className='flex flex-col gap-4 p-2'>
           <div className='flex items-center gap-4'>
             <div className='flex flex-col'>
-              <img
-                className='h-auto w-4'
-                src={ClickedArrow}
-                alt='Clicked Arrow'
-              />
+              <img className='h-auto w-4' src={ClickedArrow} alt='Clicked Arrow' />
               <p>50</p>
-              <img
-                className='h-auto w-4'
-                src={UnclickedArrow}
-                alt='Unclicked Arrow'
-              />
+              <img className='h-auto w-4' src={UnclickedArrow} alt='Unclicked Arrow' />
             </div>
             <p className='text-2xl font-bold'>Route title</p>
           </div>
 
           <div className='flex items-center'>
-            <img
-              className='h-10 w-10'
-              src={ProfileIcon}
-              alt='Friend Profile Icon'
-            />
+            <img className='h-10 w-10' src={ProfileIcon} alt='Friend Profile Icon' />
             <p className='w-fit pl-4'>I Am Not Groot · Nov 15, 2023</p>
           </div>
 
@@ -152,11 +131,7 @@ const Route = () => {
                     {spot.images && (
                       <div>
                         {spot.images.map((image, imageIndex) => (
-                          <img
-                            key={imageIndex}
-                            src={`./${image}`}
-                            alt={`Image ${imageIndex}`}
-                          />
+                          <img key={imageIndex} src={`./${image}`} alt={`Image ${imageIndex}`} />
                         ))}
                       </div>
                     )}
@@ -183,7 +158,7 @@ const Route = () => {
       </div>
 
       <div className='flex w-2/3 flex-col bg-zinc-100'>
-        <Map />
+        <Map gpxFileUrl={gpxFilePath} />
       </div>
     </div>
   )
