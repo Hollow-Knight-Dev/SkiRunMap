@@ -8,10 +8,10 @@ import Member from './components/Member'
 import RouteEdit from './components/RouteEdit'
 import RouteView from './components/RouteView'
 
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <div className='fixed w-full top-0 z-10'>
+      <div className='fixed top-0 z-10 w-full'>
         <Header />
       </div>
       <div className='h-16' />

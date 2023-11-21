@@ -6,24 +6,24 @@ import Notification from './notification-icon.png'
 const Header: React.FC = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
-  const handleItemHover = (item: string) => {
+  const handleItemHover = (item: string): void => {
     setHoveredItem(item)
   }
 
-  const handleItemLeave = () => {
+  const handleItemLeave = (): void => {
     setHoveredItem(null)
   }
 
   return (
     <div className='flex justify-between bg-white pl-8 pr-8'>
-      <div className='flex items-center h-16'>
+      <div className='flex h-16 items-center'>
         <Link to='/'>
           <img src={Logo} alt='Logo' />
         </Link>
-        <Link className='font-bold text-2xl italic ml-2 cursor-pointer' to='/'>
+        <Link className='ml-2 cursor-pointer text-2xl font-bold italic' to='/'>
           Ski Run Map
         </Link>
-        <div className='flex items-center ml-8 gap-8 font-bold text-lg relative h-full'>
+        <div className='relative ml-8 flex h-full items-center gap-8 text-lg font-bold'>
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
               name='Explore'
@@ -73,11 +73,11 @@ const Header: React.FC = () => {
       </div>
       <div className='flex items-center'>
         <img
-          className='w-6 h-auto mr-2'
+          className='mr-2 h-auto w-6'
           src={Notification}
           alt='Notification icon'
         />
-        <button className='w-fit h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 font-bold text-lg'>
+        <button className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
           Login
         </button>
       </div>
@@ -100,7 +100,7 @@ const NavItem: React.FC<NavItemProps> = ({
 }) => {
   return (
     <Link
-      className={`flex items-center h-full focus:outline-none transform ${
+      className={`flex h-full transform items-center focus:outline-none ${
         isHovered ? 'translate-y-[-2px]' : 'translate-y-0'
       } transition-transform duration-200`}
       to={url}
@@ -117,7 +117,7 @@ interface SubNavItemProps {
 
 const SubNavItem: React.FC<SubNavItemProps> = ({ items }) => {
   return (
-    <div className='flex flex-col absolute top-14 font-normal bg-white shadow-lg rounded-md p-2'>
+    <div className='absolute top-14 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
       {items.map(({ name, url }, index) => (
         <Link
           key={index}
