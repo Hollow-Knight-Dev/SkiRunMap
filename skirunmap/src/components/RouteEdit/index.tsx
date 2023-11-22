@@ -1,14 +1,38 @@
+// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useState } from 'react'
+// import { storage } from '../../auth/CloudStorage'
 import Map from '../Map'
 
-const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
+// const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
+const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
 
 const EditRoute: React.FC = () => {
   const [accessRight, setAccessRight] = useState<string>('')
+  // const [gpxURL, setGpxURL] = useState<string>('')
 
   const handleMenuClick = (option: string) => {
     setAccessRight(option)
   }
+
+  // const storageRef = ref(storage)
+  // const gpxsRef = ref(storage, 'gpxs')
+
+  // const uploadGpx = (file: File) => {
+  //   const metadata = {
+  //     contentType: 'application/octet-stream'
+  //   }
+  //   uploadBytes(gpxsRef, file, metadata)
+  //     .then((snapshot) => {
+  //       console.log('Uploaded gpx file!')
+  //     })
+  //     .catch((error) => console.log('Failed to uplaod gpx file', error))
+  // }
+
+  // const getGpx = () => {
+  //   getDownloadURL(ref(storage, 'Rusutsu.gpx')).then((url) => {
+  //     setGpxURL(url)
+  //   })
+  // }
 
   return (
     <div>

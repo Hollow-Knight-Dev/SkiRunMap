@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { getDownloadURL, ref } from 'firebase/storage'
+import { useEffect, useState } from 'react'
+import { storage } from '../../auth/CloudStorage'
 import Map from '../Map'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
@@ -10,7 +12,7 @@ import ShowArrow from './show_arrow.png'
 import SmallMap from './small-map.png'
 import UnclickedArrow from './unclicked-arrow.png'
 
-const gpxFilePath = 'src/components/RouteView/gpx-sample.gpx'
+const gpxFilePath = 'src/components/RouteView/Rusutsu.gpx'
 
 interface Geopoint {
   latitude: number
@@ -30,6 +32,31 @@ interface VisibilityState {
 }
 
 const Route = () => {
+  const [gpxURL, setGpxURL] = useState<string>('')
+
+  useEffect(() => {
+    // const storageRef = ref(storage)
+    // const gpxsRef = ref(storage, 'gpxs')
+    const getGpx = async () => {
+      try {
+        const url = await getDownloadURL(ref(storage, 'Rusutsu.gpx'))
+        console.log(typeof url, ':', url)
+        setGpxURL(url)
+        // const xhr = new XMLHttpRequest()
+        // xhr.responseType = 'blob'
+        // xhr.onload = (event) => {
+        //   const blob = xhr.response
+        // }
+        // xhr.open('GET', url)
+        // xhr.send()
+      } catch (error) {
+        console.log('Failed to get cloud storage gpx: ', error)
+      }
+    }
+
+    getGpx()
+  }, [])
+
   const initialSpots: Spot[] = [
     {
       spot_title: 'Spot 1',
@@ -157,9 +184,7 @@ const Route = () => {
         </div>
       </div>
 
-      <div className='flex w-2/3 flex-col bg-zinc-100'>
-        <Map gpxFileUrl={gpxFilePath} />
-      </div>
+      <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxFileUrl={gpxURL} />}</div>
     </div>
   )
 }

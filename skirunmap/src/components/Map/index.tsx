@@ -34,7 +34,6 @@ const Map: React.FC<MapProps> = ({ gpxFileUrl }) => {
   }, [gpxFileUrl])
 
   const fetchGpxFile = async (filePath: string, Map: any) => {
-    // const gpxFilePath = 'src/components/Map/gpx-sample.gpx'
     try {
       const response = await fetch(filePath)
       // console.log(response)
@@ -59,7 +58,7 @@ const Map: React.FC<MapProps> = ({ gpxFileUrl }) => {
 
         const googleMap = new Map(document.getElementById('map') as HTMLElement, {
           center: center,
-          zoom: 9
+          zoom: 13
         })
         setMap(googleMap)
       }
@@ -88,7 +87,7 @@ const Map: React.FC<MapProps> = ({ gpxFileUrl }) => {
         path: gpxTrackPoint,
         strokeColor: '#ff2527',
         strokeOpacity: 1,
-        strokeWeight: 2,
+        strokeWeight: 4,
         map: map,
         geodesic: true
       })
