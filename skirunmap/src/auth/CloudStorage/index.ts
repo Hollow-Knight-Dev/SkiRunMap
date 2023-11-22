@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getStorage } from 'firebase/storage'
+import { getStorage, ref } from 'firebase/storage'
 // import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -17,5 +17,7 @@ const app = initializeApp(firebaseConfig)
 
 /* Storage */
 const storage = getStorage(app)
+const routesRef = ref(storage, 'routes')
+const gpxsRef = ref(storage, 'gpxs')
 
-export { app, storage }
+export { app, gpxsRef, storage }

@@ -1,6 +1,6 @@
-// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { ref, uploadBytes } from 'firebase/storage'
 import { useState } from 'react'
-// import { storage } from '../../auth/CloudStorage'
+import { gpxsRef } from '../../auth/CloudStorage'
 import Map from '../Map'
 
 // const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
@@ -8,31 +8,46 @@ const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
 
 const EditRoute: React.FC = () => {
   const [accessRight, setAccessRight] = useState<string>('')
-  // const [gpxURL, setGpxURL] = useState<string>('')
+  const [gpxURL, setGpxURL] = useState<string>('')
 
   const handleMenuClick = (option: string) => {
     setAccessRight(option)
   }
 
-  // const storageRef = ref(storage)
-  // const gpxsRef = ref(storage, 'gpxs')
-
-  // const uploadGpx = (file: File) => {
-  //   const metadata = {
-  //     contentType: 'application/octet-stream'
-  //   }
-  //   uploadBytes(gpxsRef, file, metadata)
-  //     .then((snapshot) => {
-  //       console.log('Uploaded gpx file!')
-  //     })
-  //     .catch((error) => console.log('Failed to uplaod gpx file', error))
-  // }
+  const uploadGpx = (file: File, fileName: string) => {
+    // const storageRef = ref(storage)
+    const gpxFileRef = ref(gpxsRef, fileName)
+    const metadata = {
+      contentType: 'application/octet-stream'
+    }
+    uploadBytes(gpxFileRef, file, metadata)
+      .then((snapshot) => {
+        console.log('Uploaded gpx file!')
+      })
+      .catch((error) => console.log('Failed to uplaod gpx file', error))
+  }
 
   // const getGpx = () => {
-  //   getDownloadURL(ref(storage, 'Rusutsu.gpx')).then((url) => {
-  //     setGpxURL(url)
-  //   })
-  // }
+  // getDownloadURL(ref(storage, 'Rusutsu.gpx')).then((url) => {
+  //   setGpxURL(url)
+  // })
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target
+    const files: FileList | null = fileInput.files
+
+    if (files) {
+      const file: File = files[0]
+      if (file.name !== undefined && file.name.toLowerCase().endsWith('.gpx')) {
+        uploadGpx(file, file.name)
+      } else {
+        alert('Invalid file type. Please upload a GPX file.')
+      }
+    } else {
+      alert('Please select a GPX file.')
+      return
+    }
+  }
 
   return (
     <div>
@@ -41,9 +56,19 @@ const EditRoute: React.FC = () => {
           <Map gpxFileUrl={gpxFilePath} />
         </div>
         <form className='flex h-screen w-1/3 flex-col bg-zinc-200 p-4'>
-          <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-            Upload GPX
-          </div>
+          <label
+            htmlFor='gpxfile'
+            className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+          >
+            Upload GPX file
+          </label>
+          <input
+            className='hidden'
+            type='file'
+            id='gpxfile'
+            onChange={handleFileChange}
+            accept='application/octet-stream'
+          />
           <div className='flex flex-col gap-2 p-2'>
             <div className='flex items-center gap-2'>
               <label className='w-40 text-lg font-bold'>Route Title</label>
