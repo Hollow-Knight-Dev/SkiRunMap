@@ -1,12 +1,14 @@
 import { ref, uploadBytes } from 'firebase/storage'
 import { useState } from 'react'
-import { gpxsRef } from '../../auth/CloudStorage'
+import { gpxsRef, storage } from '../../auth/CloudStorage'
 import Map from '../Map'
+import RouteCreate from '../RouteCreate'
 
 // const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
 const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
 
 const EditRoute: React.FC = () => {
+  const [hasRouteTitle, setHasRouteTitle] = useState<boolean>(false)
   const [accessRight, setAccessRight] = useState<string>('')
   const [gpxURL, setGpxURL] = useState<string>('')
 
@@ -15,7 +17,7 @@ const EditRoute: React.FC = () => {
   }
 
   const uploadGpx = (file: File, fileName: string) => {
-    // const storageRef = ref(storage)
+    const storageRef = ref(storage)
     const gpxFileRef = ref(gpxsRef, fileName)
     const metadata = {
       contentType: 'application/octet-stream'
@@ -51,6 +53,11 @@ const EditRoute: React.FC = () => {
 
   return (
     <div>
+      {!hasRouteTitle && (
+        <div className='z-10 bg-black'>
+          <RouteCreate />
+        </div>
+      )}
       <div className='flex'>
         <div className='h-screen w-2/3 bg-zinc-500'>
           <Map gpxFileUrl={gpxFilePath} />

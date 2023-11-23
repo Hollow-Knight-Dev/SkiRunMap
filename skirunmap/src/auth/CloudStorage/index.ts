@@ -17,7 +17,6 @@ const app = initializeApp(firebaseConfig)
 
 /* Storage */
 const storage = getStorage(app)
-const routesRef = ref(storage, 'routes')
 const gpxsRef = ref(storage, 'gpxs')
 
 export { app, gpxsRef, storage }
