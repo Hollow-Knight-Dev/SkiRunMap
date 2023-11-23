@@ -1,5 +1,15 @@
 import { create } from 'zustand'
 
+interface RouteID {
+  routeID: string
+  setRouteID: (routeID: string) => void
+}
+
+export const useRouteID = create<RouteID>()((set) => ({
+  routeID: '',
+  setRouteID: (newRouteID) => set(() => ({ routeID: newRouteID }))
+}))
+
 interface RouteTitle {
   routeTitle: string
   setRouteTitle: (newTitle: string) => void

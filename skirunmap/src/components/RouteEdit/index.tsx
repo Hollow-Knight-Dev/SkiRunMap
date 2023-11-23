@@ -1,7 +1,13 @@
 import { ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { gpxsRef, storage } from '../../auth/CloudStorage'
-import { useRouteDescription, useRouteTitle, useSpotTitle, useTag } from '../../store/useRoute'
+import {
+  useRouteDescription,
+  useRouteID,
+  useRouteTitle,
+  useSpotTitle,
+  useTag
+} from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
 
@@ -12,6 +18,7 @@ const EditRoute: React.FC = () => {
   const [accessRight, setAccessRight] = useState<string>('')
   const [gpxURL, setGpxURL] = useState<string>('')
 
+  const routeID = useRouteID((state) => state.routeID)
   const routeTitle = useRouteTitle((state) => state.routeTitle)
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
   const spotTitle = useSpotTitle((state) => state.spotTitle)
@@ -23,7 +30,7 @@ const EditRoute: React.FC = () => {
   const setTag = useTag((state) => state.setTag)
 
   useEffect(() => {
-    console.log(tag)
+    console.log(tag, routeID)
   }, [tag])
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +127,7 @@ const EditRoute: React.FC = () => {
 
   return (
     <div>
-      {!routeTitle && (
+      {!routeID && (
         <div className='z-10 bg-black'>
           <RouteCreate />
         </div>
