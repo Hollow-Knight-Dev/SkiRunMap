@@ -58,7 +58,7 @@ const EditRoute: React.FC = () => {
 
   const handleTagInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const tagTempInput = event.target.value
-    if (tagTempInput && tagTempInput.length <= 20) {
+    if (tagTempInput.length <= 20) {
       setTagInput(tagTempInput)
     } else {
       alert('Tag name exceeds letter limitation')
