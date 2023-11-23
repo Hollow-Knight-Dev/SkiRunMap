@@ -29,3 +29,13 @@ export const useRouteDescription = create<RouteDescription>()((set) => ({
   routeDescription: '',
   setRouteDescription: (newDescription) => set(() => ({ routeDescription: newDescription }))
 }))
+
+interface Tag {
+  tag: string[]
+  setTag: (newTag: string[]) => void
+}
+
+export const useTag = create<Tag>()((set) => ({
+  tag: [],
+  setTag: (newTag) => set(() => ({ tag: newTag }))
+}))

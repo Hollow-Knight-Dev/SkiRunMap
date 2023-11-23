@@ -1,7 +1,7 @@
 import { ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { gpxsRef, storage } from '../../auth/CloudStorage'
-import { useRouteDescription, useRouteTitle, useSpotTitle } from '../../store/useRoute'
+import { useRouteDescription, useRouteTitle, useSpotTitle, useTag } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
 
@@ -18,10 +18,13 @@ const EditRoute: React.FC = () => {
   const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
   const routeDescription = useRouteDescription((state) => state.routeDescription)
   const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
+  const [tagInput, setTagInput] = useState<string>('')
+  const tag = useTag((state) => state.tag)
+  const setTag = useTag((state) => state.setTag)
 
   useEffect(() => {
-    console.log(routeDescription)
-  }, [routeDescription])
+    console.log(tag)
+  }, [tag])
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
@@ -51,6 +54,29 @@ const EditRoute: React.FC = () => {
       alert('Description exceeds letter limitation')
       setRouteDescription(description.slice(0, 50))
     }
+  }
+
+  const handleTagInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const tagTempInput = event.target.value
+    if (tagTempInput && tagTempInput.length <= 20) {
+      setTagInput(tagTempInput)
+    } else {
+      alert('Tag name exceeds letter limitation')
+      setTagInput(tagTempInput.slice(0, 20))
+    }
+  }
+
+  const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((event.key === ' ' || event.key === 'Enter') && tagInput.trim() !== '') {
+      setTag([...tag, tagInput.trim()])
+      setTagInput('')
+    }
+  }
+
+  const handleTagDelete = (index: number) => {
+    const newTags = [...tag]
+    newTags.splice(index, 1)
+    setTag(newTags)
   }
 
   const handleMenuClick = (option: string) => {
@@ -146,8 +172,25 @@ const EditRoute: React.FC = () => {
               value={routeDescription}
               onChange={(event) => handleRouteDescription(event)}
             />
-            <textarea className='h-20 w-full p-2' placeholder='Add tag ex. #niseko # gondola' />
-            <div className='flex flex-wrap gap-2 '>
+            <textarea
+              className='h-20 w-full p-2'
+              placeholder='Add tag ex. niseko, gondola, the-best-lift'
+              onChange={(event) => handleTagInput(event)}
+              onKeyDown={handleTagInputKeyDown}
+              value={tagInput}
+            />
+            <div className='flex gap-2'>
+              {tag.map((tag, index) => (
+                <span
+                  key={index}
+                  className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
+                >
+                  {tag}
+                  <button onClick={() => handleTagDelete(index)}>X</button>
+                </span>
+              ))}
+            </div>
+            <div className='flex flex-wrap gap-2'>
               <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
                 Add image
               </div>
