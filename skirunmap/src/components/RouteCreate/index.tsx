@@ -1,9 +1,17 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
+import { useRouteTitle } from '../../store/useRouteTitle'
+
+const temp = uuidv4()
 
 const RouteCreate: React.FC = () => {
-  const [routeTitle, setRouteTitle] = useState<string>('')
+  const routeTitle = useRouteTitle((state) => state.routeTitle)
+  const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
+
+  useEffect(() => {
+    console.log(routeTitle)
+  }, [routeTitle])
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
@@ -22,7 +30,6 @@ const RouteCreate: React.FC = () => {
       alert("You have'nt typed route title!")
     }
   }
-  const temp = uuidv4()
 
   return (
     <div className='flex h-screen w-full items-center justify-center'>

@@ -1,6 +1,7 @@
 import { ref, uploadBytes } from 'firebase/storage'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { gpxsRef, storage } from '../../auth/CloudStorage'
+import { useRouteTitle } from '../../store/useRouteTitle'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
 
@@ -8,9 +9,33 @@ import RouteCreate from '../RouteCreate'
 const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
 
 const EditRoute: React.FC = () => {
-  const [hasRouteTitle, setHasRouteTitle] = useState<boolean>(false)
   const [accessRight, setAccessRight] = useState<string>('')
   const [gpxURL, setGpxURL] = useState<string>('')
+
+  const routeTitle = useRouteTitle((state) => state.routeTitle)
+  const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
+
+  useEffect(() => {
+    console.log(routeTitle)
+  }, [routeTitle])
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const title = event.target.value
+    if (title.length <= 30) {
+      setRouteTitle(title)
+    } else {
+      alert('Exceed letter limitation')
+      setRouteTitle(title.slice(0, 30))
+    }
+  }
+
+  const handleCreateRoute = () => {
+    if (routeTitle) {
+      alert(`Route created: ${routeTitle}!`)
+    } else {
+      alert("You have'nt typed route title!")
+    }
+  }
 
   const handleMenuClick = (option: string) => {
     setAccessRight(option)
@@ -53,7 +78,7 @@ const EditRoute: React.FC = () => {
 
   return (
     <div>
-      {!hasRouteTitle && (
+      {!routeTitle && (
         <div className='z-10 bg-black'>
           <RouteCreate />
         </div>
@@ -79,7 +104,14 @@ const EditRoute: React.FC = () => {
           <div className='flex flex-col gap-2 p-2'>
             <div className='flex items-center gap-2'>
               <label className='w-40 text-lg font-bold'>Route Title</label>
-              <input className='h-10' />
+              <input
+                type='text'
+                value={routeTitle}
+                onChange={(event) => {
+                  handleInput(event)
+                }}
+                className='h-10'
+              />
             </div>
             <div className='flex items-center gap-2'>
               <label className='w-40 text-lg font-bold'>Spot Title</label>
