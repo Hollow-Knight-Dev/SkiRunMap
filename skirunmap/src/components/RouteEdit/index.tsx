@@ -1,7 +1,7 @@
 import { ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { gpxsRef, storage } from '../../auth/CloudStorage'
-import { useRouteTitle, useSpotTitle } from '../../store/useRoute'
+import { useRouteDescription, useRouteTitle, useSpotTitle } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
 
@@ -16,10 +16,12 @@ const EditRoute: React.FC = () => {
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
   const spotTitle = useSpotTitle((state) => state.spotTitle)
   const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
+  const routeDescription = useRouteDescription((state) => state.routeDescription)
+  const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
 
   useEffect(() => {
-    console.log(spotTitle)
-  }, [spotTitle])
+    console.log(routeDescription)
+  }, [routeDescription])
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
@@ -38,6 +40,16 @@ const EditRoute: React.FC = () => {
     } else {
       alert('Spot title exceeds letter limitation')
       setSpotTitle(title.slice(0, 30))
+    }
+  }
+
+  const handleRouteDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const description = event.target.value
+    if (description.length <= 50) {
+      setRouteDescription(description)
+    } else {
+      alert('Description exceeds letter limitation')
+      setRouteDescription(description.slice(0, 50))
     }
   }
 
@@ -128,7 +140,12 @@ const EditRoute: React.FC = () => {
                 className='h-10'
               />
             </div>
-            <textarea className='h-20 w-full p-2' placeholder='Add text' />
+            <textarea
+              className='h-20 w-full p-2'
+              placeholder='Add text'
+              value={routeDescription}
+              onChange={(event) => handleRouteDescription(event)}
+            />
             <textarea className='h-20 w-full p-2' placeholder='Add tag ex. #niseko # gondola' />
             <div className='flex flex-wrap gap-2 '>
               <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
