@@ -46,8 +46,8 @@ const Header: React.FC = () => {
             {hoveredItem === 'Route' && (
               <SubNavItem
                 items={[
-                  { name: 'Create Route', url: '/edit-route' },
                   { name: 'View Route', url: '/route' },
+                  { name: 'Create Route', url: '/edit-route' }
                 ]}
               />
             )}
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
               <SubNavItem
                 items={[
                   { name: 'My Page', url: '/member' },
-                  { name: 'My Friend', url: '/friend' },
+                  { name: 'My Friend', url: '/friend' }
                 ]}
               />
             )}
@@ -72,11 +72,7 @@ const Header: React.FC = () => {
         </div>
       </div>
       <div className='flex items-center'>
-        <img
-          className='mr-2 h-auto w-6'
-          src={Notification}
-          alt='Notification icon'
-        />
+        <img className='mr-2 h-auto w-6' src={Notification} alt='Notification icon' />
         <button className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
           Login
         </button>
@@ -92,12 +88,7 @@ interface NavItemProps {
   onMouseEnter: () => void
 }
 
-const NavItem: React.FC<NavItemProps> = ({
-  name,
-  isHovered,
-  url,
-  onMouseEnter,
-}) => {
+const NavItem: React.FC<NavItemProps> = ({ name, isHovered, url, onMouseEnter }) => {
   return (
     <Link
       className={`flex h-full transform items-center focus:outline-none ${
