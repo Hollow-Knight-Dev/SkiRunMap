@@ -1,7 +1,7 @@
 import { ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { gpxsRef, storage } from '../../auth/CloudStorage'
-import { useRouteTitle } from '../../store/useRouteTitle'
+import { useRouteTitle, useSpotTitle } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
 
@@ -14,26 +14,30 @@ const EditRoute: React.FC = () => {
 
   const routeTitle = useRouteTitle((state) => state.routeTitle)
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
+  const spotTitle = useSpotTitle((state) => state.spotTitle)
+  const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
 
   useEffect(() => {
-    console.log(routeTitle)
-  }, [routeTitle])
+    console.log(spotTitle)
+  }, [spotTitle])
 
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
     if (title.length <= 30) {
       setRouteTitle(title)
     } else {
-      alert('Exceed letter limitation')
+      alert('Route title exceeds letter limitation')
       setRouteTitle(title.slice(0, 30))
     }
   }
 
-  const handleCreateRoute = () => {
-    if (routeTitle) {
-      alert(`Route created: ${routeTitle}!`)
+  const handleSpotTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const title = event.target.value
+    if (title.length <= 30) {
+      setSpotTitle(title)
     } else {
-      alert("You have'nt typed route title!")
+      alert('Spot title exceeds letter limitation')
+      setSpotTitle(title.slice(0, 30))
     }
   }
 
@@ -108,14 +112,21 @@ const EditRoute: React.FC = () => {
                 type='text'
                 value={routeTitle}
                 onChange={(event) => {
-                  handleInput(event)
+                  handleRouteTitle(event)
                 }}
                 className='h-10'
               />
             </div>
             <div className='flex items-center gap-2'>
               <label className='w-40 text-lg font-bold'>Spot Title</label>
-              <input className='h-10' />
+              <input
+                type='text'
+                value={spotTitle}
+                onChange={(event) => {
+                  handleSpotTitle(event)
+                }}
+                className='h-10'
+              />
             </div>
             <textarea className='h-20 w-full p-2' placeholder='Add text' />
             <textarea className='h-20 w-full p-2' placeholder='Add tag ex. #niseko # gondola' />
