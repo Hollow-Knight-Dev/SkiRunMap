@@ -1,15 +1,16 @@
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect } from 'react'
-import { storage } from '../../auth/CloudStorage'
+import { db, storage } from '../../auth/CloudStorage'
 import {
   useAccessRight,
   useBuddy,
   useBuddyInput,
   useGpxUrl,
   useImageUrls,
-  useRouteDescription,
   useRouteID,
   useRouteTitle,
+  useSpotDescription,
   useSpotTitle,
   useTag,
   useTagInput,
@@ -27,8 +28,8 @@ const EditRoute: React.FC = () => {
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
   const spotTitle = useSpotTitle((state) => state.spotTitle)
   const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
-  const routeDescription = useRouteDescription((state) => state.routeDescription)
-  const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
+  const spotDescription = useSpotDescription((state) => state.spotDescription)
+  const setSpotDescription = useSpotDescription((state) => state.setSpotDescription)
   const tag = useTag((state) => state.tag)
   const setTag = useTag((state) => state.setTag)
   const tagInput = useTagInput((state) => state.tagInput)
@@ -79,10 +80,10 @@ const EditRoute: React.FC = () => {
   const handleRouteDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const description = event.target.value
     if (description.length <= 50) {
-      setRouteDescription(description)
+      setSpotDescription(description)
     } else {
       alert('Description exceeds letter limitation')
-      setRouteDescription(description.slice(0, 50))
+      setSpotDescription(description.slice(0, 50))
     }
   }
 
@@ -226,6 +227,39 @@ const EditRoute: React.FC = () => {
     }
   }
 
+  const handleSubmit = async () => {
+    console.log('here')
+    const data = {
+      userID: '1',
+      username: 'I Am Groot',
+      routeID: routeID,
+      routeTitle: routeTitle,
+      gpxUrl: gpxUrl,
+      routeCoordinate: [42.827069873533766, 140.80677808428817],
+      createTime: serverTimestamp(),
+      isPublic: accessRight,
+      tags: tag,
+      snowBuddies: buddy,
+      spots: [
+        {
+          spotTitle: spotTitle,
+          spotDescription: spotDescription,
+          spotCoordinate: [42.827069873533766, 140.80677808428817],
+          images: imageUrls,
+          videos: videoUrls
+        }
+      ],
+      likeUsers: ['2', '3', '4'],
+      dislikeUsers: ['5'],
+      likeCount: 2,
+      viewCount: 1000,
+      comments: [
+        { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+      ]
+    }
+    await setDoc(doc(db, 'routes', routeID), data)
+  }
+
   return (
     <div>
       {!routeID && (
@@ -277,7 +311,7 @@ const EditRoute: React.FC = () => {
             <textarea
               className='h-20 w-full p-2'
               placeholder='Add text'
-              value={routeDescription}
+              value={spotDescription}
               onChange={(event) => handleRouteDescription(event)}
             />
             <textarea
@@ -334,7 +368,7 @@ const EditRoute: React.FC = () => {
                 htmlFor='videoFile'
                 className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
               >
-                Upload vidoe
+                Upload video
               </label>
               <input
                 className='hidden'
@@ -368,9 +402,12 @@ const EditRoute: React.FC = () => {
             </div>
           </div>
 
-          <button className='mt-8 h-fit w-fit self-end rounded-3xl bg-zinc-300 p-4 text-lg font-bold'>
+          <div
+            className='mt-8 h-fit w-fit cursor-pointer self-end rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+            onClick={() => handleSubmit()}
+          >
             Submit route
-          </button>
+          </div>
         </form>
       </div>
     </div>

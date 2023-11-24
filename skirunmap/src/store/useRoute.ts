@@ -30,14 +30,14 @@ export const useSpotTitle = create<SpotTitle>()((set) => ({
   setSpotTitle: (newTitle) => set(() => ({ spotTitle: newTitle }))
 }))
 
-interface RouteDescription {
-  routeDescription: string
-  setRouteDescription: (newDescription: string) => void
+interface SpotDescription {
+  spotDescription: string
+  setSpotDescription: (newDescription: string) => void
 }
 
-export const useRouteDescription = create<RouteDescription>()((set) => ({
-  routeDescription: '',
-  setRouteDescription: (newDescription) => set(() => ({ routeDescription: newDescription }))
+export const useSpotDescription = create<SpotDescription>()((set) => ({
+  spotDescription: '',
+  setSpotDescription: (newDescription) => set(() => ({ spotDescription: newDescription }))
 }))
 
 interface Tag {
