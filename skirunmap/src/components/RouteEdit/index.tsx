@@ -13,7 +13,7 @@ import {
   useSpotTitle,
   useTag,
   useTagInput,
-  useVidoeUrls
+  useVideoUrls
 } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
@@ -43,8 +43,8 @@ const EditRoute: React.FC = () => {
   const setGpxUrl = useGpxUrl((state) => state.setGpxUrl)
   const imageUrls = useImageUrls((state) => state.imageUrls)
   const setImageUrls = useImageUrls((state) => state.setImageUrls)
-  const videoUrls = useVidoeUrls((state) => state.videoUrls)
-  const setVideoUrls = useVidoeUrls((state) => state.setVideoUrls)
+  const videoUrls = useVideoUrls((state) => state.videoUrls)
+  const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
 
   const storageRef = ref(storage)
   const routesRef = ref(storage, 'routes')

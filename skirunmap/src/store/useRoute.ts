@@ -110,12 +110,12 @@ export const useImageUrls = create<ImageUrls>()((set) => ({
   setImageUrls: (newUrls) => set(() => ({ imageUrls: newUrls }))
 }))
 
-interface VidoeUrls {
+interface VideoUrls {
   videoUrls: string[]
   setVideoUrls: (url: string[]) => void
 }
 
-export const useVidoeUrls = create<VidoeUrls>()((set) => ({
+export const useVideoUrls = create<VideoUrls>()((set) => ({
   videoUrls: [],
   setVideoUrls: (url) => set(() => ({ videoUrls: url }))
 }))
