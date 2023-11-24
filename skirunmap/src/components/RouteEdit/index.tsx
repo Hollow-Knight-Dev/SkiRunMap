@@ -1,23 +1,23 @@
-import { ref, uploadBytes } from 'firebase/storage'
-import { useEffect, useState } from 'react'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { useEffect } from 'react'
 import { storage } from '../../auth/CloudStorage'
 import {
   useAccessRight,
+  useGpxUrl,
   useRouteDescription,
   useRouteID,
   useRouteTitle,
   useSpotTitle,
-  useTag
+  useTag,
+  useTagInput
 } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
 
 // const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
-const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
+// const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
 
 const EditRoute: React.FC = () => {
-  const [gpxURL, setGpxURL] = useState<string>('')
-
   const routeID = useRouteID((state) => state.routeID)
   const routeTitle = useRouteTitle((state) => state.routeTitle)
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
@@ -25,15 +25,22 @@ const EditRoute: React.FC = () => {
   const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
   const routeDescription = useRouteDescription((state) => state.routeDescription)
   const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
-  const [tagInput, setTagInput] = useState<string>('')
   const tag = useTag((state) => state.tag)
   const setTag = useTag((state) => state.setTag)
+  const tagInput = useTagInput((state) => state.tagInput)
+  const setTagInput = useTagInput((state) => state.setTagInput)
   const accessRight = useAccessRight((state) => state.accessRight)
   const setAccessRight = useAccessRight((state) => state.setAccessRight)
+  const gpxUrl = useGpxUrl((state) => state.gpxUrl)
+  const setGpxUrl = useGpxUrl((state) => state.setGpxUrl)
+
+  const storageRef = ref(storage)
+  const routesRef = ref(storage, 'routes')
+  const routeRef = ref(routesRef, routeID)
 
   useEffect(() => {
-    console.log(tag, routeID)
-  }, [tag])
+    console.log(gpxUrl)
+  }, [gpxUrl])
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
@@ -83,8 +90,7 @@ const EditRoute: React.FC = () => {
   }
 
   const handleTagDelete = (index: number) => {
-    const newTags = [...tag]
-    newTags.splice(index, 1)
+    const newTags = tag.filter((_, i) => i !== index)
     setTag(newTags)
   }
 
@@ -92,10 +98,7 @@ const EditRoute: React.FC = () => {
     setAccessRight(newRight)
   }
 
-  const uploadGpx = (file: File, fileName: string) => {
-    const storageRef = ref(storage)
-    const routesRef = ref(storage, 'routes')
-    const routeRef = ref(routesRef, routeID)
+  const uploadAndDownloadGpx = (file: File, fileName: string) => {
     const gpxFileRef = ref(routeRef, fileName)
     const metadata = {
       contentType: 'application/octet-stream'
@@ -103,14 +106,13 @@ const EditRoute: React.FC = () => {
     uploadBytes(gpxFileRef, file, metadata)
       .then((snapshot) => {
         console.log('Uploaded gpx file!')
+        return getDownloadURL(gpxFileRef)
       })
-      .catch((error) => console.log('Failed to uplaod gpx file', error))
+      .then((url) => {
+        setGpxUrl(url)
+      })
+      .catch((error) => console.log('Failed to uplaod and download gpx file', error))
   }
-
-  // const getGpx = () => {
-  // getDownloadURL(ref(storage, 'Rusutsu.gpx')).then((url) => {
-  //   setGpxURL(url)
-  // })
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileInput = event.target
@@ -119,7 +121,7 @@ const EditRoute: React.FC = () => {
     if (files) {
       const file: File = files[0]
       if (file.name !== undefined && file.name.toLowerCase().endsWith('.gpx')) {
-        uploadGpx(file, routeID.concat('.gpx'))
+        uploadAndDownloadGpx(file, routeID.concat('.gpx'))
       } else {
         alert('Invalid file type. Please upload a GPX file.')
       }
@@ -138,7 +140,7 @@ const EditRoute: React.FC = () => {
       )}
       <div className='flex'>
         <div className='h-screen w-2/3 bg-zinc-500'>
-          <Map gpxFileUrl={gpxFilePath} />
+          <Map gpxUrl={gpxUrl} />
         </div>
         <form className='flex h-screen w-1/3 flex-col bg-zinc-200 p-4'>
           <label

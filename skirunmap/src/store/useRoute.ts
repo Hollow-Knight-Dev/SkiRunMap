@@ -50,6 +50,16 @@ export const useTag = create<Tag>()((set) => ({
   setTag: (newTag) => set(() => ({ tag: newTag }))
 }))
 
+interface TagInput {
+  tagInput: string
+  setTagInput: (newTagInput: string) => void
+}
+
+export const useTagInput = create<TagInput>()((set) => ({
+  tagInput: '',
+  setTagInput: (newTagInput) => set(() => ({ tagInput: newTagInput }))
+}))
+
 interface AccessRight {
   accessRight: boolean
   setAccessRight: (newRight: boolean) => void
@@ -58,4 +68,14 @@ interface AccessRight {
 export const useAccessRight = create<AccessRight>()((set) => ({
   accessRight: true,
   setAccessRight: (newRight) => set(() => ({ accessRight: newRight }))
+}))
+
+interface GpxUrl {
+  gpxUrl: string
+  setGpxUrl: (url: string) => void
+}
+
+export const useGpxUrl = create<GpxUrl>()((set) => ({
+  gpxUrl: '',
+  setGpxUrl: (url) => set(() => ({ gpxUrl: url }))
 }))

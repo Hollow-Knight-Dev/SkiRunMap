@@ -184,7 +184,7 @@ const Route = () => {
         </div>
       </div>
 
-      <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxFileUrl={gpxURL} />}</div>
+      <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxUrl={gpxURL} />}</div>
     </div>
   )
 }
