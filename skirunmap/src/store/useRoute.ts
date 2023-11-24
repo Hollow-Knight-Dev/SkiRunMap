@@ -60,6 +60,26 @@ export const useTagInput = create<TagInput>()((set) => ({
   setTagInput: (newTagInput) => set(() => ({ tagInput: newTagInput }))
 }))
 
+interface Buddy {
+  buddy: string[]
+  setBuddy: (newBuddy: string[]) => void
+}
+
+export const useBuddy = create<Buddy>()((set) => ({
+  buddy: [],
+  setBuddy: (newBuddy) => set(() => ({ buddy: newBuddy }))
+}))
+
+interface BuddyInput {
+  buddyInput: string
+  setBuddyInput: (newBuddyInput: string) => void
+}
+
+export const useBuddyInput = create<BuddyInput>()((set) => ({
+  buddyInput: '',
+  setBuddyInput: (newBuddyInput) => set(() => ({ buddyInput: newBuddyInput }))
+}))
+
 interface AccessRight {
   accessRight: boolean
   setAccessRight: (newRight: boolean) => void

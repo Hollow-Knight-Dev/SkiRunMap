@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 import { storage } from '../../auth/CloudStorage'
 import {
   useAccessRight,
+  useBuddy,
+  useBuddyInput,
   useGpxUrl,
   useRouteDescription,
   useRouteID,
@@ -29,6 +31,10 @@ const EditRoute: React.FC = () => {
   const setTag = useTag((state) => state.setTag)
   const tagInput = useTagInput((state) => state.tagInput)
   const setTagInput = useTagInput((state) => state.setTagInput)
+  const buddy = useBuddy((state) => state.buddy)
+  const setBuddy = useBuddy((state) => state.setBuddy)
+  const buddyInput = useBuddyInput((state) => state.buddyInput)
+  const setBuddyInput = useBuddyInput((state) => state.setBuddyInput)
   const accessRight = useAccessRight((state) => state.accessRight)
   const setAccessRight = useAccessRight((state) => state.setAccessRight)
   const gpxUrl = useGpxUrl((state) => state.gpxUrl)
@@ -39,8 +45,8 @@ const EditRoute: React.FC = () => {
   const routeRef = ref(routesRef, routeID)
 
   useEffect(() => {
-    console.log(gpxUrl)
-  }, [gpxUrl])
+    console.log(buddy)
+  }, [buddy])
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
@@ -83,7 +89,7 @@ const EditRoute: React.FC = () => {
   }
 
   const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((event.key === ' ' || event.key === 'Enter') && tagInput.trim() !== '') {
+    if (event.key === 'Enter' && tagInput.trim() !== '') {
       setTag([...tag, tagInput.trim()])
       setTagInput('')
     }
@@ -92,6 +98,28 @@ const EditRoute: React.FC = () => {
   const handleTagDelete = (index: number) => {
     const newTags = tag.filter((_, i) => i !== index)
     setTag(newTags)
+  }
+
+  const handleBuddyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const buddyTempInput = event.target.value
+    if (buddyTempInput.length <= 20) {
+      setBuddyInput(buddyTempInput)
+    } else {
+      alert('Buddy name exceeds letter limitation')
+      setBuddyInput(buddyTempInput.slice(0, 20))
+    }
+  }
+
+  const handleBuddyInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && buddyInput.trim() !== '') {
+      setBuddy([...buddy, buddyInput.trim()])
+      setBuddyInput('')
+    }
+  }
+
+  const handleBuddyDelete = (index: number) => {
+    const newbuddys = buddy.filter((_, i) => i !== index)
+    setBuddy(newbuddys)
   }
 
   const handleAccessRight = (newRight: boolean) => {
@@ -203,15 +231,30 @@ const EditRoute: React.FC = () => {
                 </span>
               ))}
             </div>
+            <textarea
+              className='h-20 w-full p-2'
+              placeholder='Tag snow buddy with this route'
+              onChange={(event) => handleBuddyInput(event)}
+              onKeyDown={handleBuddyInputKeyDown}
+              value={buddyInput}
+            />
+            <div className='flex gap-2'>
+              {buddy.map((buddy, index) => (
+                <span
+                  key={index}
+                  className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
+                >
+                  {buddy}
+                  <button onClick={() => handleBuddyDelete(index)}>X</button>
+                </span>
+              ))}
+            </div>
             <div className='flex flex-wrap gap-2'>
               <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
                 Add image
               </div>
               <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
                 Add video
-              </div>
-              <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                Add snow buddy
               </div>
             </div>
             <div className='flex gap-2'>
