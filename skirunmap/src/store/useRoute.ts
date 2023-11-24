@@ -99,3 +99,23 @@ export const useGpxUrl = create<GpxUrl>()((set) => ({
   gpxUrl: '',
   setGpxUrl: (url) => set(() => ({ gpxUrl: url }))
 }))
+
+interface ImageUrls {
+  imageUrls: string[]
+  setImageUrls: (url: string[]) => void
+}
+
+export const useImageUrls = create<ImageUrls>()((set) => ({
+  imageUrls: [],
+  setImageUrls: (newUrls) => set(() => ({ imageUrls: newUrls }))
+}))
+
+interface VidoeUrls {
+  videoUrls: string[]
+  setVideoUrls: (url: string[]) => void
+}
+
+export const useVidoeUrls = create<VidoeUrls>()((set) => ({
+  videoUrls: [],
+  setVideoUrls: (url) => set(() => ({ videoUrls: url }))
+}))

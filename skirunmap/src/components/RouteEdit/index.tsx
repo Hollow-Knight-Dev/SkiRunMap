@@ -6,12 +6,14 @@ import {
   useBuddy,
   useBuddyInput,
   useGpxUrl,
+  useImageUrls,
   useRouteDescription,
   useRouteID,
   useRouteTitle,
   useSpotTitle,
   useTag,
-  useTagInput
+  useTagInput,
+  useVidoeUrls
 } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
@@ -39,14 +41,20 @@ const EditRoute: React.FC = () => {
   const setAccessRight = useAccessRight((state) => state.setAccessRight)
   const gpxUrl = useGpxUrl((state) => state.gpxUrl)
   const setGpxUrl = useGpxUrl((state) => state.setGpxUrl)
+  const imageUrls = useImageUrls((state) => state.imageUrls)
+  const setImageUrls = useImageUrls((state) => state.setImageUrls)
+  const videoUrls = useVidoeUrls((state) => state.videoUrls)
+  const setVideoUrls = useVidoeUrls((state) => state.setVideoUrls)
 
   const storageRef = ref(storage)
   const routesRef = ref(storage, 'routes')
   const routeRef = ref(routesRef, routeID)
+  const imagesRef = ref(routeRef, 'images')
+  const videosRef = ref(routeRef, 'videos')
 
   useEffect(() => {
-    console.log(buddy)
-  }, [buddy])
+    console.log(imageUrls, videoUrls)
+  }, [imageUrls, videoUrls])
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
@@ -128,10 +136,7 @@ const EditRoute: React.FC = () => {
 
   const uploadAndDownloadGpx = (file: File, fileName: string) => {
     const gpxFileRef = ref(routeRef, fileName)
-    const metadata = {
-      contentType: 'application/octet-stream'
-    }
-    uploadBytes(gpxFileRef, file, metadata)
+    uploadBytes(gpxFileRef, file)
       .then((snapshot) => {
         console.log('Uploaded gpx file!')
         return getDownloadURL(gpxFileRef)
@@ -142,7 +147,7 @@ const EditRoute: React.FC = () => {
       .catch((error) => console.log('Failed to uplaod and download gpx file', error))
   }
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGpxFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileInput = event.target
     const files: FileList | null = fileInput.files
 
@@ -155,6 +160,68 @@ const EditRoute: React.FC = () => {
       }
     } else {
       alert('Please select a GPX file.')
+      return
+    }
+  }
+
+  const uploadAndDownloadImages = (file: File, fileName: string) => {
+    const imageRef = ref(imagesRef, fileName)
+    uploadBytes(imageRef, file)
+      .then((snapshot) => {
+        console.log('Uploaded image!')
+        return getDownloadURL(imageRef)
+      })
+      .then((url) => {
+        const newUrls = [...imageUrls, url]
+        setImageUrls(newUrls)
+      })
+      .catch((error) => console.log('Failed to uplaod and download image file', error))
+  }
+
+  const handleImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target
+    const files: FileList | null = fileInput.files
+
+    if (files) {
+      const file: File = files[0]
+      if (file.name) {
+        uploadAndDownloadImages(file, file.name)
+      } else {
+        alert('Invalid file type. Please upload an image.')
+      }
+    } else {
+      alert('Please select an image.')
+      return
+    }
+  }
+
+  const uploadAndDownloadVideos = (file: File, fileName: string) => {
+    const videoRef = ref(videosRef, fileName)
+    uploadBytes(videoRef, file)
+      .then((snapshot) => {
+        console.log('Uploaded video!')
+        return getDownloadURL(videoRef)
+      })
+      .then((url) => {
+        const newUrls = [...videoUrls, url]
+        setVideoUrls(newUrls)
+      })
+      .catch((error) => console.log('Failed to uplaod and download mp4 file', error))
+  }
+
+  const handleVideos = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target
+    const files: FileList | null = fileInput.files
+
+    if (files) {
+      const file: File = files[0]
+      if (file.name) {
+        uploadAndDownloadVideos(file, file.name)
+      } else {
+        alert('Invalid file type. Please upload an MP4 video.')
+      }
+    } else {
+      alert('Please select an MP4 video.')
       return
     }
   }
@@ -172,7 +239,7 @@ const EditRoute: React.FC = () => {
         </div>
         <form className='flex h-screen w-1/3 flex-col bg-zinc-200 p-4'>
           <label
-            htmlFor='gpxfile'
+            htmlFor='gpxFile'
             className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
           >
             Upload GPX file
@@ -180,8 +247,8 @@ const EditRoute: React.FC = () => {
           <input
             className='hidden'
             type='file'
-            id='gpxfile'
-            onChange={handleFileChange}
+            id='gpxFile'
+            onChange={handleGpxFile}
             accept='application/octet-stream'
           />
           <div className='flex flex-col gap-2 p-2'>
@@ -250,12 +317,32 @@ const EditRoute: React.FC = () => {
               ))}
             </div>
             <div className='flex flex-wrap gap-2'>
-              <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                Add image
-              </div>
-              <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                Add video
-              </div>
+              <label
+                htmlFor='imageFile'
+                className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+              >
+                Upload images
+              </label>
+              <input
+                className='hidden'
+                type='file'
+                id='imageFile'
+                accept='image/jpeg, image/png, image/svg+xml'
+                onChange={handleImages}
+              />
+              <label
+                htmlFor='videoFile'
+                className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+              >
+                Upload vidoe
+              </label>
+              <input
+                className='hidden'
+                type='file'
+                id='videoFile'
+                accept='video/mp4'
+                onChange={handleVideos}
+              />
             </div>
             <div className='flex gap-2'>
               <p className='w-40 text-lg font-bold'>Set Access Right</p>
