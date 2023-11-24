@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="Hiking Biji">
+<metadata>
+  <name>2023年臺北大縱走：尋寶任務臺北大縱走第一段：關渡至二子坪202311181258</name>
+  <link href="https://hiking.biji.co/">
+    <text>健行筆記 Hiking Biji</text>
+  </link>
+  <time>2023-11-18T04:58:19Z</time>
+</metadata>
+<trk>
+  <trkseg>
+    <trkpt lat="25.1257944" lon="121.4670474">
+      <ele>6.0</ele>
+      <time>2023-11-18T01:29:57Z</time>
+    </trkpt>
+<trkpt lat="25.1257826" lon="121.4670371"><ele>23.799999237060547</ele><time>2023-11-18T01:30:00Z</time></trkpt>
+<trkpt lat="25.12574115344887" lon="121.46704040884977"><ele>6.0</ele><time>2023-11-18T01:30:06Z</time></trkpt>
+<trkpt lat="25.125711224964903" lon="121.46702858235227"><ele>5.0</ele><time>2023-11-18T01:30:09Z</time></trkpt>
+<trkpt lat="25.125675939996956" lon="121.46701042851498"><ele>5.0</ele><time>2023-11-18T01:30:12Z</time></trkpt>
+<trkpt lat="25.125642110446503" lon="121.46697216738886"><ele>5.0</ele><time>2023-11-18T01:30:16Z</time></trkpt>
+</trkseg>
+</trk>
+</gpx>

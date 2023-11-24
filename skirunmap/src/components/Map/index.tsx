@@ -2,7 +2,7 @@ import GPX from 'gpx-parser-builder'
 import { useEffect, useState } from 'react'
 
 interface MapProps {
-  gpxFileUrl: string
+  gpxUrl: string
 }
 interface GPXPoint {
   $: {
@@ -12,7 +12,7 @@ interface GPXPoint {
   ele: string
 }
 
-const Map: React.FC<MapProps> = ({ gpxFileUrl }) => {
+const Map: React.FC<MapProps> = ({ gpxUrl }) => {
   const mapStyles = {
     height: '100vh',
     width: '100%'
@@ -27,11 +27,13 @@ const Map: React.FC<MapProps> = ({ gpxFileUrl }) => {
   useEffect(() => {
     const loadGoogleMapsApi = async () => {
       const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary
-      fetchGpxFile(gpxFileUrl, Map)
+      if (gpxUrl) {
+        fetchGpxFile(gpxUrl, Map)
+      }
     }
 
     loadGoogleMapsApi()
-  }, [gpxFileUrl])
+  }, [gpxUrl])
 
   const fetchGpxFile = async (filePath: string, Map: any) => {
     try {
