@@ -49,3 +49,13 @@ export const useTag = create<Tag>()((set) => ({
   tag: [],
   setTag: (newTag) => set(() => ({ tag: newTag }))
 }))
+
+interface AccessRight {
+  accessRight: boolean
+  setAccessRight: (newRight: boolean) => void
+}
+
+export const useAccessRight = create<AccessRight>()((set) => ({
+  accessRight: true,
+  setAccessRight: (newRight) => set(() => ({ accessRight: newRight }))
+}))

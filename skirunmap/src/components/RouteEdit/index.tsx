@@ -1,7 +1,8 @@
 import { ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
-import { gpxsRef, storage } from '../../auth/CloudStorage'
+import { storage } from '../../auth/CloudStorage'
 import {
+  useAccessRight,
   useRouteDescription,
   useRouteID,
   useRouteTitle,
@@ -15,7 +16,6 @@ import RouteCreate from '../RouteCreate'
 const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'
 
 const EditRoute: React.FC = () => {
-  const [accessRight, setAccessRight] = useState<string>('')
   const [gpxURL, setGpxURL] = useState<string>('')
 
   const routeID = useRouteID((state) => state.routeID)
@@ -28,6 +28,8 @@ const EditRoute: React.FC = () => {
   const [tagInput, setTagInput] = useState<string>('')
   const tag = useTag((state) => state.tag)
   const setTag = useTag((state) => state.setTag)
+  const accessRight = useAccessRight((state) => state.accessRight)
+  const setAccessRight = useAccessRight((state) => state.setAccessRight)
 
   useEffect(() => {
     console.log(tag, routeID)
@@ -86,13 +88,15 @@ const EditRoute: React.FC = () => {
     setTag(newTags)
   }
 
-  const handleMenuClick = (option: string) => {
-    setAccessRight(option)
+  const handleAccessRight = (newRight: boolean) => {
+    setAccessRight(newRight)
   }
 
   const uploadGpx = (file: File, fileName: string) => {
     const storageRef = ref(storage)
-    const gpxFileRef = ref(gpxsRef, fileName)
+    const routesRef = ref(storage, 'routes')
+    const routeRef = ref(routesRef, routeID)
+    const gpxFileRef = ref(routeRef, fileName)
     const metadata = {
       contentType: 'application/octet-stream'
     }
@@ -115,7 +119,7 @@ const EditRoute: React.FC = () => {
     if (files) {
       const file: File = files[0]
       if (file.name !== undefined && file.name.toLowerCase().endsWith('.gpx')) {
-        uploadGpx(file, file.name)
+        uploadGpx(file, routeID.concat('.gpx'))
       } else {
         alert('Invalid file type. Please upload a GPX file.')
       }
@@ -212,17 +216,17 @@ const EditRoute: React.FC = () => {
               <p className='w-40 text-lg font-bold'>Set Access Right</p>
               <div
                 className={`w-16 cursor-pointer rounded-md text-center ${
-                  accessRight === 'Public' ? 'bg-yellow-200' : 'bg-white'
+                  accessRight === true ? 'bg-yellow-200' : 'bg-white'
                 }`}
-                onClick={() => handleMenuClick('Public')}
+                onClick={() => handleAccessRight(true)}
               >
                 Public
               </div>
               <div
                 className={`w-16 cursor-pointer rounded-md text-center ${
-                  accessRight === 'Private' ? 'bg-yellow-200' : 'bg-white'
+                  accessRight === false ? 'bg-yellow-200' : 'bg-white'
                 }`}
-                onClick={() => handleMenuClick('Private')}
+                onClick={() => handleAccessRight(false)}
               >
                 Private
               </div>
