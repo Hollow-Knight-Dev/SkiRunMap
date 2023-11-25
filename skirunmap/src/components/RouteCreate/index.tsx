@@ -5,7 +5,6 @@ import { useRouteID, useRouteTitle } from '../../store/useRoute'
 const RouteCreate: React.FC = () => {
   const routeTitle = useRouteTitle((state) => state.routeTitle)
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
-  const routeID = useRouteID((state) => state.routeID)
   const setRouteID = useRouteID((state) => state.setRouteID)
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {

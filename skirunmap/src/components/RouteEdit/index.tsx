@@ -137,7 +137,7 @@ const EditRoute: React.FC = () => {
   const uploadAndDownloadGpx = (file: File, fileName: string) => {
     const gpxFileRef = ref(routeRef, fileName)
     uploadBytes(gpxFileRef, file)
-      .then((snapshot) => {
+      .then(() => {
         console.log('Uploaded gpx file!')
         return getDownloadURL(gpxFileRef)
       })
@@ -167,7 +167,7 @@ const EditRoute: React.FC = () => {
   const uploadAndDownloadImages = (file: File, fileName: string) => {
     const imageRef = ref(imagesRef, fileName)
     uploadBytes(imageRef, file)
-      .then((snapshot) => {
+      .then(() => {
         console.log('Uploaded image!')
         return getDownloadURL(imageRef)
       })
@@ -198,7 +198,7 @@ const EditRoute: React.FC = () => {
   const uploadAndDownloadVideos = (file: File, fileName: string) => {
     const videoRef = ref(videosRef, fileName)
     uploadBytes(videoRef, file)
-      .then((snapshot) => {
+      .then(() => {
         console.log('Uploaded video!')
         return getDownloadURL(videoRef)
       })

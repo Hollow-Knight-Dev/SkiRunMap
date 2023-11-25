@@ -94,7 +94,7 @@ const Home = () => {
       console.log(allRoutes)
     })
 
-    // return () => unsubscribe()
+    return () => unsubscribe()
   }, [])
 
   return (

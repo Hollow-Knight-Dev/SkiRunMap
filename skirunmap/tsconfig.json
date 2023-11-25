@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Firestore types */
-    "types": ["node"]
+    "types": ["node", "google.maps"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

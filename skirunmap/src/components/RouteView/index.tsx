@@ -12,7 +12,7 @@ import ShowArrow from './show_arrow.png'
 import SmallMap from './small-map.png'
 import UnclickedArrow from './unclicked-arrow.png'
 
-const gpxFilePath = 'src/components/RouteView/Rusutsu.gpx'
+// const gpxFilePath = 'src/components/RouteView/Rusutsu.gpx'
 
 interface Geopoint {
   latitude: number

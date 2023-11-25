@@ -33,7 +33,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
       if (gpxUrl) {
         fetchGpxFile(gpxUrl, Map)
       } else {
-        let map = new Map(document.getElementById('map') as HTMLElement, {
+        new Map(document.getElementById('map') as HTMLElement, {
           center: defaultCenter,
           zoom: 12
         })
@@ -93,7 +93,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
 
   useEffect(() => {
     if (map && gpxTrackPoint) {
-      const polyline = new google.maps.Polyline({
+      new google.maps.Polyline({
         path: gpxTrackPoint,
         strokeColor: '#ff2527',
         strokeOpacity: 1,
