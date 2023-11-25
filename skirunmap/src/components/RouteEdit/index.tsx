@@ -226,7 +226,7 @@ const EditRoute: React.FC = () => {
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSaveDraft = async () => {
     const data = {
       userID: '1',
       username: 'I Am Groot',
@@ -234,8 +234,6 @@ const EditRoute: React.FC = () => {
       routeTitle: routeTitle,
       gpxUrl: gpxUrl,
       routeCoordinate: [42.827069873533766, 140.80677808428817],
-      createTime: serverTimestamp(),
-      isPublic: accessRight,
       tags: tags,
       snowBuddies: buddies,
       spots: [
@@ -247,6 +245,9 @@ const EditRoute: React.FC = () => {
           videos: videoUrls
         }
       ],
+      isPublic: accessRight,
+      isSubmitted: false,
+      createTime: serverTimestamp(),
       likeUsers: ['2', '3', '4'],
       dislikeUsers: ['5'],
       likeCount: 2,
@@ -255,7 +256,40 @@ const EditRoute: React.FC = () => {
         { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
       ]
     }
-    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Uploaded this route!'))
+    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Saved in draft!'))
+  }
+
+  const handleSubmit = async () => {
+    const data = {
+      userID: '1',
+      username: 'I Am Groot',
+      routeID: routeID,
+      routeTitle: routeTitle,
+      gpxUrl: gpxUrl,
+      routeCoordinate: [42.827069873533766, 140.80677808428817],
+      tags: tags,
+      snowBuddies: buddies,
+      spots: [
+        {
+          spotTitle: spotTitle,
+          spotDescription: spotDescription,
+          spotCoordinate: [42.827069873533766, 140.80677808428817],
+          images: imageUrls,
+          videos: videoUrls
+        }
+      ],
+      isPublic: accessRight,
+      isSubmitted: true,
+      createTime: serverTimestamp(),
+      likeUsers: ['2', '3', '4'],
+      dislikeUsers: ['5'],
+      likeCount: 2,
+      viewCount: 1000,
+      comments: [
+        { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+      ]
+    }
+    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Route been submitted!'))
   }
 
   return (
@@ -307,13 +341,13 @@ const EditRoute: React.FC = () => {
               />
             </div>
             <textarea
-              className='h-20 w-full p-2'
+              className='h-10 w-full p-2'
               placeholder='Add text'
               value={spotDescription}
               onChange={(event) => handleRouteDescription(event)}
             />
             <textarea
-              className='h-20 w-full p-2'
+              className='h-10 w-full p-2'
               placeholder='Add tag ex. niseko, gondola, the-best-lift'
               onChange={(event) => handleTagInput(event)}
               onKeyDown={handleTagInputKeyDown}
@@ -331,7 +365,7 @@ const EditRoute: React.FC = () => {
               ))}
             </div>
             <textarea
-              className='h-20 w-full p-2'
+              className='h-10 w-full p-2'
               placeholder='Tag snow buddy with this route'
               onChange={(event) => handleBuddyInput(event)}
               onKeyDown={handleBuddyInputKeyDown}
@@ -362,6 +396,7 @@ const EditRoute: React.FC = () => {
                 accept='image/jpeg, image/png, image/svg+xml'
                 onChange={handleImages}
               />
+              <p>{imageUrls}</p>
               <label
                 htmlFor='videoFile'
                 className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
@@ -375,6 +410,7 @@ const EditRoute: React.FC = () => {
                 accept='video/mp4'
                 onChange={handleVideos}
               />
+              <p>{videoUrls}</p>
             </div>
             <div className='flex gap-2'>
               <p className='w-40 text-lg font-bold'>Set Access Right</p>
@@ -400,11 +436,19 @@ const EditRoute: React.FC = () => {
             </div>
           </div>
 
-          <div
-            className='mt-8 h-fit w-fit cursor-pointer self-end rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
-            onClick={() => handleSubmit()}
-          >
-            Submit route
+          <div className='mt-8 flex justify-between'>
+            <div
+              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+              onClick={() => handleSaveDraft()}
+            >
+              Save draft
+            </div>
+            <div
+              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+              onClick={() => handleSubmit()}
+            >
+              Submit route
+            </div>
           </div>
         </form>
       </div>
