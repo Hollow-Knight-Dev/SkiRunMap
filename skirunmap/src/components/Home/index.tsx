@@ -1,4 +1,4 @@
-import { DocumentData, collection, onSnapshot, query, where } from 'firebase/firestore'
+import { DocumentData, collection, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { db } from '../../auth/CloudStorage'
 import SearchIcon from './search-icon.png'
@@ -80,21 +80,23 @@ const Home = () => {
   }
 
   useEffect(() => {
-    const routes: DocumentData[] = []
     const q = query(
       collection(db, 'routes'),
       where('isSubmitted', '==', true),
-      where('isPublic', '==', true)
+      where('isPublic', '==', true),
+      orderBy('createTime', 'desc')
     )
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    // const unsubscribe =
+    onSnapshot(q, (querySnapshot) => {
+      const routes: DocumentData[] = []
+      // console.log('Snapshot received!')
       querySnapshot.forEach((doc) => {
         routes.push(doc.data())
-        setAllRoutes(routes)
       })
-      console.log(allRoutes)
+      setAllRoutes(routes)
     })
 
-    return () => unsubscribe()
+    // return () => unsubscribe()
   }, [])
 
   return (
@@ -147,7 +149,7 @@ const Home = () => {
           </div>
         </div>
         <div className='mb-6 w-full border border-zinc-300' />
-        <div className='flex w-fit gap-4'>
+        <div className='flex w-fit flex-wrap gap-4'>
           {allRoutes.map((map, index) => (
             <div key={index} className='h-40 w-40 rounded-2xl bg-zinc-300'>
               <p>{map.routeTitle}</p>
