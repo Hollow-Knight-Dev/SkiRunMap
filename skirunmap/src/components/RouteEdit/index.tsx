@@ -1,19 +1,20 @@
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect } from 'react'
-import { storage } from '../../auth/CloudStorage'
+import { db, storage } from '../../auth/CloudStorage'
 import {
   useAccessRight,
-  useBuddy,
+  useBuddies,
   useBuddyInput,
   useGpxUrl,
   useImageUrls,
-  useRouteDescription,
   useRouteID,
   useRouteTitle,
+  useSpotDescription,
   useSpotTitle,
-  useTag,
   useTagInput,
-  useVidoeUrls
+  useTags,
+  useVideoUrls
 } from '../../store/useRoute'
 import Map from '../Map'
 import RouteCreate from '../RouteCreate'
@@ -27,14 +28,14 @@ const EditRoute: React.FC = () => {
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
   const spotTitle = useSpotTitle((state) => state.spotTitle)
   const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
-  const routeDescription = useRouteDescription((state) => state.routeDescription)
-  const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
-  const tag = useTag((state) => state.tag)
-  const setTag = useTag((state) => state.setTag)
+  const spotDescription = useSpotDescription((state) => state.spotDescription)
+  const setSpotDescription = useSpotDescription((state) => state.setSpotDescription)
+  const tags = useTags((state) => state.tags)
+  const setTags = useTags((state) => state.setTags)
   const tagInput = useTagInput((state) => state.tagInput)
   const setTagInput = useTagInput((state) => state.setTagInput)
-  const buddy = useBuddy((state) => state.buddy)
-  const setBuddy = useBuddy((state) => state.setBuddy)
+  const buddies = useBuddies((state) => state.buddies)
+  const setBuddies = useBuddies((state) => state.setBuddies)
   const buddyInput = useBuddyInput((state) => state.buddyInput)
   const setBuddyInput = useBuddyInput((state) => state.setBuddyInput)
   const accessRight = useAccessRight((state) => state.accessRight)
@@ -43,10 +44,9 @@ const EditRoute: React.FC = () => {
   const setGpxUrl = useGpxUrl((state) => state.setGpxUrl)
   const imageUrls = useImageUrls((state) => state.imageUrls)
   const setImageUrls = useImageUrls((state) => state.setImageUrls)
-  const videoUrls = useVidoeUrls((state) => state.videoUrls)
-  const setVideoUrls = useVidoeUrls((state) => state.setVideoUrls)
+  const videoUrls = useVideoUrls((state) => state.videoUrls)
+  const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
 
-  const storageRef = ref(storage)
   const routesRef = ref(storage, 'routes')
   const routeRef = ref(routesRef, routeID)
   const imagesRef = ref(routeRef, 'images')
@@ -79,10 +79,10 @@ const EditRoute: React.FC = () => {
   const handleRouteDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const description = event.target.value
     if (description.length <= 50) {
-      setRouteDescription(description)
+      setSpotDescription(description)
     } else {
       alert('Description exceeds letter limitation')
-      setRouteDescription(description.slice(0, 50))
+      setSpotDescription(description.slice(0, 50))
     }
   }
 
@@ -98,14 +98,14 @@ const EditRoute: React.FC = () => {
 
   const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && tagInput.trim() !== '') {
-      setTag([...tag, tagInput.trim()])
+      setTags([...tags, tagInput.trim()])
       setTagInput('')
     }
   }
 
   const handleTagDelete = (index: number) => {
-    const newTags = tag.filter((_, i) => i !== index)
-    setTag(newTags)
+    const newTags = tags.filter((_, i) => i !== index)
+    setTags(newTags)
   }
 
   const handleBuddyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -120,14 +120,14 @@ const EditRoute: React.FC = () => {
 
   const handleBuddyInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && buddyInput.trim() !== '') {
-      setBuddy([...buddy, buddyInput.trim()])
+      setBuddies([...buddies, buddyInput.trim()])
       setBuddyInput('')
     }
   }
 
   const handleBuddyDelete = (index: number) => {
-    const newbuddys = buddy.filter((_, i) => i !== index)
-    setBuddy(newbuddys)
+    const newbuddys = buddies.filter((_, i) => i !== index)
+    setBuddies(newbuddys)
   }
 
   const handleAccessRight = (newRight: boolean) => {
@@ -226,6 +226,72 @@ const EditRoute: React.FC = () => {
     }
   }
 
+  const handleSaveDraft = async () => {
+    const data = {
+      userID: '1',
+      username: 'I Am Groot',
+      routeID: routeID,
+      routeTitle: routeTitle,
+      gpxUrl: gpxUrl,
+      routeCoordinate: [42.827069873533766, 140.80677808428817],
+      tags: tags,
+      snowBuddies: buddies,
+      spots: [
+        {
+          spotTitle: spotTitle,
+          spotDescription: spotDescription,
+          spotCoordinate: [42.827069873533766, 140.80677808428817],
+          images: imageUrls,
+          videos: videoUrls
+        }
+      ],
+      isPublic: accessRight,
+      isSubmitted: false,
+      createTime: serverTimestamp(),
+      likeUsers: ['2', '3', '4'],
+      dislikeUsers: ['5'],
+      likeCount: 2,
+      viewCount: 1000,
+      comments: [
+        { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+      ]
+    }
+    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Saved in draft!'))
+  }
+
+  const handleSubmit = async () => {
+    const data = {
+      userID: '1',
+      username: 'I Am Groot',
+      routeID: routeID,
+      routeTitle: routeTitle,
+      gpxUrl: gpxUrl,
+      routeCoordinate: [42.827069873533766, 140.80677808428817],
+      tags: tags,
+      snowBuddies: buddies,
+      spots: [
+        {
+          spotTitle: spotTitle,
+          spotDescription: spotDescription,
+          spotCoordinate: [42.827069873533766, 140.80677808428817],
+          images: imageUrls,
+          videos: videoUrls
+        }
+      ],
+      isPublic: accessRight,
+      isSubmitted: true,
+      createTime: serverTimestamp(),
+      likeUsers: ['2', '3', '4'],
+      dislikeUsers: ['5'],
+      likeCount: 2,
+      viewCount: 1000,
+      comments: [
+        { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+      ]
+    }
+    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Route been submitted!'))
+  }
+
   return (
     <div>
       {!routeID && (
@@ -275,20 +341,20 @@ const EditRoute: React.FC = () => {
               />
             </div>
             <textarea
-              className='h-20 w-full p-2'
+              className='h-10 w-full p-2'
               placeholder='Add text'
-              value={routeDescription}
+              value={spotDescription}
               onChange={(event) => handleRouteDescription(event)}
             />
             <textarea
-              className='h-20 w-full p-2'
+              className='h-10 w-full p-2'
               placeholder='Add tag ex. niseko, gondola, the-best-lift'
               onChange={(event) => handleTagInput(event)}
               onKeyDown={handleTagInputKeyDown}
               value={tagInput}
             />
             <div className='flex gap-2'>
-              {tag.map((tag, index) => (
+              {tags.map((tag, index) => (
                 <span
                   key={index}
                   className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
@@ -299,14 +365,14 @@ const EditRoute: React.FC = () => {
               ))}
             </div>
             <textarea
-              className='h-20 w-full p-2'
+              className='h-10 w-full p-2'
               placeholder='Tag snow buddy with this route'
               onChange={(event) => handleBuddyInput(event)}
               onKeyDown={handleBuddyInputKeyDown}
               value={buddyInput}
             />
             <div className='flex gap-2'>
-              {buddy.map((buddy, index) => (
+              {buddies.map((buddy, index) => (
                 <span
                   key={index}
                   className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
@@ -330,11 +396,12 @@ const EditRoute: React.FC = () => {
                 accept='image/jpeg, image/png, image/svg+xml'
                 onChange={handleImages}
               />
+              <p>{imageUrls}</p>
               <label
                 htmlFor='videoFile'
                 className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
               >
-                Upload vidoe
+                Upload video
               </label>
               <input
                 className='hidden'
@@ -343,6 +410,7 @@ const EditRoute: React.FC = () => {
                 accept='video/mp4'
                 onChange={handleVideos}
               />
+              <p>{videoUrls}</p>
             </div>
             <div className='flex gap-2'>
               <p className='w-40 text-lg font-bold'>Set Access Right</p>
@@ -368,9 +436,20 @@ const EditRoute: React.FC = () => {
             </div>
           </div>
 
-          <button className='mt-8 h-fit w-fit self-end rounded-3xl bg-zinc-300 p-4 text-lg font-bold'>
-            Submit route
-          </button>
+          <div className='mt-8 flex justify-between'>
+            <div
+              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+              onClick={() => handleSaveDraft()}
+            >
+              Save draft
+            </div>
+            <div
+              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+              onClick={() => handleSubmit()}
+            >
+              Submit route
+            </div>
+          </div>
         </form>
       </div>
     </div>
