@@ -1,8 +1,74 @@
-import { useState } from 'react'
+import { DocumentData, collection, onSnapshot, query, where } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
+import { db } from '../../auth/CloudStorage'
 import SearchIcon from './search-icon.png'
 import SnowMountain from './snow-mountain.png'
 
+// const data = {
+//   userID: '1',
+//   username: 'I Am Groot',
+//   routeID: routeID,
+//   routeTitle: routeTitle,
+//   gpxUrl: gpxUrl,
+//   routeCoordinate: [42.827069873533766, 140.80677808428817],
+//   tags: tags,
+//   snowBuddies: buddies,
+//   spots: [
+//     {
+//       spotTitle: spotTitle,
+//       spotDescription: spotDescription,
+//       spotCoordinate: [42.827069873533766, 140.80677808428817],
+//       imageUrls: imageUrls,
+//       videoUrls: videoUrls
+//     }
+//   ],
+//   isPublic: accessRight,
+//   isSubmitted: true,
+//   createTime: serverTimestamp(),
+//   likeUsers: ['2', '3', '4'],
+//   dislikeUsers: ['5'],
+//   likeCount: 2,
+//   viewCount: 1000,
+//   comments: [
+//     { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+//   ]
+// }
+
+// interface Spots {
+//   spotTitle: string
+//   spotDescription: string
+//   spotCoordinate: number[]
+//   images: string[]
+//   videos: string[]
+// }
+
+// interface Comments {
+//   userID: string
+//   comment: string
+//   commentTime: FieldValue
+// }
+// interface Route {
+//   userID: string
+//   username: string
+//   routeID: string
+//   routeTitle: string
+//   gpxUrl: string
+//   routeCoordinate: number[]
+//   tags: string[]
+//   snowBuddies: string[]
+//   spots: Spots[]
+//   isPublic: boolean
+//   isSubmitted: boolean
+//   createTime: FieldValue
+//   likeUsers: string[]
+//   dislikeUsers: string[]
+//   likeCount: number
+//   viewCount: number
+//   comments: Comments[]
+// }
+
 const Home = () => {
+  const [allRoutes, setAllRoutes] = useState<DocumentData[]>([])
   const [hasFilter, setHasFilter] = useState(false)
 
   const handleFilterClick = () => {
@@ -12,6 +78,24 @@ const Home = () => {
   const handleFilterMouseLeave = () => {
     setHasFilter(false)
   }
+
+  useEffect(() => {
+    const routes: DocumentData[] = []
+    const q = query(
+      collection(db, 'routes'),
+      where('isSubmitted', '==', true),
+      where('isPublic', '==', true)
+    )
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        routes.push(doc.data())
+        setAllRoutes(routes)
+      })
+      console.log(allRoutes)
+    })
+
+    // return () => unsubscribe()
+  }, [])
 
   return (
     <div className='flex flex-col items-center'>
@@ -30,7 +114,7 @@ const Home = () => {
           <img src={SnowMountain} alt='Snow Mountain' />
         </div>
       </div>
-      <div className='flex w-fit flex-col items-center p-8'>
+      <div className='flex w-full flex-col items-center p-8'>
         <div className='mb-2 flex w-full justify-between'>
           <p className='text-3xl font-bold'>Hottest routes</p>
           <div
@@ -63,19 +147,15 @@ const Home = () => {
           </div>
         </div>
         <div className='mb-6 w-full border border-zinc-300' />
-        <div className='grid w-fit grid-cols-4 gap-4'>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
-          <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+        <div className='flex w-fit gap-4'>
+          {allRoutes.map((map, index) => (
+            <div key={index} className='h-40 w-40 rounded-2xl bg-zinc-300'>
+              <p>{map.routeTitle}</p>
+              {map.spots[0].imageUrls.map((url: string, index: number) => (
+                <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-12' />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

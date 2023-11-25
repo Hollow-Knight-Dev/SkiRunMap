@@ -241,8 +241,8 @@ const EditRoute: React.FC = () => {
           spotTitle: spotTitle,
           spotDescription: spotDescription,
           spotCoordinate: [42.827069873533766, 140.80677808428817],
-          images: imageUrls,
-          videos: videoUrls
+          imageUrls: imageUrls,
+          videoUrls: videoUrls
         }
       ],
       isPublic: accessRight,
@@ -253,7 +253,7 @@ const EditRoute: React.FC = () => {
       likeCount: 2,
       viewCount: 1000,
       comments: [
-        { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+        { userID: '3', comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8' }
       ]
     }
     await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Saved in draft!'))
@@ -274,8 +274,8 @@ const EditRoute: React.FC = () => {
           spotTitle: spotTitle,
           spotDescription: spotDescription,
           spotCoordinate: [42.827069873533766, 140.80677808428817],
-          images: imageUrls,
-          videos: videoUrls
+          imageUrls: imageUrls,
+          videoUrls: videoUrls
         }
       ],
       isPublic: accessRight,
@@ -286,7 +286,7 @@ const EditRoute: React.FC = () => {
       likeCount: 2,
       viewCount: 1000,
       comments: [
-        { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
+        { userID: '3', comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8' }
       ]
     }
     await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Route been submitted!'))
