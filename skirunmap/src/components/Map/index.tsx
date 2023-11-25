@@ -19,7 +19,10 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
   }
 
   const [map, setMap] = useState<google.maps.Map | null>(null)
-  const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>({ lat: 0, lng: 0 })
+  const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>({
+    lat: 42.84886847854739,
+    lng: 140.7229683345836
+  })
   const [gpxTrackPoint, setGpxTrackPoint] = useState<google.maps.LatLngLiteral[] | undefined>(
     undefined
   )
@@ -29,6 +32,11 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
       const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary
       if (gpxUrl) {
         fetchGpxFile(gpxUrl, Map)
+      } else {
+        let map = new Map(document.getElementById('map') as HTMLElement, {
+          center: defaultCenter,
+          zoom: 12
+        })
       }
     }
 

@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { db, storage } from '../../auth/CloudStorage'
 import {
   useAccessRight,
-  useBuddy,
+  useBuddies,
   useBuddyInput,
   useGpxUrl,
   useImageUrls,
@@ -12,8 +12,8 @@ import {
   useRouteTitle,
   useSpotDescription,
   useSpotTitle,
-  useTag,
   useTagInput,
+  useTags,
   useVideoUrls
 } from '../../store/useRoute'
 import Map from '../Map'
@@ -30,12 +30,12 @@ const EditRoute: React.FC = () => {
   const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
   const spotDescription = useSpotDescription((state) => state.spotDescription)
   const setSpotDescription = useSpotDescription((state) => state.setSpotDescription)
-  const tag = useTag((state) => state.tag)
-  const setTag = useTag((state) => state.setTag)
+  const tags = useTags((state) => state.tags)
+  const setTags = useTags((state) => state.setTags)
   const tagInput = useTagInput((state) => state.tagInput)
   const setTagInput = useTagInput((state) => state.setTagInput)
-  const buddy = useBuddy((state) => state.buddy)
-  const setBuddy = useBuddy((state) => state.setBuddy)
+  const buddies = useBuddies((state) => state.buddies)
+  const setBuddies = useBuddies((state) => state.setBuddies)
   const buddyInput = useBuddyInput((state) => state.buddyInput)
   const setBuddyInput = useBuddyInput((state) => state.setBuddyInput)
   const accessRight = useAccessRight((state) => state.accessRight)
@@ -47,7 +47,6 @@ const EditRoute: React.FC = () => {
   const videoUrls = useVideoUrls((state) => state.videoUrls)
   const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
 
-  const storageRef = ref(storage)
   const routesRef = ref(storage, 'routes')
   const routeRef = ref(routesRef, routeID)
   const imagesRef = ref(routeRef, 'images')
@@ -99,14 +98,14 @@ const EditRoute: React.FC = () => {
 
   const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && tagInput.trim() !== '') {
-      setTag([...tag, tagInput.trim()])
+      setTags([...tags, tagInput.trim()])
       setTagInput('')
     }
   }
 
   const handleTagDelete = (index: number) => {
-    const newTags = tag.filter((_, i) => i !== index)
-    setTag(newTags)
+    const newTags = tags.filter((_, i) => i !== index)
+    setTags(newTags)
   }
 
   const handleBuddyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -121,14 +120,14 @@ const EditRoute: React.FC = () => {
 
   const handleBuddyInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && buddyInput.trim() !== '') {
-      setBuddy([...buddy, buddyInput.trim()])
+      setBuddies([...buddies, buddyInput.trim()])
       setBuddyInput('')
     }
   }
 
   const handleBuddyDelete = (index: number) => {
-    const newbuddys = buddy.filter((_, i) => i !== index)
-    setBuddy(newbuddys)
+    const newbuddys = buddies.filter((_, i) => i !== index)
+    setBuddies(newbuddys)
   }
 
   const handleAccessRight = (newRight: boolean) => {
@@ -228,7 +227,6 @@ const EditRoute: React.FC = () => {
   }
 
   const handleSubmit = async () => {
-    console.log('here')
     const data = {
       userID: '1',
       username: 'I Am Groot',
@@ -238,8 +236,8 @@ const EditRoute: React.FC = () => {
       routeCoordinate: [42.827069873533766, 140.80677808428817],
       createTime: serverTimestamp(),
       isPublic: accessRight,
-      tags: tag,
-      snowBuddies: buddy,
+      tags: tags,
+      snowBuddies: buddies,
       spots: [
         {
           spotTitle: spotTitle,
@@ -257,7 +255,7 @@ const EditRoute: React.FC = () => {
         { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
       ]
     }
-    await setDoc(doc(db, 'routes', routeID), data)
+    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Uploaded this route!'))
   }
 
   return (
@@ -322,7 +320,7 @@ const EditRoute: React.FC = () => {
               value={tagInput}
             />
             <div className='flex gap-2'>
-              {tag.map((tag, index) => (
+              {tags.map((tag, index) => (
                 <span
                   key={index}
                   className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
@@ -340,7 +338,7 @@ const EditRoute: React.FC = () => {
               value={buddyInput}
             />
             <div className='flex gap-2'>
-              {buddy.map((buddy, index) => (
+              {buddies.map((buddy, index) => (
                 <span
                   key={index}
                   className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'

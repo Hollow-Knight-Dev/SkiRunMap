@@ -40,14 +40,14 @@ export const useSpotDescription = create<SpotDescription>()((set) => ({
   setSpotDescription: (newDescription) => set(() => ({ spotDescription: newDescription }))
 }))
 
-interface Tag {
-  tag: string[]
-  setTag: (newTag: string[]) => void
+interface Tags {
+  tags: string[]
+  setTags: (newTags: string[]) => void
 }
 
-export const useTag = create<Tag>()((set) => ({
-  tag: [],
-  setTag: (newTag) => set(() => ({ tag: newTag }))
+export const useTags = create<Tags>()((set) => ({
+  tags: [],
+  setTags: (newTags) => set(() => ({ tags: newTags }))
 }))
 
 interface TagInput {
@@ -60,14 +60,14 @@ export const useTagInput = create<TagInput>()((set) => ({
   setTagInput: (newTagInput) => set(() => ({ tagInput: newTagInput }))
 }))
 
-interface Buddy {
-  buddy: string[]
-  setBuddy: (newBuddy: string[]) => void
+interface Buddies {
+  buddies: string[]
+  setBuddies: (newBuddies: string[]) => void
 }
 
-export const useBuddy = create<Buddy>()((set) => ({
-  buddy: [],
-  setBuddy: (newBuddy) => set(() => ({ buddy: newBuddy }))
+export const useBuddies = create<Buddies>()((set) => ({
+  buddies: [],
+  setBuddies: (newBuddies) => set(() => ({ buddies: newBuddies }))
 }))
 
 interface BuddyInput {
