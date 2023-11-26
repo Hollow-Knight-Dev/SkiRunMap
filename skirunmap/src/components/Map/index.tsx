@@ -14,7 +14,7 @@ interface GPXPoint {
 
 const Map: React.FC<MapProps> = ({ gpxUrl }) => {
   const mapStyles = {
-    height: '100vh',
+    height: '100%',
     width: '100%'
   }
 

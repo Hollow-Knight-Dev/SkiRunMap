@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Member from './pages/Member'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
+import SignIn from './pages/Signin'
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
 
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/signin' element={<SignIn />} />
         <Route path='/member' element={<Member />} />
         <Route path='/route' element={<RouteView />} />
         <Route path='/edit-route' element={<RouteEdit />} />

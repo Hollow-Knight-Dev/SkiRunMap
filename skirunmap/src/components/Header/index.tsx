@@ -73,9 +73,12 @@ const Header: React.FC = () => {
       </div>
       <div className='flex items-center'>
         <img className='mr-2 h-auto w-6' src={Notification} alt='Notification icon' />
-        <button className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
+        <Link
+          to='/signin'
+          className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+        >
           Login
-        </button>
+        </Link>
       </div>
     </div>
   )

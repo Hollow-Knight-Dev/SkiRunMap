@@ -293,165 +293,166 @@ const EditRoute: React.FC = () => {
   }
 
   return (
-    <div>
-      {!routeID && (
-        <div className='z-10 bg-black'>
+    <div className='flex w-full'>
+      {!routeID ? (
+        <div className='h-screen-64px z-10 w-full bg-black'>
           <RouteCreate />
         </div>
-      )}
-      <div className='flex'>
-        <div className='h-screen w-2/3 bg-zinc-500'>
-          <Map gpxUrl={gpxUrl} />
-        </div>
-        <form className='flex h-screen w-1/3 flex-col bg-zinc-200 p-4'>
-          <label
-            htmlFor='gpxFile'
-            className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-          >
-            Upload GPX file
-          </label>
-          <input
-            className='hidden'
-            type='file'
-            id='gpxFile'
-            onChange={handleGpxFile}
-            accept='application/octet-stream'
-          />
-          <div className='flex flex-col gap-2 p-2'>
-            <div className='flex items-center gap-2'>
-              <label className='w-40 text-lg font-bold'>Route Title</label>
-              <input
-                type='text'
-                value={routeTitle}
-                onChange={(event) => {
-                  handleRouteTitle(event)
-                }}
-                className='h-10'
-              />
-            </div>
-            <div className='flex items-center gap-2'>
-              <label className='w-40 text-lg font-bold'>Spot Title</label>
-              <input
-                type='text'
-                value={spotTitle}
-                onChange={(event) => {
-                  handleSpotTitle(event)
-                }}
-                className='h-10'
-              />
-            </div>
-            <textarea
-              className='h-10 w-full p-2'
-              placeholder='Add text'
-              value={spotDescription}
-              onChange={(event) => handleRouteDescription(event)}
-            />
-            <textarea
-              className='h-10 w-full p-2'
-              placeholder='Add tag ex. niseko, gondola, the-best-lift'
-              onChange={(event) => handleTagInput(event)}
-              onKeyDown={handleTagInputKeyDown}
-              value={tagInput}
-            />
-            <div className='flex gap-2'>
-              {tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
-                >
-                  {tag}
-                  <button onClick={() => handleTagDelete(index)}>X</button>
-                </span>
-              ))}
-            </div>
-            <textarea
-              className='h-10 w-full p-2'
-              placeholder='Tag snow buddy with this route'
-              onChange={(event) => handleBuddyInput(event)}
-              onKeyDown={handleBuddyInputKeyDown}
-              value={buddyInput}
-            />
-            <div className='flex gap-2'>
-              {buddies.map((buddy, index) => (
-                <span
-                  key={index}
-                  className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
-                >
-                  {buddy}
-                  <button onClick={() => handleBuddyDelete(index)}>X</button>
-                </span>
-              ))}
-            </div>
-            <div className='flex flex-wrap gap-2'>
-              <label
-                htmlFor='imageFile'
-                className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-              >
-                Upload images
-              </label>
-              <input
-                className='hidden'
-                type='file'
-                id='imageFile'
-                accept='image/jpeg, image/png, image/svg+xml'
-                onChange={handleImages}
-              />
-              <p>{imageUrls}</p>
-              <label
-                htmlFor='videoFile'
-                className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-              >
-                Upload video
-              </label>
-              <input
-                className='hidden'
-                type='file'
-                id='videoFile'
-                accept='video/mp4'
-                onChange={handleVideos}
-              />
-              <p>{videoUrls}</p>
-            </div>
-            <div className='flex gap-2'>
-              <p className='w-40 text-lg font-bold'>Set Access Right</p>
-              <div
-                className={`w-16 cursor-pointer rounded-md text-center ${
-                  accessRight === true ? 'bg-yellow-200' : 'bg-white'
-                }`}
-                onClick={() => handleAccessRight(true)}
-              >
-                Public
-              </div>
-              <div
-                className={`w-16 cursor-pointer rounded-md text-center ${
-                  accessRight === false ? 'bg-yellow-200' : 'bg-white'
-                }`}
-                onClick={() => handleAccessRight(false)}
-              >
-                Private
-              </div>
-            </div>
-            <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-              Add spot
-            </div>
+      ) : (
+        <div className='h-screen-64px flex w-full'>
+          <div className='h-full w-2/3 bg-zinc-500'>
+            <Map gpxUrl={gpxUrl} />
           </div>
+          <form className='flex h-full w-1/3 flex-col bg-zinc-200 p-4'>
+            <label
+              htmlFor='gpxFile'
+              className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+            >
+              Upload GPX file
+            </label>
+            <input
+              className='hidden'
+              type='file'
+              id='gpxFile'
+              onChange={handleGpxFile}
+              accept='application/octet-stream'
+            />
+            <div className='flex flex-col gap-2 p-2'>
+              <div className='flex items-center gap-2'>
+                <label className='w-40 text-lg font-bold'>Route Title</label>
+                <input
+                  type='text'
+                  value={routeTitle}
+                  onChange={(event) => {
+                    handleRouteTitle(event)
+                  }}
+                  className='h-10'
+                />
+              </div>
+              <div className='flex items-center gap-2'>
+                <label className='w-40 text-lg font-bold'>Spot Title</label>
+                <input
+                  type='text'
+                  value={spotTitle}
+                  onChange={(event) => {
+                    handleSpotTitle(event)
+                  }}
+                  className='h-10'
+                />
+              </div>
+              <textarea
+                className='h-10 w-full p-2'
+                placeholder='Add text'
+                value={spotDescription}
+                onChange={(event) => handleRouteDescription(event)}
+              />
+              <textarea
+                className='h-10 w-full p-2'
+                placeholder='Add tag ex. niseko, gondola, the-best-lift'
+                onChange={(event) => handleTagInput(event)}
+                onKeyDown={handleTagInputKeyDown}
+                value={tagInput}
+              />
+              <div className='flex gap-2'>
+                {tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
+                  >
+                    {tag}
+                    <button onClick={() => handleTagDelete(index)}>X</button>
+                  </span>
+                ))}
+              </div>
+              <textarea
+                className='h-10 w-full p-2'
+                placeholder='Tag snow buddy with this route'
+                onChange={(event) => handleBuddyInput(event)}
+                onKeyDown={handleBuddyInputKeyDown}
+                value={buddyInput}
+              />
+              <div className='flex gap-2'>
+                {buddies.map((buddy, index) => (
+                  <span
+                    key={index}
+                    className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
+                  >
+                    {buddy}
+                    <button onClick={() => handleBuddyDelete(index)}>X</button>
+                  </span>
+                ))}
+              </div>
+              <div className='flex flex-wrap gap-2'>
+                <label
+                  htmlFor='imageFile'
+                  className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                >
+                  Upload images
+                </label>
+                <input
+                  className='hidden'
+                  type='file'
+                  id='imageFile'
+                  accept='image/jpeg, image/png, image/svg+xml'
+                  onChange={handleImages}
+                />
+                <p>{imageUrls}</p>
+                <label
+                  htmlFor='videoFile'
+                  className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                >
+                  Upload video
+                </label>
+                <input
+                  className='hidden'
+                  type='file'
+                  id='videoFile'
+                  accept='video/mp4'
+                  onChange={handleVideos}
+                />
+                <p>{videoUrls}</p>
+              </div>
+              <div className='flex gap-2'>
+                <p className='w-40 text-lg font-bold'>Set Access Right</p>
+                <div
+                  className={`w-16 cursor-pointer rounded-md text-center ${
+                    accessRight === true ? 'bg-yellow-200' : 'bg-white'
+                  }`}
+                  onClick={() => handleAccessRight(true)}
+                >
+                  Public
+                </div>
+                <div
+                  className={`w-16 cursor-pointer rounded-md text-center ${
+                    accessRight === false ? 'bg-yellow-200' : 'bg-white'
+                  }`}
+                  onClick={() => handleAccessRight(false)}
+                >
+                  Private
+                </div>
+              </div>
+              <div className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
+                Add spot
+              </div>
+            </div>
 
-          <div className='mt-8 flex justify-between'>
-            <div
-              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
-              onClick={() => handleSaveDraft()}
-            >
-              Save draft
+            <div className='mt-8 flex justify-between'>
+              <div
+                className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+                onClick={() => handleSaveDraft()}
+              >
+                Save draft
+              </div>
+              <div
+                className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+                onClick={() => handleSubmit()}
+              >
+                Submit route
+              </div>
             </div>
-            <div
-              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
-              onClick={() => handleSubmit()}
-            >
-              Submit route
-            </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      )}
     </div>
   )
 }

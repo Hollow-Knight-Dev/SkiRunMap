@@ -96,7 +96,7 @@ const Route = () => {
   }
 
   return (
-    <div className='flex h-screen pb-16'>
+    <div className='h-screen-64px flex'>
       <div className='flex w-1/3 flex-col bg-zinc-200 p-2'>
         <div className='relative mb-2 w-full'>
           <input
