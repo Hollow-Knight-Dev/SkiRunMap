@@ -1,15 +1,24 @@
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useIsSignIn, useUserID } from '../../store/useUser'
 
 const SignIn: React.FC = () => {
+  const navigate = useNavigate()
   const auth = getAuth()
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const userID = useUserID((state) => state.userID)
+  const setUserID = useUserID((state) => state.setUserID)
+  // const isSignIn = useIsSignIn((state) => state.isSignIn)
+  const setIsSignIn = useIsSignIn((state) => state.setIsSignIn)
 
   useEffect(() => {
-    console.log(password)
-  }, [password])
+    console.log(userID)
+  }, [userID])
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
@@ -24,8 +33,20 @@ const SignIn: React.FC = () => {
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user
-        console.log(user)
+        const userID = userCredential.user.uid
+        console.log(userID)
+        toast.success('Sign up successed!', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+        setEmail('')
+        setPassword('')
       })
       .catch((error) => {
         console.log(error)
@@ -35,8 +56,23 @@ const SignIn: React.FC = () => {
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user
-        console.log(user)
+        const userUID = userCredential.user.uid
+        console.log(userUID)
+        setUserID(userUID)
+        setIsSignIn(true)
+        toast.success(`Welcome back, ${userUID}`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+        setEmail('')
+        setPassword('')
+        navigate('/member')
       })
       .catch((error) => {
         console.log(error.code, ': ', error.message)
