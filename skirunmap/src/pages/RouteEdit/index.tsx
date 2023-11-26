@@ -2,6 +2,8 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect } from 'react'
 import { db, storage } from '../../auth/CloudStorage'
+import Map from '../../components/Map'
+import RouteCreate from '../../components/RouteCreate'
 import {
   useAccessRight,
   useBuddies,
@@ -16,8 +18,6 @@ import {
   useTags,
   useVideoUrls
 } from '../../store/useRoute'
-import Map from '../Map'
-import RouteCreate from '../RouteCreate'
 
 // const gpxFilePath = 'src/components/RouteEdit/Central-Ontario-Loop-Trail-COLT.gpx'
 // const gpxFilePath = 'src/components/RouteEdit/gpx-sample.gpx'

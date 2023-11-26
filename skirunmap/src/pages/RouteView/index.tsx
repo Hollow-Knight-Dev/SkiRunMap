@@ -1,7 +1,7 @@
 import { getDownloadURL, ref } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { storage } from '../../auth/CloudStorage'
-import Map from '../Map'
+import Map from '../../components/Map'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedArrow from './clicked-arrow.png'
