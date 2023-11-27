@@ -1,5 +1,7 @@
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import RouteCreate from '../../components/RouteCreate'
@@ -250,7 +252,18 @@ const EditRoute: React.FC = () => {
         { userID: '3', comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8' }
       ]
     }
-    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Saved in draft!'))
+    await setDoc(doc(db, 'routes', routeID), data).then(() =>
+      toast.success('Draft saved!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    )
   }
 
   const handleSubmit = async () => {
@@ -283,7 +296,18 @@ const EditRoute: React.FC = () => {
         { userID: '3', comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8' }
       ]
     }
-    await setDoc(doc(db, 'routes', routeID), data).then(() => alert('Route been submitted!'))
+    await setDoc(doc(db, 'routes', routeID), data).then(() =>
+      toast.success('Submitted route!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    )
   }
 
   return (
