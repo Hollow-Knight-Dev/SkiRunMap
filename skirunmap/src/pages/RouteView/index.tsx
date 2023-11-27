@@ -33,20 +33,11 @@ const Route = () => {
   const [gpxURL, setGpxURL] = useState<string>('')
 
   useEffect(() => {
-    // const storageRef = ref(storage)
-    // const gpxsRef = ref(storage, 'gpxs')
     const getGpx = async () => {
       try {
         const url = await getDownloadURL(ref(storage, 'Kutchan.gpx'))
         // console.log(typeof url, ':', url)
         setGpxURL(url)
-        // const xhr = new XMLHttpRequest()
-        // xhr.responseType = 'blob'
-        // xhr.onload = (event) => {
-        //   const blob = xhr.response
-        // }
-        // xhr.open('GET', url)
-        // xhr.send()
       } catch (error) {
         console.log('Failed to get cloud storage gpx: ', error)
       }
