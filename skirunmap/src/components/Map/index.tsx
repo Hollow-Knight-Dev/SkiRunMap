@@ -116,6 +116,8 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
     }
   }
 
+  // const addMarker = (coordinate: google.maps.LatLngLiteral, icon: string, content: string) => {}
+
   useEffect(() => {
     if (map && gpxTrackPoint) {
       new google.maps.Polyline({
@@ -125,28 +127,35 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
         strokeWeight: 2,
         map: map
       })
+
+      let infoWindow = new google.maps.InfoWindow({
+        content: 'Click the map to get Lat/Lng',
+        position: { lat: 42.84676617984929, lng: 140.68491306976668 }
+      })
+      infoWindow.open(map)
+
+      map.addListener('click', (mapsMouseEvent: google.maps.MapMouseEvent) => {
+        if (infoWindow) {
+          infoWindow.close()
+        }
+        const latLng = mapsMouseEvent.latLng
+        const content = JSON.stringify(mapsMouseEvent.latLng?.toJSON(), null, 2)
+        const marker = new google.maps.Marker({
+          position: latLng,
+          map: map,
+          icon: {
+            url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
+            scaledSize: new google.maps.Size(40, 40)
+          }
+        })
+
+        infoWindow = new google.maps.InfoWindow({
+          content: content
+        })
+        infoWindow.open(map, marker)
+      })
     }
   }, [map, gpxTrackPoint])
-
-  let infoWindow = new google.maps.InfoWindow({
-    content: 'Click the map to get Lat/Lng',
-    position: { lat: 42.84676617984929, lng: 140.68491306976668 }
-  })
-
-  infoWindow.open(map)
-
-  if (map) {
-    map.addListener('click', (mapsMouseEvent: google.maps.MapMouseEvent) => {
-      if (infoWindow) {
-        infoWindow.close()
-      }
-      infoWindow = new google.maps.InfoWindow({
-        position: mapsMouseEvent.latLng
-      })
-      infoWindow.setContent(JSON.stringify(mapsMouseEvent.latLng?.toJSON(), null, 2))
-      infoWindow.open(map)
-    })
-  }
 
   return <div id='map' style={mapStyles}></div>
 }
