@@ -129,3 +129,34 @@ export const useVideoUrls = create<VideoUrls>()((set) => ({
   videoUrls: [],
   setVideoUrls: (url) => set(() => ({ videoUrls: url }))
 }))
+
+export interface Spot {
+  spotTitle: string
+  spotDescription: string
+  spotCoordinate: { lat: number; lng: number }
+  imageUrls: string[]
+  videoUrls: string[]
+}
+
+interface SpotStore {
+  spots: Spot[]
+  addSpot: (spot: Spot) => void
+  updateSpot: (index: number, spot: Spot) => void
+  removeSpot: (index: number) => void
+  alterSpot: (index: number, alteredSpot: Partial<Spot>) => void
+}
+
+export const useSpotStore = create<SpotStore>()((set) => ({
+  spots: [],
+  addSpot: (spot) => set((state) => ({ spots: [...state.spots, spot] })),
+  updateSpot: (index, spot) =>
+    set((state) => ({
+      spots: [...state.spots.slice(0, index), spot, ...state.spots.slice(index + 1)]
+    })),
+  removeSpot: (index) =>
+    set((state) => ({ spots: [...state.spots.slice(0, index), ...state.spots.slice(index + 1)] })),
+  alterSpot: (index, alteredSpot) =>
+    set((state) => ({
+      spots: state.spots.map((spot, i) => (i === index ? { ...spot, ...alteredSpot } : spot))
+    }))
+}))

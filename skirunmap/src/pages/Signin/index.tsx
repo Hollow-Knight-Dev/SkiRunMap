@@ -103,7 +103,7 @@ const SignIn: React.FC = () => {
         <div className='flex h-fit w-4/5 items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
           <label className='w-24'>Email</label>
           <input
-            className='h-6 w-2/5 rounded-full bg-blue-500 pl-4 outline-0'
+            className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
             type='email'
             value={email}
             onChange={(e) => handleEmail(e)}
@@ -112,7 +112,7 @@ const SignIn: React.FC = () => {
         <div className='flex h-fit w-4/5 items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
           <label className='w-24'>Password</label>
           <input
-            className='h-6 w-2/5 rounded-full bg-blue-500 pl-4 outline-0'
+            className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
             type='text'
             value={password}
             onChange={(e) => handlePassword(e)}

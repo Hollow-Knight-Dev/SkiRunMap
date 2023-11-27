@@ -7,19 +7,20 @@ import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import {
+  Spot,
   useAccessRight,
   useBuddies,
   useBuddyInput,
   useGpxUrl,
-  useImageUrls,
+  // useImageUrls,
   useRouteDescription,
   useRouteID,
   useRouteTitle,
-  useSpotDescription,
-  useSpotTitle,
+  // useSpotDescription,
+  useSpotStore,
+  // useSpotTitle,
   useTagInput,
-  useTags,
-  useVideoUrls
+  useTags
 } from '../../store/useRoute'
 import { useUserID } from '../../store/useUser'
 import HideArrow from './hide_arrow.png'
@@ -33,10 +34,10 @@ const EditRoute: React.FC = () => {
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
   const routeDescription = useRouteDescription((state) => state.routeDescription)
   const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
-  const spotTitle = useSpotTitle((state) => state.spotTitle)
-  const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
-  const spotDescription = useSpotDescription((state) => state.spotDescription)
-  const setSpotDescription = useSpotDescription((state) => state.setSpotDescription)
+  // const spotTitle = useSpotTitle((state) => state.spotTitle)
+  // const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
+  // const spotDescription = useSpotDescription((state) => state.spotDescription)
+  // const setSpotDescription = useSpotDescription((state) => state.setSpotDescription)
   const tags = useTags((state) => state.tags)
   const setTags = useTags((state) => state.setTags)
   const tagInput = useTagInput((state) => state.tagInput)
@@ -49,10 +50,11 @@ const EditRoute: React.FC = () => {
   const setAccessRight = useAccessRight((state) => state.setAccessRight)
   const gpxUrl = useGpxUrl((state) => state.gpxUrl)
   const setGpxUrl = useGpxUrl((state) => state.setGpxUrl)
-  const imageUrls = useImageUrls((state) => state.imageUrls)
-  const setImageUrls = useImageUrls((state) => state.setImageUrls)
-  const videoUrls = useVideoUrls((state) => state.videoUrls)
-  const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
+  // const imageUrls = useImageUrls((state) => state.imageUrls)
+  // const setImageUrls = useImageUrls((state) => state.setImageUrls)
+  // const videoUrls = useVideoUrls((state) => state.videoUrls)
+  // const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
+  const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
   const [gpxFileName, setGpxFileName] = useState<string>('')
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
@@ -87,26 +89,6 @@ const EditRoute: React.FC = () => {
     } else {
       alert('Route description exceeds letter limitation')
       setRouteDescription(description.slice(0, 50))
-    }
-  }
-
-  const handleSpotTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const title = event.target.value
-    if (title.length <= 30) {
-      setSpotTitle(title)
-    } else {
-      alert('Spot title exceeds letter limitation')
-      setSpotTitle(title.slice(0, 30))
-    }
-  }
-
-  const handleSpotDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const description = event.target.value
-    if (description.length <= 50) {
-      setSpotDescription(description)
-    } else {
-      alert('Spot description exceeds letter limitation')
-      setSpotDescription(description.slice(0, 50))
     }
   }
 
@@ -216,27 +198,65 @@ const EditRoute: React.FC = () => {
     }
   }
 
-  const uploadAndDownloadImages = (file: File, fileName: string) => {
-    const imageRef = ref(imagesRef, fileName)
-    uploadBytes(imageRef, file)
-      .then(() => {
-        return getDownloadURL(imageRef)
-      })
-      .then((url) => {
-        const newUrls = [...imageUrls, url]
-        setImageUrls(newUrls)
-      })
-      .catch((error) => console.log('Failed to uplaod and download image file', error))
+  const handleAddSpot = () => {
+    const newSpot: Spot = {
+      spotTitle: '',
+      spotDescription: '',
+      spotCoordinate: { lat: 42.84676617984929, lng: 140.68491306976668 },
+      imageUrls: [],
+      videoUrls: []
+    }
+    addSpot(newSpot)
   }
 
-  const handleImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpdateSpot = (index: number, updatedSpot: Spot) => {
+    updateSpot(index, updatedSpot)
+  }
+
+  const handleRemoveSpot = (index: number) => {
+    removeSpot(index)
+  }
+
+  // const handleSpotTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const title = event.target.value
+  //   if (title.length <= 30) {
+  //     setSpotTitle(title)
+  //   } else {
+  //     alert('Spot title exceeds letter limitation')
+  //     setSpotTitle(title.slice(0, 30))
+  //   }
+  // }
+
+  // const handleSpotDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const description = event.target.value
+  //   if (description.length <= 50) {
+  //     setSpotDescription(description)
+  //   } else {
+  //     alert('Spot description exceeds letter limitation')
+  //     setSpotDescription(description.slice(0, 50))
+  //   }
+  // }
+
+  const uploadAndDownloadImages = async (file: File, fileName: string, spotIndex: number) => {
+    const imageRef = ref(imagesRef, fileName)
+    try {
+      await uploadBytes(imageRef, file)
+      const url = await getDownloadURL(imageRef)
+      const newUrls = [...spots[spotIndex].imageUrls, url]
+      alterSpot(spotIndex, { imageUrls: newUrls })
+    } catch (error) {
+      console.log('Failed to uplaod and download image file', error)
+    }
+  }
+
+  const handleImages = async (event: React.ChangeEvent<HTMLInputElement>, spotIndex: number) => {
     const fileInput = event.target
     const files: FileList | null = fileInput.files
 
     if (files) {
       const file: File = files[0]
       if (file.name) {
-        uploadAndDownloadImages(file, file.name)
+        uploadAndDownloadImages(file, file.name, spotIndex)
       } else {
         alert('Invalid file type. Please upload an image.')
       }
@@ -246,27 +266,26 @@ const EditRoute: React.FC = () => {
     }
   }
 
-  const uploadAndDownloadVideos = (file: File, fileName: string) => {
+  const uploadAndDownloadVideos = async (file: File, fileName: string, spotIndex: number) => {
     const videoRef = ref(videosRef, fileName)
-    uploadBytes(videoRef, file)
-      .then(() => {
-        return getDownloadURL(videoRef)
-      })
-      .then((url) => {
-        const newUrls = [...videoUrls, url]
-        setVideoUrls(newUrls)
-      })
-      .catch((error) => console.log('Failed to uplaod and download mp4 file', error))
+    try {
+      await uploadBytes(videoRef, file)
+      const url = await getDownloadURL(videoRef)
+      const newUrls = [...spots[spotIndex].videoUrls, url]
+      alterSpot(spotIndex, { videoUrls: newUrls })
+    } catch (error) {
+      console.log('Failed to uplaod and download mp4 file', error)
+    }
   }
 
-  const handleVideos = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideos = async (event: React.ChangeEvent<HTMLInputElement>, spotIndex: number) => {
     const fileInput = event.target
     const files: FileList | null = fileInput.files
 
     if (files) {
       const file: File = files[0]
       if (file.name) {
-        uploadAndDownloadVideos(file, file.name)
+        uploadAndDownloadVideos(file, file.name, spotIndex)
       } else {
         alert('Invalid file type. Please upload an MP4 video.')
       }
@@ -286,15 +305,7 @@ const EditRoute: React.FC = () => {
       routeCoordinate: [42.827069873533766, 140.80677808428817],
       tags: tags,
       snowBuddies: buddies,
-      spots: [
-        {
-          spotTitle: spotTitle,
-          spotDescription: spotDescription,
-          spotCoordinate: [42.827069873533766, 140.80677808428817],
-          imageUrls: imageUrls,
-          videoUrls: videoUrls
-        }
-      ],
+      spots: spots,
       isPublic: accessRight,
       isSubmitted: false,
       createTime: serverTimestamp(),
@@ -303,7 +314,11 @@ const EditRoute: React.FC = () => {
       likeCount: 2,
       viewCount: 1000,
       comments: [
-        { userID: '3', comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8' }
+        {
+          userID: '3',
+          comment: 'Nice choice!',
+          commentTime: '17 November 2023 at 14:00:00 UTC+8'
+        }
       ]
     }
     await setDoc(doc(db, 'routes', routeID), data).then(() =>
@@ -330,15 +345,7 @@ const EditRoute: React.FC = () => {
       routeCoordinate: [42.827069873533766, 140.80677808428817],
       tags: tags,
       snowBuddies: buddies,
-      spots: [
-        {
-          spotTitle: spotTitle,
-          spotDescription: spotDescription,
-          spotCoordinate: [42.827069873533766, 140.80677808428817],
-          imageUrls: imageUrls,
-          videoUrls: videoUrls
-        }
-      ],
+      spots: spots,
       isPublic: accessRight,
       isSubmitted: true,
       createTime: serverTimestamp(),
@@ -347,7 +354,11 @@ const EditRoute: React.FC = () => {
       likeCount: 2,
       viewCount: 1000,
       comments: [
-        { userID: '3', comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8' }
+        {
+          userID: '3',
+          comment: 'Nice choice!',
+          commentTime: '17 November 2023 at 14:00:00 UTC+8'
+        }
       ]
     }
     await setDoc(doc(db, 'routes', routeID), data).then(() =>
@@ -372,6 +383,10 @@ const EditRoute: React.FC = () => {
     }
   }, [])
 
+  useEffect(() => {
+    console.log(spots)
+  }, [spots])
+
   return (
     <div className='flex w-full'>
       <div className='h-screen-64px flex w-full'>
@@ -388,7 +403,11 @@ const EditRoute: React.FC = () => {
                 onDragLeave={(e) => handleDragLeave(e)}
                 onDrop={(e) => handleDrop(e)}
               >
-                <div className='rounded-2xl bg-zinc-100 text-lg font-bold hover:bg-zinc-300 '>
+                <div
+                  className={`rounded-2xl bg-zinc-100 text-lg font-bold hover:bg-zinc-300 ${
+                    isDragOver && 'text-zinc-300'
+                  }`}
+                >
                   <label htmlFor='gpxFile' className='cursor-pointer rounded-l-2xl pl-4'>
                     Drag GPX file or&nbsp;
                   </label>
@@ -439,27 +458,27 @@ const EditRoute: React.FC = () => {
             </div>
 
             <div className={`mb-4 flex flex-col gap-2 ${!routeVisibility && 'hidden'}`}>
-              <div className='flex items-center gap-2'>
-                <label className='w-40 text-lg font-bold'>Route Title:</label>
-                <input
-                  type='text'
-                  value={routeTitle}
-                  onChange={(event) => {
-                    handleRouteTitle(event)
-                  }}
-                  className='h-10'
-                />
-              </div>
+              <label className='w-40 text-lg font-bold'>Route Title:</label>
+              <input
+                type='text'
+                value={routeTitle}
+                onChange={(event) => {
+                  handleRouteTitle(event)
+                }}
+                className='h-10 p-2'
+              />
               <label className='text-lg font-bold'>Route Description:</label>
               <textarea
-                className='h-auto w-full resize-none p-2'
+                className='h-fit w-full resize-none p-2'
                 placeholder='Add route description'
                 value={routeDescription}
                 onChange={(event) => handleRouteDescription(event)}
               />
+              <label className='w-40 text-lg font-bold'>Date:</label>
+              <input type='text' className='h-10 p-2' />
               <label className='text-lg font-bold'>Tag this route:</label>
               <textarea
-                className='h-10 w-full resize-none p-2'
+                className='h-fit w-full resize-none p-2'
                 placeholder='Add tag ex. niseko, gondola, the-best-lift'
                 onChange={(event) => handleTagInput(event)}
                 onKeyDown={handleTagInputKeyDown}
@@ -478,7 +497,7 @@ const EditRoute: React.FC = () => {
               </div>
               <label className='text-lg font-bold'>Tag snow buddy:</label>
               <textarea
-                className='h-10 w-full resize-none p-2'
+                className='h-fit w-full resize-none p-2'
                 placeholder='Tag snow buddy with this route'
                 onChange={(event) => handleBuddyInput(event)}
                 onKeyDown={handleBuddyInputKeyDown}
@@ -495,8 +514,9 @@ const EditRoute: React.FC = () => {
                   </span>
                 ))}
               </div>
-              <div className='flex gap-2'>
-                <p className='w-40 text-lg font-bold'>Set Access Right</p>
+
+              <p className='w-40 text-lg font-bold'>Set Access Right:</p>
+              <div className='flex gap-4'>
                 <div
                   className={`w-16 cursor-pointer rounded-md text-center ${
                     accessRight === true ? 'bg-yellow-200' : 'bg-white'
@@ -530,56 +550,80 @@ const EditRoute: React.FC = () => {
             </div>
 
             <div className={`mb-4 flex flex-col gap-2 ${!spotVisibility && 'hidden'}`}>
-              <div className='h-fit w-full cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-center text-lg font-bold'>
+              {spots.map((spot, index) => (
+                <div key={index} className='flex flex-col gap-2'>
+                  <div className='flex items-center justify-between'>
+                    <p className='w-full text-lg font-bold underline'>{`Spot ${index + 1}`}</p>
+                    <p
+                      className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
+                      onClick={() => handleRemoveSpot(index)}
+                    >
+                      Delete
+                    </p>
+                  </div>
+                  <label className='w-40 text-lg font-bold'>Spot Title:</label>
+                  <input
+                    type='text'
+                    value={spot.spotTitle}
+                    onChange={(event) => {
+                      handleUpdateSpot(index, { ...spot, spotTitle: event.target.value })
+                    }}
+                    className='h-10 p-2'
+                  />
+                  <label className='text-lg font-bold'>Spot Description:</label>
+                  <textarea
+                    className='h-fit w-full resize-none p-2'
+                    placeholder='Add spot description'
+                    value={spot.spotDescription}
+                    onChange={(event) =>
+                      handleUpdateSpot(index, { ...spot, spotDescription: event.target.value })
+                    }
+                  />
+                  <label
+                    htmlFor={`imageFile${index}`}
+                    className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                  >
+                    Upload images
+                  </label>
+                  <input
+                    className='hidden'
+                    type='file'
+                    id={`imageFile${index}`}
+                    accept='image/jpeg, image/png, image/svg+xml'
+                    onChange={(event) => handleImages(event, index)}
+                  />
+                  <div className='flex gap-2'>
+                    {spot.imageUrls.map((url, i) => (
+                      <img key={i} src={url} alt={`Image ${i}`} className='h-auto w-8' />
+                    ))}
+                  </div>
+                  <label
+                    htmlFor={`videoFile${index}`}
+                    className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                  >
+                    Upload videos
+                  </label>
+                  <input
+                    className='hidden'
+                    type='file'
+                    id={`videoFile${index}`}
+                    accept='video/mp4'
+                    onChange={(event) => handleVideos(event, index)}
+                  />
+                  <div className='flex gap-2'></div>
+                  {spot.videoUrls.map((url, i) => (
+                    <video key={i} controls width='150' height='100'>
+                      <source src={url} type='video/mp4' />
+                    </video>
+                  ))}
+                </div>
+              ))}
+
+              <div
+                className='h-fit w-full cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-center text-lg font-bold'
+                onClick={() => handleAddSpot()}
+              >
                 Add spot
-              </div>
-              <div className='flex items-center gap-2'>
-                <label className='w-40 text-lg font-bold'>Spot Title</label>
-                <input
-                  type='text'
-                  value={spotTitle}
-                  onChange={(event) => {
-                    handleSpotTitle(event)
-                  }}
-                  className='h-10'
-                />
-              </div>
-              <label className='text-lg font-bold'>Spot Description:</label>
-              <textarea
-                className='h-10 w-full resize-none p-2'
-                placeholder='Add spot description'
-                value={spotDescription}
-                onChange={(event) => handleSpotDescription(event)}
-              />
-              <div className='flex flex-wrap gap-2'>
-                <label
-                  htmlFor='imageFile'
-                  className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-                >
-                  Upload images
-                </label>
-                <input
-                  className='hidden'
-                  type='file'
-                  id='imageFile'
-                  accept='image/jpeg, image/png, image/svg+xml'
-                  onChange={handleImages}
-                />
-                <p>{imageUrls}</p>
-                <label
-                  htmlFor='videoFile'
-                  className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-                >
-                  Upload video
-                </label>
-                <input
-                  className='hidden'
-                  type='file'
-                  id='videoFile'
-                  accept='video/mp4'
-                  onChange={handleVideos}
-                />
-                <p>{videoUrls}</p>
               </div>
             </div>
           </div>

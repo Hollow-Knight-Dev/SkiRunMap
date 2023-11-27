@@ -1,3 +1,8 @@
+input,
+textarea {
+  outline: 0;
+}
+
 @layer {
   .h-screen-256px {
     min-height: calc(100vh - 256px);

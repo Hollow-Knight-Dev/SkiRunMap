@@ -139,7 +139,9 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
           infoWindow.close()
         }
         const latLng = mapsMouseEvent.latLng
-        const content = JSON.stringify(mapsMouseEvent.latLng?.toJSON(), null, 2)
+        const content = JSON.stringify(mapsMouseEvent.latLng?.toJSON())
+        console.log('latLng', latLng, typeof latLng)
+        console.log('content', content, typeof content)
         const marker = new google.maps.Marker({
           position: latLng,
           map: map,
