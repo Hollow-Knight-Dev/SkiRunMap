@@ -129,7 +129,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
       })
 
       let infoWindow = new google.maps.InfoWindow({
-        content: 'Click the map to get Lat/Lng',
+        content: 'Click the map to create new marker!',
         position: { lat: 42.84676617984929, lng: 140.68491306976668 }
       })
       infoWindow.open(map)
@@ -146,13 +146,28 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
           icon: {
             url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
             scaledSize: new google.maps.Size(40, 40)
-          }
+          },
+          animation: google.maps.Animation.DROP,
+          draggable: true,
+          title: 'Drag me!'
         })
 
-        infoWindow = new google.maps.InfoWindow({
-          content: content
+        const renewMarkerPosition = () => {
+          if (infoWindow) {
+            infoWindow.close()
+          }
+          const markerPosition = marker.getPosition() as google.maps.LatLng
+          const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
+          infoWindow = new google.maps.InfoWindow({
+            content: markercontent
+          })
+          infoWindow.open(map, marker)
+        }
+        marker.addListener('dragend', () => renewMarkerPosition())
+        marker.addListener('click', () => renewMarkerPosition())
+        marker.addListener('dblclick', () => {
+          marker.setMap(null)
         })
-        infoWindow.open(map, marker)
       })
     }
   }, [map, gpxTrackPoint])
