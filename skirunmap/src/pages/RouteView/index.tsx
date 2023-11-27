@@ -97,7 +97,7 @@ const Route = () => {
     <div className='h-screen-64px flex'>
       <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxUrl={gpxURL} />}</div>
 
-      <div className='flex w-1/3 flex-col bg-zinc-200 p-2'>
+      <div className='flex w-1/3 flex-col overflow-y-auto overflow-x-hidden bg-zinc-200 p-2'>
         <div className='relative mb-2 w-full'>
           <input
             className='w-full rounded-3xl border border-zinc-300 p-1 pl-10'
