@@ -12,8 +12,6 @@ import ShowArrow from './show_arrow.png'
 import SmallMap from './small-map.png'
 import UnclickedArrow from './unclicked-arrow.png'
 
-// const gpxFilePath = 'src/components/RouteView/Rusutsu.gpx'
-
 interface Geopoint {
   latitude: number
   longitude: number
@@ -39,8 +37,8 @@ const Route = () => {
     // const gpxsRef = ref(storage, 'gpxs')
     const getGpx = async () => {
       try {
-        const url = await getDownloadURL(ref(storage, 'Rusutsu.gpx'))
-        console.log(typeof url, ':', url)
+        const url = await getDownloadURL(ref(storage, 'Kutchan.gpx'))
+        // console.log(typeof url, ':', url)
         setGpxURL(url)
         // const xhr = new XMLHttpRequest()
         // xhr.responseType = 'blob'
@@ -97,6 +95,8 @@ const Route = () => {
 
   return (
     <div className='h-screen-64px flex'>
+      <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxUrl={gpxURL} />}</div>
+
       <div className='flex w-1/3 flex-col bg-zinc-200 p-2'>
         <div className='relative mb-2 w-full'>
           <input
@@ -183,8 +183,6 @@ const Route = () => {
           <textarea className='h-20 w-full' />
         </div>
       </div>
-
-      <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxUrl={gpxURL} />}</div>
     </div>
   )
 }

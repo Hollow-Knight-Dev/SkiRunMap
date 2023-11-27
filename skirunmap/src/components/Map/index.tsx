@@ -4,12 +4,16 @@ import { useEffect, useState } from 'react'
 interface MapProps {
   gpxUrl: string
 }
-interface GPXPoint {
+interface Waypoint {
   $: {
     lat: string
     lon: string
   }
   ele: string
+}
+
+interface TrackSegment {
+  trkpt: Waypoint[]
 }
 
 const Map: React.FC<MapProps> = ({ gpxUrl }) => {
@@ -19,24 +23,21 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
   }
 
   const [map, setMap] = useState<google.maps.Map | null>(null)
-  const [defaultCenter, setDefaultCenter] = useState<google.maps.LatLngLiteral>({
-    lat: 42.84886847854739,
-    lng: 140.7229683345836
-  })
   const [gpxTrackPoint, setGpxTrackPoint] = useState<google.maps.LatLngLiteral[] | undefined>(
     undefined
   )
 
   useEffect(() => {
     const loadGoogleMapsApi = async () => {
-      const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary
-      if (gpxUrl) {
-        fetchGpxFile(gpxUrl, Map)
-      } else {
-        new Map(document.getElementById('map') as HTMLElement, {
-          center: defaultCenter,
-          zoom: 12
-        })
+      try {
+        const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary
+        if (gpxUrl) {
+          fetchGpxFile(gpxUrl, Map)
+        } else {
+          console.log('GPX route fail to load in')
+        }
+      } catch (error) {
+        console.error('Error loading Google Maps API:', error)
       }
     }
 
@@ -64,25 +65,49 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
           lat: parseFloat(firstTrackPoint.$.lat),
           lng: parseFloat(firstTrackPoint.$.lon)
         }
-        setDefaultCenter(center)
 
         const googleMap = new Map(document.getElementById('map') as HTMLElement, {
           center: center,
-          zoom: 13
+          zoom: 13,
+          mapTypeId: 'terrain',
+          scrollwheel: true,
+          scaleControl: true,
+          rotateControl: true,
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: google.maps.ControlPosition.TOP_LEFT
+          },
+          fullscreenControl: true,
+          fullscreenControlOptions: {
+            position: google.maps.ControlPosition.BOTTOM_RIGHT
+          },
+          heading: 320,
+          tilt: 47.5,
+          restriction: {
+            latLngBounds: {
+              north: 45.551483,
+              south: 24.396308,
+              east: 153.986672,
+              west: 122.93457
+            }
+          },
+          draggableCursor: 'pointer'
         })
         setMap(googleMap)
       }
 
       const trkptArray: google.maps.LatLngLiteral[] = []
 
-      parsedGpx?.trk[0]?.trkseg[0]?.trkpt.forEach((point: GPXPoint) => {
-        const latLng: google.maps.LatLngLiteral = {
-          lat: parseFloat(point.$.lat),
-          lng: parseFloat(point.$.lon)
-        }
-        trkptArray.push(latLng)
+      parsedGpx?.trk[0]?.trkseg.forEach((trkseg: TrackSegment) => {
+        trkseg.trkpt.forEach((point: Waypoint) => {
+          const latLng: google.maps.LatLngLiteral = {
+            lat: parseFloat(point.$.lat),
+            lng: parseFloat(point.$.lon)
+          }
+          trkptArray.push(latLng)
+        })
       })
-
       setGpxTrackPoint(trkptArray)
       // console.log(typeof trkptArray)
       // console.log(trkptArray)
@@ -97,12 +122,31 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
         path: gpxTrackPoint,
         strokeColor: '#ff2527',
         strokeOpacity: 1,
-        strokeWeight: 4,
-        map: map,
-        geodesic: true
+        strokeWeight: 2,
+        map: map
       })
     }
   }, [map, gpxTrackPoint])
+
+  let infoWindow = new google.maps.InfoWindow({
+    content: 'Click the map to get Lat/Lng',
+    position: { lat: 42.84676617984929, lng: 140.68491306976668 }
+  })
+
+  infoWindow.open(map)
+
+  if (map) {
+    map.addListener('click', (mapsMouseEvent: google.maps.MapMouseEvent) => {
+      if (infoWindow) {
+        infoWindow.close()
+      }
+      infoWindow = new google.maps.InfoWindow({
+        position: mapsMouseEvent.latLng
+      })
+      infoWindow.setContent(JSON.stringify(mapsMouseEvent.latLng?.toJSON(), null, 2))
+      infoWindow.open(map)
+    })
+  }
 
   return <div id='map' style={mapStyles}></div>
 }
