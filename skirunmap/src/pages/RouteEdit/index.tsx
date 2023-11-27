@@ -17,8 +17,10 @@ import {
   useTags,
   useVideoUrls
 } from '../../store/useRoute'
+import { useUserID } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
+  const userID = useUserID((state) => state.userID)
   const routeID = useRouteID((state) => state.routeID)
   const routeTitle = useRouteTitle((state) => state.routeTitle)
   const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
@@ -220,7 +222,7 @@ const EditRoute: React.FC = () => {
 
   const handleSaveDraft = async () => {
     const data = {
-      userID: '1',
+      userID: userID,
       username: 'I Am Groot',
       routeID: routeID,
       routeTitle: routeTitle,
@@ -253,7 +255,7 @@ const EditRoute: React.FC = () => {
 
   const handleSubmit = async () => {
     const data = {
-      userID: '1',
+      userID: userID,
       username: 'I Am Groot',
       routeID: routeID,
       routeTitle: routeTitle,

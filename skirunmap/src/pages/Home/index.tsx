@@ -152,7 +152,10 @@ const Home = () => {
         <div className='flex w-fit flex-wrap gap-4'>
           {allRoutes.map((map, index) => (
             <div key={index} className='h-40 w-40 rounded-2xl bg-zinc-300'>
-              <p>{map.routeTitle}</p>
+              <p>Title: {map.routeTitle}</p>
+              <p>user: {map.userID}</p>
+              <p>tag: {map.tags}</p>
+              <p>Buddy: {map.snowBuddies}</p>
               {map.spots[0].imageUrls.map((url: string, index: number) => (
                 <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-12' />
               ))}
