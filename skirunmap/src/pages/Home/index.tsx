@@ -1,71 +1,9 @@
 import { DocumentData, collection, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
 import SearchIcon from './search-icon.png'
 import SnowMountain from './snow-mountain.png'
-
-// const data = {
-//   userID: '1',
-//   username: 'I Am Groot',
-//   routeID: routeID,
-//   routeTitle: routeTitle,
-//   gpxUrl: gpxUrl,
-//   routeCoordinate: [42.827069873533766, 140.80677808428817],
-//   tags: tags,
-//   snowBuddies: buddies,
-//   spots: [
-//     {
-//       spotTitle: spotTitle,
-//       spotDescription: spotDescription,
-//       spotCoordinate: [42.827069873533766, 140.80677808428817],
-//       imageUrls: imageUrls,
-//       videoUrls: videoUrls
-//     }
-//   ],
-//   isPublic: accessRight,
-//   isSubmitted: true,
-//   createTime: serverTimestamp(),
-//   likeUsers: ['2', '3', '4'],
-//   dislikeUsers: ['5'],
-//   likeCount: 2,
-//   viewCount: 1000,
-//   comments: [
-//     { comment: 'Nice choice!', commentTime: '17 November 2023 at 14:00:00 UTC+8', userID: '3' }
-//   ]
-// }
-
-// interface Spots {
-//   spotTitle: string
-//   spotDescription: string
-//   spotCoordinate: number[]
-//   images: string[]
-//   videos: string[]
-// }
-
-// interface Comments {
-//   userID: string
-//   comment: string
-//   commentTime: FieldValue
-// }
-// interface Route {
-//   userID: string
-//   username: string
-//   routeID: string
-//   routeTitle: string
-//   gpxUrl: string
-//   routeCoordinate: number[]
-//   tags: string[]
-//   snowBuddies: string[]
-//   spots: Spots[]
-//   isPublic: boolean
-//   isSubmitted: boolean
-//   createTime: FieldValue
-//   likeUsers: string[]
-//   dislikeUsers: string[]
-//   likeCount: number
-//   viewCount: number
-//   comments: Comments[]
-// }
 
 const Home = () => {
   const [allRoutes, setAllRoutes] = useState<DocumentData[]>([])
@@ -151,7 +89,11 @@ const Home = () => {
         <div className='mb-6 w-full border border-zinc-300' />
         <div className='flex w-fit flex-wrap gap-4'>
           {allRoutes.map((map, index) => (
-            <div key={index} className='h-40 w-40 rounded-2xl bg-zinc-300'>
+            <Link
+              key={index}
+              to={`/route/${map.routeID}`}
+              className='h-40 w-40 cursor-pointer rounded-2xl bg-zinc-300'
+            >
               <p>Title: {map.routeTitle}</p>
               <p>user: {map.userID}</p>
               <p>tag: {map.tags}</p>
@@ -159,7 +101,7 @@ const Home = () => {
               {map.spots[0].imageUrls.map((url: string, index: number) => (
                 <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-12' />
               ))}
-            </div>
+            </Link>
           ))}
         </div>
       </div>

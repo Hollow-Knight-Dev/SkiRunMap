@@ -1,12 +1,14 @@
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import {
+  Route,
   Spot,
   useAccessRight,
   useBuddies,
@@ -27,6 +29,7 @@ import HideArrow from './hide_arrow.png'
 import ShowArrow from './show_arrow.png'
 
 const EditRoute: React.FC = () => {
+  const navigate = useNavigate()
   const userID = useUserID((state) => state.userID)
   const routeID = useRouteID((state) => state.routeID)
   const setRouteID = useRouteID((state) => state.setRouteID)
@@ -296,13 +299,13 @@ const EditRoute: React.FC = () => {
   }
 
   const handleSaveDraft = async () => {
-    const data = {
+    const data: Route = {
       userID: userID,
       username: 'I Am Groot',
       routeID: routeID,
       routeTitle: routeTitle,
       gpxUrl: gpxUrl,
-      routeCoordinate: [42.827069873533766, 140.80677808428817],
+      routeCoordinate: { lat: 42.827069873533766, lng: 140.80677808428817 },
       tags: tags,
       snowBuddies: buddies,
       spots: spots,
@@ -313,13 +316,7 @@ const EditRoute: React.FC = () => {
       dislikeUsers: ['5'],
       likeCount: 2,
       viewCount: 1000,
-      comments: [
-        {
-          userID: '3',
-          comment: 'Nice choice!',
-          commentTime: '17 November 2023 at 14:00:00 UTC+8'
-        }
-      ]
+      comments: []
     }
     await setDoc(doc(db, 'routes', routeID), data).then(() =>
       toast.success('Draft saved!', {
@@ -336,13 +333,13 @@ const EditRoute: React.FC = () => {
   }
 
   const handleSubmit = async () => {
-    const data = {
+    const data: Route = {
       userID: userID,
       username: 'I Am Groot',
       routeID: routeID,
       routeTitle: routeTitle,
       gpxUrl: gpxUrl,
-      routeCoordinate: [42.827069873533766, 140.80677808428817],
+      routeCoordinate: { lat: 42.827069873533766, lng: 140.80677808428817 },
       tags: tags,
       snowBuddies: buddies,
       spots: spots,
@@ -353,26 +350,22 @@ const EditRoute: React.FC = () => {
       dislikeUsers: ['5'],
       likeCount: 2,
       viewCount: 1000,
-      comments: [
-        {
-          userID: '3',
-          comment: 'Nice choice!',
-          commentTime: '17 November 2023 at 14:00:00 UTC+8'
-        }
-      ]
+      comments: []
     }
-    await setDoc(doc(db, 'routes', routeID), data).then(() =>
-      toast.success('Submitted route!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-    )
+    await setDoc(doc(db, 'routes', routeID), data)
+    toast.success('Submitted route!', {
+      position: 'top-right',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+      onClose: () => {
+        navigate('/')
+      }
+    })
   }
 
   useEffect(() => {
@@ -417,6 +410,13 @@ const EditRoute: React.FC = () => {
                   >
                     Browse file
                   </label>
+                  <input
+                    className='hidden'
+                    type='file'
+                    id='gpxFile'
+                    onChange={handleGpxFile}
+                    accept='.gpx'
+                  />
                 </div>
               </div>
             </div>
@@ -433,13 +433,6 @@ const EditRoute: React.FC = () => {
                 >
                   Alter GPX file
                 </label>
-                <input
-                  className='hidden'
-                  type='file'
-                  id='gpxFile'
-                  onChange={handleGpxFile}
-                  accept='.gpx'
-                />
                 {gpxFileName && <p>{gpxFileName}</p>}
               </div>
             )}
@@ -479,7 +472,7 @@ const EditRoute: React.FC = () => {
               <label className='text-lg font-bold'>Tag this route:</label>
               <textarea
                 className='h-fit w-full resize-none p-2'
-                placeholder='Add tag ex. niseko, gondola, the-best-lift'
+                placeholder='Press Enter to add tag ex. niseko, gondola, the-best-lift'
                 onChange={(event) => handleTagInput(event)}
                 onKeyDown={handleTagInputKeyDown}
                 value={tagInput}
@@ -498,7 +491,7 @@ const EditRoute: React.FC = () => {
               <label className='text-lg font-bold'>Tag snow buddy:</label>
               <textarea
                 className='h-fit w-full resize-none p-2'
-                placeholder='Tag snow buddy with this route'
+                placeholder='Press Enter to tag snow buddy with this route'
                 onChange={(event) => handleBuddyInput(event)}
                 onKeyDown={handleBuddyInputKeyDown}
                 value={buddyInput}

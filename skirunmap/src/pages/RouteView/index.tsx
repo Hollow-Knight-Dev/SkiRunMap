@@ -1,7 +1,9 @@
-import { getDownloadURL, ref } from 'firebase/storage'
+import { doc, onSnapshot } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { storage } from '../../auth/CloudStorage'
+import { useParams } from 'react-router-dom'
+import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
+import { Route, Spot } from '../../store/useRoute'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedArrow from './clicked-arrow.png'
@@ -12,69 +14,57 @@ import ShowArrow from './show_arrow.png'
 import SmallMap from './small-map.png'
 import UnclickedArrow from './unclicked-arrow.png'
 
-interface Geopoint {
-  latitude: number
-  longitude: number
-}
-
-interface Spot {
-  spot_title: string
-  description: string | null
-  spot_coordinate: Geopoint
-  images: string[] | null
-  videos: string[] | null
-}
-
 interface VisibilityState {
-  [spot_title: string]: boolean
+  [spotTitle: string]: boolean
 }
 
-const Route = () => {
-  const [gpxURL, setGpxURL] = useState<string>('')
+const RouteView = () => {
+  const { id } = useParams<{ id: string }>()
+  const [data, setData] = useState<Route>()
 
   useEffect(() => {
-    const getGpx = async () => {
-      try {
-        const url = await getDownloadURL(ref(storage, 'Kutchan.gpx'))
-        // console.log(typeof url, ':', url)
-        setGpxURL(url)
-      } catch (error) {
-        console.log('Failed to get cloud storage gpx: ', error)
-      }
+    if (id) {
+      onSnapshot(doc(db, 'routes', id), (doc) => {
+        const routeData = doc.data()
+        if (routeData) {
+          console.log(routeData)
+          setData(routeData as Route)
+        } else {
+          console.error('Fail to get route data from Firestore')
+        }
+      })
     }
-
-    getGpx()
   }, [])
 
   const initialSpots: Spot[] = [
     {
-      spot_title: 'Spot 1',
-      description: 'This is spot 1',
-      spot_coordinate: { latitude: 40.7128, longitude: -74.006 },
-      images: ['small-map.png'],
-      videos: []
+      spotTitle: 'Spot 1',
+      spotDescription: 'This is spot 1',
+      spotCoordinate: { lat: 40.7128, lng: -74.006 },
+      imageUrls: ['small-map.png'],
+      videoUrls: []
     },
     {
-      spot_title: 'Spot 2',
-      description: 'This is spot 2',
-      spot_coordinate: { latitude: 40.7128, longitude: -74.006 },
-      images: [],
-      videos: [
+      spotTitle: 'Spot 2',
+      spotDescription: 'This is spot 2',
+      spotCoordinate: { lat: 40.7128, lng: -74.006 },
+      imageUrls: [],
+      videoUrls: [
         'https://youtube.com/shorts/8HBKH2DTmGw?feature=shared',
         'https://youtu.be/38gk0XYwq6s?feature=shared'
       ]
     },
     {
-      spot_title: 'Spot 3',
-      description: 'This is spot 3',
-      spot_coordinate: { latitude: 40.7128, longitude: -74.006 },
-      images: ['User-icon.png', 'User-icon.png'],
-      videos: []
+      spotTitle: 'Spot 3',
+      spotDescription: 'This is spot 3',
+      spotCoordinate: { lat: 40.7128, lng: -74.006 },
+      imageUrls: ['User-icon.png', 'User-icon.png'],
+      videoUrls: []
     }
   ]
 
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>(
-    initialSpots.reduce((acc, spot) => ({ ...acc, [spot.spot_title]: false }), {})
+    initialSpots.reduce((acc, spot) => ({ ...acc, [spot.spotTitle]: false }), {})
   )
 
   const toggleVisibility = (spotTitle: string) => {
@@ -86,7 +76,9 @@ const Route = () => {
 
   return (
     <div className='h-screen-64px flex'>
-      <div className='flex w-2/3 flex-col bg-zinc-100'>{gpxURL && <Map gpxUrl={gpxURL} />}</div>
+      <div className='flex w-2/3 flex-col bg-zinc-100'>
+        {data?.gpxUrl && <Map gpxUrl={data?.gpxUrl} />}
+      </div>
 
       <div className='flex w-1/3 flex-col overflow-y-auto overflow-x-hidden bg-zinc-200 p-2'>
         <div className='relative mb-2 w-full'>
@@ -126,36 +118,36 @@ const Route = () => {
             {initialSpots.map((spot, index) => (
               <div key={index} className='flex flex-col'>
                 <div className='flex'>
-                  <p className='w-fit pr-2'>{spot.spot_title}</p>
-                  {spotsVisibility[spot.spot_title] ? (
+                  <p className='w-fit pr-2'>{spot.spotTitle}</p>
+                  {spotsVisibility[spot.spotTitle] ? (
                     <img
                       className='h-auto w-6 cursor-pointer'
                       src={HideArrow}
                       alt='To Hide Arrow'
-                      onClick={() => toggleVisibility(spot.spot_title)}
+                      onClick={() => toggleVisibility(spot.spotTitle)}
                     />
                   ) : (
                     <img
                       className='h-auto w-6 cursor-pointer'
                       src={ShowArrow}
                       alt='To Show Arrow'
-                      onClick={() => toggleVisibility(spot.spot_title)}
+                      onClick={() => toggleVisibility(spot.spotTitle)}
                     />
                   )}
                 </div>
-                {spotsVisibility[spot.spot_title] && (
+                {spotsVisibility[spot.spotTitle] && (
                   <div>
-                    {spot.description && <p>{spot.description}</p>}
-                    {spot.images && (
+                    {spot.spotDescription && <p>{spot.spotDescription}</p>}
+                    {spot.imageUrls && (
                       <div>
-                        {spot.images.map((image, imageIndex) => (
+                        {spot.imageUrls.map((image, imageIndex) => (
                           <img key={imageIndex} src={`./${image}`} alt={`Image ${imageIndex}`} />
                         ))}
                       </div>
                     )}
-                    {spot.videos && (
+                    {spot.videoUrls && (
                       <div>
-                        {spot.videos.map((video, videoIndex) => (
+                        {spot.videoUrls.map((video, videoIndex) => (
                           <video key={videoIndex} controls>
                             <source src={video} type='video' />
                             Your browser does not support the video tag.
@@ -178,4 +170,4 @@ const Route = () => {
   )
 }
 
-export default Route
+export default RouteView

@@ -1,5 +1,39 @@
+import { FieldValue } from 'firebase/firestore'
 import { create } from 'zustand'
 
+export interface Spot {
+  spotTitle: string
+  spotDescription: string
+  spotCoordinate: { lat: number; lng: number }
+  imageUrls: string[]
+  videoUrls: string[]
+}
+
+export interface Comment {
+  userID: string
+  comment: string
+  commentTime: FieldValue
+}
+
+export interface Route {
+  userID: string
+  username: string
+  routeID: string
+  routeTitle: string
+  gpxUrl: string
+  routeCoordinate: { lat: number; lng: number }
+  tags: string[]
+  snowBuddies: string[]
+  isPublic: boolean
+  spots: Spot[]
+  isSubmitted: boolean
+  createTime: FieldValue
+  likeUsers: string[]
+  dislikeUsers: string[]
+  likeCount: number
+  viewCount: number
+  comments: Comment[]
+}
 interface RouteID {
   routeID: string
   setRouteID: (routeID: string) => void
@@ -129,14 +163,6 @@ export const useVideoUrls = create<VideoUrls>()((set) => ({
   videoUrls: [],
   setVideoUrls: (url) => set(() => ({ videoUrls: url }))
 }))
-
-export interface Spot {
-  spotTitle: string
-  spotDescription: string
-  spotCoordinate: { lat: number; lng: number }
-  imageUrls: string[]
-  videoUrls: string[]
-}
 
 interface SpotStore {
   spots: Spot[]
