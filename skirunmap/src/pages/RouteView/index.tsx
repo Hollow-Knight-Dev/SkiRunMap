@@ -113,6 +113,12 @@ const RouteView = () => {
                 </p>
               </div>
 
+              <div className='flex flex-wrap'>
+                <p className='w-full'>Route start coordinate:</p>
+                <p className='w-full'>Latitude: {data.routeCoordinate.lat}</p>
+                <p className='w-full'>Longtitude: {data.routeCoordinate.lng}</p>
+              </div>
+
               <div className='flex gap-2'>
                 <p>Tags:</p>
                 {data.tags.map((tag, index) => (

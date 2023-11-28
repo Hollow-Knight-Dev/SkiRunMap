@@ -1,5 +1,6 @@
 import GPX from 'gpx-parser-builder'
 import { useEffect, useState } from 'react'
+import { useMapStore } from '../../store/useMap'
 
 interface MapProps {
   gpxUrl: string
@@ -22,7 +23,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
     width: '100%'
   }
 
-  const [map, setMap] = useState<google.maps.Map | null>(null)
+  const { map, setMap } = useMapStore()
   const [gpxTrackPoint, setGpxTrackPoint] = useState<google.maps.LatLngLiteral[] | undefined>(
     undefined
   )
