@@ -92,15 +92,17 @@ const Home = () => {
             <Link
               key={index}
               to={`/route/${map.routeID}`}
-              className='h-40 w-40 cursor-pointer rounded-2xl bg-zinc-300'
+              className='h-48 w-48 cursor-pointer rounded-2xl bg-zinc-300 p-4'
             >
               <p>Title: {map.routeTitle}</p>
-              <p>user: {map.userID}</p>
-              <p>tag: {map.tags}</p>
-              <p>Buddy: {map.snowBuddies}</p>
-              {map.spots[0].imageUrls.map((url: string, index: number) => (
-                <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-12' />
-              ))}
+              <p>User: {map.userID}</p>
+              <p>Tag: {map.tags}</p>
+              <p>Snow Buddy: {map.snowBuddies}</p>
+              <div className='flex gap-1'>
+                {map.spots[0].imageUrls.map((url: string, index: number) => (
+                  <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-6' />
+                ))}
+              </div>
             </Link>
           ))}
         </div>
