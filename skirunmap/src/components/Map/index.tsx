@@ -46,9 +46,9 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
     loadGoogleMapsApi()
   }, [gpxUrl])
 
-  // useEffect(() => {
-  //   console.log('route start coordinate: ', routeCoordinate)
-  // }, [routeCoordinate])
+  useEffect(() => {
+    console.log('route start coordinate: ', routeCoordinate)
+  }, [routeCoordinate])
 
   const fetchGpxFile = async (filePath: string, Map: any) => {
     try {
@@ -126,7 +126,12 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
   // const addMarker = (coordinate: google.maps.LatLngLiteral, icon: string, content: string) => {}
 
   useEffect(() => {
-    if (map && gpxTrackPoint) {
+    if (
+      map &&
+      gpxTrackPoint &&
+      routeCoordinate.lat !== undefined &&
+      routeCoordinate.lng !== undefined
+    ) {
       new google.maps.Polyline({
         path: gpxTrackPoint,
         strokeColor: '#ff2527',
@@ -137,7 +142,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
 
       let infoWindow = new google.maps.InfoWindow({
         content: 'Click the map to create new marker!',
-        position: { lat: 42.84676617984929, lng: 140.68491306976668 }
+        position: { lat: routeCoordinate.lat, lng: routeCoordinate.lng }
       })
       infoWindow.open(map)
 
