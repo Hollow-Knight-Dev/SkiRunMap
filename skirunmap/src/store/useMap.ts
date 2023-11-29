@@ -6,7 +6,7 @@ interface MapStore {
   routeCoordinate: { lat: number | undefined; lng: number | undefined }
   setRouteCoordinate: (coordinate: { lat: number; lng: number }) => void
   spotCoordinates: { lat: number; lng: number }[]
-  addSpotCoordinates: (coordinate: { lat: number; lng: number }) => void
+  addSpotCoordinates: (index: number, coordinate: { lat: number; lng: number }) => void
 }
 
 export const useMapStore = create<MapStore>((set) => ({
@@ -15,6 +15,11 @@ export const useMapStore = create<MapStore>((set) => ({
   routeCoordinate: { lat: undefined, lng: undefined },
   setRouteCoordinate: (coordinate) => set({ routeCoordinate: coordinate }),
   spotCoordinates: [],
-  addSpotCoordinates: (coordinate) =>
-    set((state) => ({ spotCoordinates: [...state.spotCoordinates, coordinate] }))
+  addSpotCoordinates: (index, coordinate) => {
+    set((state) => {
+      const updatedSpotCoordinates = [...state.spotCoordinates]
+      updatedSpotCoordinates[index] = coordinate
+      return { spotCoordinates: updatedSpotCoordinates }
+    })
+  }
 }))

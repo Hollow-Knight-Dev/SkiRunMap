@@ -57,8 +57,7 @@ const EditRoute: React.FC = () => {
   // const videoUrls = useVideoUrls((state) => state.videoUrls)
   // const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
   const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
-  const { map, setMap, routeCoordinate, setRouteCoordinate, spotCoordinates, addSpotCoordinates } =
-    useMapStore()
+  const { map, setMap, routeCoordinate, spotCoordinates, addSpotCoordinates } = useMapStore()
   const [gpxFileName, setGpxFileName] = useState<string>('')
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
@@ -219,6 +218,51 @@ const EditRoute: React.FC = () => {
 
   const handleRemoveSpot = (index: number) => {
     removeSpot(index)
+  }
+
+  useEffect(() => {
+    console.log('spotCoordinates: ', spotCoordinates)
+  }, [spotCoordinates])
+
+  const handleAddMarker = (index: number) => {
+    let addedSpotCoordinate = { lat: 0, lng: 0 }
+    if (map && routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
+      addedSpotCoordinate = { lat: routeCoordinate.lat, lng: routeCoordinate.lng }
+      addSpotCoordinates(index, addedSpotCoordinate)
+      const marker = new google.maps.Marker({
+        position: { lat: routeCoordinate.lat, lng: routeCoordinate.lng },
+        map: map,
+        icon: {
+          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
+          scaledSize: new google.maps.Size(40, 40)
+        },
+        animation: google.maps.Animation.DROP,
+        draggable: true,
+        title: 'Drag me!'
+      })
+
+      const renewMarkerPosition = () => {
+        const markerPosition = marker.getPosition() as google.maps.LatLng
+        const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
+        const markerLat = markerPosition?.lat()
+        const markerLng = markerPosition?.lng()
+        // console.log('Marker latlng', markerPosition, typeof markerPosition)
+        // console.log('markerLat', markerLat, typeof markerLat)
+        // console.log('markerLng', markerLng, typeof markerLng)
+        // console.log('Marker content', markercontent, typeof markercontent)
+        addedSpotCoordinate = { lat: markerLat, lng: markerLng }
+        addSpotCoordinates(index, addedSpotCoordinate)
+        let infoWindow = new google.maps.InfoWindow({
+          content: markercontent
+        })
+        infoWindow.open(map, marker)
+      }
+      marker.addListener('dragend', () => renewMarkerPosition())
+      marker.addListener('click', () => renewMarkerPosition())
+      marker.addListener('dblclick', () => {
+        marker.setMap(null)
+      })
+    }
   }
 
   // const handleSpotTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -643,7 +687,7 @@ const EditRoute: React.FC = () => {
                     <p className='w-40 text-lg font-bold'>Spot Coordinate:</p>
                     <p
                       className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
-                      onClick={() => console.log('add mark')}
+                      onClick={() => handleAddMarker(index)}
                     >
                       Add marker
                     </p>
@@ -651,11 +695,21 @@ const EditRoute: React.FC = () => {
 
                   <div className='flex items-center justify-between'>
                     <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
-                    <input type='number' value={0} className='h-10 p-2' readOnly />
+                    <input
+                      type='number'
+                      value={spotCoordinates[index]?.lat || ''}
+                      className='h-10 p-2'
+                      readOnly
+                    />
                   </div>
                   <div className='flex items-center justify-between'>
                     <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
-                    <input type='number' value={0} className='h-10 p-2' readOnly />
+                    <input
+                      type='number'
+                      value={spotCoordinates[index]?.lng || ''}
+                      className='h-10 p-2'
+                      readOnly
+                    />
                   </div>
 
                   <label className='text-lg font-bold'>Spot Description:</label>

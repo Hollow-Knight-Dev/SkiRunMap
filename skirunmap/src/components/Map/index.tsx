@@ -46,9 +46,9 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
     loadGoogleMapsApi()
   }, [gpxUrl])
 
-  useEffect(() => {
-    console.log('route start coordinate: ', routeCoordinate)
-  }, [routeCoordinate])
+  // useEffect(() => {
+  //   console.log('route start coordinate: ', routeCoordinate)
+  // }, [routeCoordinate])
 
   const fetchGpxFile = async (filePath: string, Map: any) => {
     try {
@@ -146,42 +146,42 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
       })
       infoWindow.open(map)
 
-      map.addListener('click', (mapsMouseEvent: google.maps.MapMouseEvent) => {
-        if (infoWindow) {
-          infoWindow.close()
-        }
-        const latLng = mapsMouseEvent.latLng
-        const marker = new google.maps.Marker({
-          position: latLng,
-          map: map,
-          icon: {
-            url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
-            scaledSize: new google.maps.Size(40, 40)
-          },
-          animation: google.maps.Animation.DROP,
-          draggable: true,
-          title: 'Drag me!'
-        })
+      // map.addListener('click', (mapsMouseEvent: google.maps.MapMouseEvent) => {
+      //   if (infoWindow) {
+      //     infoWindow.close()
+      //   }
+      //   const latLng = mapsMouseEvent.latLng
+      //   const marker = new google.maps.Marker({
+      //     position: latLng,
+      //     map: map,
+      //     icon: {
+      //       url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
+      //       scaledSize: new google.maps.Size(40, 40)
+      //     },
+      //     animation: google.maps.Animation.DROP,
+      //     draggable: true,
+      //     title: 'Drag me!'
+      //   })
 
-        const renewMarkerPosition = () => {
-          if (infoWindow) {
-            infoWindow.close()
-          }
-          const markerPosition = marker.getPosition() as google.maps.LatLng
-          const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
-          console.log('Marker latlng', markerPosition, typeof markerPosition)
-          console.log('Marker content', markercontent, typeof markercontent)
-          infoWindow = new google.maps.InfoWindow({
-            content: markercontent
-          })
-          infoWindow.open(map, marker)
-        }
-        marker.addListener('dragend', () => renewMarkerPosition())
-        marker.addListener('click', () => renewMarkerPosition())
-        marker.addListener('dblclick', () => {
-          marker.setMap(null)
-        })
-      })
+      //   const renewMarkerPosition = () => {
+      //     if (infoWindow) {
+      //       infoWindow.close()
+      //     }
+      //     const markerPosition = marker.getPosition() as google.maps.LatLng
+      //     const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
+      //     console.log('Marker latlng', markerPosition, typeof markerPosition)
+      //     console.log('Marker content', markercontent, typeof markercontent)
+      //     infoWindow = new google.maps.InfoWindow({
+      //       content: markercontent
+      //     })
+      //     infoWindow.open(map, marker)
+      //   }
+      //   marker.addListener('dragend', () => renewMarkerPosition())
+      //   marker.addListener('click', () => renewMarkerPosition())
+      //   marker.addListener('dblclick', () => {
+      //     marker.setMap(null)
+      //   })
+      // })
     }
   }, [map, gpxTrackPoint])
 
