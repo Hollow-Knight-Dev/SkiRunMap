@@ -23,7 +23,8 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
     width: '100%'
   }
 
-  const { map, setMap } = useMapStore()
+  const { map, setMap, routeCoordinate, setRouteCoordinate, spotCoordinates, addSpotCoordinates } =
+    useMapStore()
   const [gpxTrackPoint, setGpxTrackPoint] = useState<google.maps.LatLngLiteral[] | undefined>(
     undefined
   )
@@ -44,6 +45,10 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
 
     loadGoogleMapsApi()
   }, [gpxUrl])
+
+  // useEffect(() => {
+  //   console.log('route start coordinate: ', routeCoordinate)
+  // }, [routeCoordinate])
 
   const fetchGpxFile = async (filePath: string, Map: any) => {
     try {
@@ -96,6 +101,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
           draggableCursor: 'pointer'
         })
         setMap(googleMap)
+        setRouteCoordinate(center)
       }
 
       const trkptArray: google.maps.LatLngLiteral[] = []

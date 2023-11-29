@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
+import { useMapStore } from '../../store/useMap'
 import {
   Route,
   Spot,
@@ -56,6 +57,8 @@ const EditRoute: React.FC = () => {
   // const videoUrls = useVideoUrls((state) => state.videoUrls)
   // const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
   const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
+  const { map, setMap, routeCoordinate, setRouteCoordinate, spotCoordinates, addSpotCoordinates } =
+    useMapStore()
   const [gpxFileName, setGpxFileName] = useState<string>('')
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
@@ -495,6 +498,20 @@ const EditRoute: React.FC = () => {
                 }}
                 className='h-10 p-2'
               />
+
+              <div className='flex items-center'>
+                <p className='w-40 text-lg font-bold'>Route Coordinate:</p>
+              </div>
+
+              <div className='flex items-center justify-between'>
+                <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
+                <input type='number' value={routeCoordinate.lat} className='h-10 p-2' readOnly />
+              </div>
+              <div className='flex items-center justify-between'>
+                <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
+                <input type='number' value={routeCoordinate.lng} className='h-10 p-2' readOnly />
+              </div>
+
               <label className='text-lg font-bold'>Route Description:</label>
               <textarea
                 className='h-fit w-full resize-none p-2'
@@ -628,7 +645,7 @@ const EditRoute: React.FC = () => {
                       className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
                       onClick={() => console.log('add mark')}
                     >
-                      Click me to mark location
+                      Add marker
                     </p>
                   </div>
 
