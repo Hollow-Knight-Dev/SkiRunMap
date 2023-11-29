@@ -64,7 +64,7 @@ const EditRoute: React.FC = () => {
   const toggleRouteVisibility = () => {
     setRouteVisibility((prevVisibility) => !prevVisibility)
   }
-  const toggleSpotVisibility = () => {
+  const toggleSpotsVisibility = () => {
     setSpotVisibility((prevVisibility) => !prevVisibility)
   }
 
@@ -403,13 +403,13 @@ const EditRoute: React.FC = () => {
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
                     viewBox='0 0 24 24'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                     stroke='currentColor'
                     className='h-6 w-6'
                   >
                     <path
-                      stroke-linecap='round'
-                      stroke-linejoin='round'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
                       d='M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'
                     />
                   </svg>
@@ -460,7 +460,7 @@ const EditRoute: React.FC = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                   stroke='currentColor'
                   className='h-6 w-6'
                 >
@@ -475,7 +475,7 @@ const EditRoute: React.FC = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                   stroke='currentColor'
                   className='h-6 w-6'
                 >
@@ -566,7 +566,7 @@ const EditRoute: React.FC = () => {
 
             <div
               className='flex w-full cursor-pointer flex-wrap items-center justify-between bg-white'
-              onClick={() => toggleSpotVisibility()}
+              onClick={() => toggleSpotsVisibility()}
             >
               <p className='text-xl font-bold'>Spots</p>
               {spotVisibility ? (
@@ -574,7 +574,7 @@ const EditRoute: React.FC = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                   stroke='currentColor'
                   className='h-6 w-6'
                 >
@@ -589,7 +589,7 @@ const EditRoute: React.FC = () => {
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
-                  stroke-width='1.5'
+                  strokeWidth='1.5'
                   stroke='currentColor'
                   className='h-6 w-6'
                 >
@@ -611,6 +611,7 @@ const EditRoute: React.FC = () => {
                       Delete
                     </p>
                   </div>
+
                   <label className='w-40 text-lg font-bold'>Spot Title:</label>
                   <input
                     type='text'
@@ -620,6 +621,26 @@ const EditRoute: React.FC = () => {
                     }}
                     className='h-10 p-2'
                   />
+
+                  <div className='flex items-center'>
+                    <p className='w-40 text-lg font-bold'>Spot Coordinate:</p>
+                    <p
+                      className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
+                      onClick={() => console.log('add mark')}
+                    >
+                      Click me to mark location
+                    </p>
+                  </div>
+
+                  <div className='flex items-center justify-between'>
+                    <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
+                    <input type='number' value={0} className='h-10 p-2' readOnly />
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
+                    <input type='number' value={0} className='h-10 p-2' readOnly />
+                  </div>
+
                   <label className='text-lg font-bold'>Spot Description:</label>
                   <textarea
                     className='h-fit w-full resize-none p-2'
