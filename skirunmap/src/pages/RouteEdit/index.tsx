@@ -493,6 +493,13 @@ const EditRoute: React.FC = () => {
                 >
                   Alter GPX file
                 </label>
+                <input
+                  className='hidden'
+                  type='file'
+                  id='gpxFile'
+                  onChange={handleGpxFile}
+                  accept='.gpx'
+                />
                 {gpxFileName && <p>{gpxFileName}</p>}
               </div>
             )}
