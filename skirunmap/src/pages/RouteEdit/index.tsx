@@ -7,13 +7,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
-import { useMapStore } from '../../store/useMap'
+import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
 import {
   Route,
   Spot,
   useAccessRight,
   useBuddies,
   useBuddyInput,
+  useCoordinateStore,
   useGpxUrl,
   // useImageUrls,
   useRouteDescription,
@@ -57,11 +58,29 @@ const EditRoute: React.FC = () => {
   // const videoUrls = useVideoUrls((state) => state.videoUrls)
   // const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
   const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
-  const { map, setMap, routeCoordinate, spotCoordinates, addSpotCoordinates } = useMapStore()
+  const { map, markers, addMarker, updateMarker, infoWindow, setInfoWindow, removeMarker } =
+    useMapStore()
+  const { routeCoordinate } = useCoordinateStore()
   const [gpxFileName, setGpxFileName] = useState<string>('')
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
   const [spotVisibility, setSpotVisibility] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (!routeID) {
+      const id = uuidv4()
+      setRouteID(id)
+      alert(`Created route id:${id}!`)
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('spots: ', spots)
+  }, [spots])
+
+  useEffect(() => {
+    console.log('markers: ', markers)
+  }, [markers])
 
   const toggleRouteVisibility = () => {
     setRouteVisibility((prevVisibility) => !prevVisibility)
@@ -202,35 +221,20 @@ const EditRoute: React.FC = () => {
   }
 
   const handleAddSpot = () => {
-    const newSpot: Spot = {
-      spotTitle: '',
-      spotDescription: '',
-      spotCoordinate: { lat: 42.84676617984929, lng: 140.68491306976668 },
-      imageUrls: [],
-      videoUrls: []
-    }
-    addSpot(newSpot)
-  }
-
-  const handleUpdateSpot = (index: number, updatedSpot: Spot) => {
-    updateSpot(index, updatedSpot)
-  }
-
-  const handleRemoveSpot = (index: number) => {
-    removeSpot(index)
-  }
-
-  useEffect(() => {
-    console.log('spotCoordinates: ', spotCoordinates)
-  }, [spotCoordinates])
-
-  const handleAddMarker = (index: number) => {
-    let addedSpotCoordinate = { lat: 0, lng: 0 }
     if (map && routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
-      addedSpotCoordinate = { lat: routeCoordinate.lat, lng: routeCoordinate.lng }
-      addSpotCoordinates(index, addedSpotCoordinate)
+      const addedSpotCoordinate = { lat: routeCoordinate.lat, lng: routeCoordinate.lng }
+      const id = uuidv4()
+      const newSpot: Spot = {
+        spotID: id,
+        spotTitle: '',
+        spotDescription: '',
+        spotCoordinate: addedSpotCoordinate,
+        imageUrls: [],
+        videoUrls: []
+      }
+      addSpot(newSpot)
       const marker = new google.maps.Marker({
-        position: { lat: routeCoordinate.lat, lng: routeCoordinate.lng },
+        position: addedSpotCoordinate,
         map: map,
         icon: {
           url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
@@ -238,51 +242,74 @@ const EditRoute: React.FC = () => {
         },
         animation: google.maps.Animation.DROP,
         draggable: true,
-        title: 'Drag me!'
-      })
-
-      const renewMarkerPosition = () => {
-        const markerPosition = marker.getPosition() as google.maps.LatLng
-        const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
-        const markerLat = markerPosition?.lat()
-        const markerLng = markerPosition?.lng()
-        // console.log('Marker latlng', markerPosition, typeof markerPosition)
-        // console.log('markerLat', markerLat, typeof markerLat)
-        // console.log('markerLng', markerLng, typeof markerLng)
-        // console.log('Marker content', markercontent, typeof markercontent)
-        addedSpotCoordinate = { lat: markerLat, lng: markerLng }
-        addSpotCoordinates(index, addedSpotCoordinate)
-        let infoWindow = new google.maps.InfoWindow({
-          content: markercontent
-        })
-        infoWindow.open(map, marker)
+        title: `Drag spot ${spots.length + 1}`
+      }) as MarkerWithSpotId
+      marker.spotID = newSpot.spotID
+      addMarker(marker)
+      if (infoWindow) {
+        infoWindow.close()
       }
-      marker.addListener('dragend', () => renewMarkerPosition())
-      marker.addListener('click', () => renewMarkerPosition())
-      marker.addListener('dblclick', () => {
-        marker.setMap(null)
+      const markerPosition = marker.getPosition() as google.maps.LatLng
+      const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
+      const newInfoWindow = new google.maps.InfoWindow({
+        content: markercontent
       })
+      newInfoWindow.open(map, marker)
+      setInfoWindow(newInfoWindow)
+      marker.addListener('dragend', () => renewMarkerPosition(marker))
+      marker.addListener('click', () => renewMarkerPosition(marker))
+    } else {
+      alert('Please upload a gpx file first')
     }
   }
 
-  // const handleSpotTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const title = event.target.value
-  //   if (title.length <= 30) {
-  //     setSpotTitle(title)
-  //   } else {
-  //     alert('Spot title exceeds letter limitation')
-  //     setSpotTitle(title.slice(0, 30))
-  //   }
-  // }
+  const handleUpdateSpot = (index: number, updatedSpot: Spot) => {
+    updateSpot(index, updatedSpot)
+  }
 
-  // const handleSpotDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   const description = event.target.value
-  //   if (description.length <= 50) {
-  //     setSpotDescription(description)
-  //   } else {
-  //     alert('Spot description exceeds letter limitation')
-  //     setSpotDescription(description.slice(0, 50))
-  //   }
+  const handleRemoveSpot = (index: number) => {
+    const spotIDToRemove = spots[index].spotID
+    removeSpot(index)
+    removeMarker(spotIDToRemove)
+    const markerIndex = markers.findIndex((marker) => marker.spotID === spotIDToRemove)
+    markers[markerIndex].setMap(null)
+  }
+
+  const renewMarkerPosition = (marker: MarkerWithSpotId) => {
+    const markerSpotID = marker.spotID
+    const markerPosition = marker.getPosition() as google.maps.LatLng
+    const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
+    const markerLat = markerPosition?.lat()
+    const markerLng = markerPosition?.lng()
+    // console.log('Marker latlng', markerPosition, typeof markerPosition)
+    // console.log('markerLat', markerLat, typeof markerLat)
+    // console.log('markerLng', markerLng, typeof markerLng)
+    // console.log('Marker content', markercontent, typeof markercontent)
+    const addedSpotCoordinate = { lat: markerLat, lng: markerLng }
+    console.log(markercontent)
+
+    if (infoWindow) {
+      infoWindow.close()
+    }
+    const newInfoWindow = new google.maps.InfoWindow({
+      content: markercontent
+    })
+    newInfoWindow.open(map, marker)
+    setInfoWindow(newInfoWindow)
+
+    // updateMarker(marker.spotID, { ...marker, addedSpotCoordinate })
+    for (let i = 0; i < spots.length; i++) {
+      console.log(spots[i], spots[i].spotID)
+    }
+
+    const spotIndex = spots.findIndex((spot) => spot.spotID === markerSpotID)
+
+    console.log(markerSpotID, spotIndex)
+    alterSpot(spotIndex, { spotCoordinate: addedSpotCoordinate })
+  }
+
+  // const handleAlterMarker = (index: number) => {
+  //   specific marker blink
   // }
 
   const uploadAndDownloadImages = async (file: File, fileName: string, spotIndex: number) => {
@@ -344,86 +371,78 @@ const EditRoute: React.FC = () => {
   }
 
   const handleSaveDraft = async () => {
-    const data: Route = {
-      userID: userID,
-      username: 'I Am Groot',
-      routeID: routeID,
-      routeTitle: routeTitle,
-      gpxUrl: gpxUrl,
-      routeCoordinate: { lat: 42.827069873533766, lng: 140.80677808428817 },
-      tags: tags,
-      snowBuddies: buddies,
-      spots: spots,
-      isPublic: accessRight,
-      isSubmitted: false,
-      createTime: serverTimestamp(),
-      likeUsers: ['2', '3', '4'],
-      dislikeUsers: ['5'],
-      likeCount: 2,
-      viewCount: 1000,
-      comments: []
+    if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
+      const data: Route = {
+        userID: userID,
+        username: 'I Am Groot',
+        routeID: routeID,
+        routeTitle: routeTitle,
+        gpxUrl: gpxUrl,
+        routeCoordinate: { lat: routeCoordinate.lat, lng: routeCoordinate.lng },
+        tags: tags,
+        snowBuddies: buddies,
+        spots: spots,
+        isPublic: accessRight,
+        isSubmitted: false,
+        createTime: serverTimestamp(),
+        likeUsers: ['2', '3', '4'],
+        dislikeUsers: ['5'],
+        likeCount: 2,
+        viewCount: 1000,
+        comments: []
+      }
+      await setDoc(doc(db, 'routes', routeID), data).then(() =>
+        toast.success('Draft saved!', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+      )
     }
-    await setDoc(doc(db, 'routes', routeID), data).then(() =>
-      toast.success('Draft saved!', {
+  }
+
+  const handleSubmit = async () => {
+    if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
+      const data: Route = {
+        userID: userID,
+        username: 'I Am Groot',
+        routeID: routeID,
+        routeTitle: routeTitle,
+        gpxUrl: gpxUrl,
+        routeCoordinate: { lat: routeCoordinate.lat, lng: routeCoordinate.lng },
+        tags: tags,
+        snowBuddies: buddies,
+        spots: spots,
+        isPublic: accessRight,
+        isSubmitted: true,
+        createTime: serverTimestamp(),
+        likeUsers: ['2', '3', '4'],
+        dislikeUsers: ['5'],
+        likeCount: 2,
+        viewCount: 1000,
+        comments: []
+      }
+      await setDoc(doc(db, 'routes', routeID), data)
+      toast.success('Submitted route!', {
         position: 'top-right',
-        autoClose: 1000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: false,
         draggable: false,
         progress: undefined,
-        theme: 'light'
+        theme: 'light',
+        onClose: () => {
+          navigate('/')
+        }
       })
-    )
-  }
-
-  const handleSubmit = async () => {
-    const data: Route = {
-      userID: userID,
-      username: 'I Am Groot',
-      routeID: routeID,
-      routeTitle: routeTitle,
-      gpxUrl: gpxUrl,
-      routeCoordinate: { lat: 42.827069873533766, lng: 140.80677808428817 },
-      tags: tags,
-      snowBuddies: buddies,
-      spots: spots,
-      isPublic: accessRight,
-      isSubmitted: true,
-      createTime: serverTimestamp(),
-      likeUsers: ['2', '3', '4'],
-      dislikeUsers: ['5'],
-      likeCount: 2,
-      viewCount: 1000,
-      comments: []
     }
-    await setDoc(doc(db, 'routes', routeID), data)
-    toast.success('Submitted route!', {
-      position: 'top-right',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-      onClose: () => {
-        navigate('/')
-      }
-    })
   }
-
-  useEffect(() => {
-    if (!routeID) {
-      const id = uuidv4()
-      setRouteID(id)
-      alert(`Created route id:${id}!`)
-    }
-  }, [])
-
-  // useEffect(() => {
-  //   console.log(spots)
-  // }, [spots])
 
   return (
     <div className='flex w-full'>
@@ -556,11 +575,21 @@ const EditRoute: React.FC = () => {
 
               <div className='flex items-center justify-between'>
                 <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
-                <input type='number' value={routeCoordinate.lat} className='h-10 p-2' readOnly />
+                <input
+                  type='number'
+                  value={routeCoordinate.lat ?? ''}
+                  className='h-10 p-2'
+                  readOnly
+                />
               </div>
               <div className='flex items-center justify-between'>
                 <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
-                <input type='number' value={routeCoordinate.lng} className='h-10 p-2' readOnly />
+                <input
+                  type='number'
+                  value={routeCoordinate.lng ?? ''}
+                  className='h-10 p-2'
+                  readOnly
+                />
               </div>
 
               <label className='text-lg font-bold'>Route Description:</label>
@@ -692,19 +721,19 @@ const EditRoute: React.FC = () => {
 
                   <div className='flex items-center'>
                     <p className='w-40 text-lg font-bold'>Spot Coordinate:</p>
-                    <p
+                    {/* <p
                       className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
-                      onClick={() => handleAddMarker(index)}
+                      // onClick={() => handleAlterMarker(index)}
                     >
-                      Add marker
-                    </p>
+                      Alter marker
+                    </p> */}
                   </div>
 
                   <div className='flex items-center justify-between'>
                     <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
                     <input
                       type='number'
-                      value={spotCoordinates[index]?.lat || ''}
+                      value={spot.spotCoordinate.lat}
                       className='h-10 p-2'
                       readOnly
                     />
@@ -713,7 +742,7 @@ const EditRoute: React.FC = () => {
                     <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
                     <input
                       type='number'
-                      value={spotCoordinates[index]?.lng || ''}
+                      value={spot.spotCoordinate.lng}
                       className='h-10 p-2'
                       readOnly
                     />
