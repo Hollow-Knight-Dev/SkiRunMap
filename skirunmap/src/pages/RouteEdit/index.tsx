@@ -76,14 +76,14 @@ const EditRoute: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    console.log('spots are altered: ', spots)
     latestSpotsRef.current = spots
-    console.log('latestSpotsRef are altered: ', latestSpotsRef.current)
+    // console.log('spots are altered: ', spots)
+    // console.log('latestSpotsRef are altered: ', latestSpotsRef.current)
   }, [spots])
 
-  useEffect(() => {
-    console.log('markers are altered: ', markers)
-  }, [markers])
+  // useEffect(() => {
+  //   console.log('markers are altered: ', markers)
+  // }, [markers])
 
   const toggleRouteVisibility = () => {
     setRouteVisibility((prevVisibility) => !prevVisibility)
@@ -302,11 +302,11 @@ const EditRoute: React.FC = () => {
     setInfoWindow(newInfoWindow)
 
     const addedSpotCoordinate = { lat: markerLat, lng: markerLng }
-    console.log(addedSpotCoordinate)
-    console.log('marker can get spots: ', spots)
-    console.log('marker SpotID: ', markerSpotID)
+    // console.log(addedSpotCoordinate)
+    // console.log('marker can get spots: ', spots)
+    // console.log('marker SpotID: ', markerSpotID)
     const spotIndex = latestSpotsRef.current.findIndex((spot) => spot.spotID === markerSpotID)
-    console.log('spotIndex: ', spotIndex)
+    // console.log('spotIndex: ', spotIndex)
     if (spotIndex !== -1) {
       alterSpot(spotIndex, { spotCoordinate: addedSpotCoordinate })
     }
