@@ -236,7 +236,6 @@ const EditRoute: React.FC = () => {
         videoUrls: []
       }
       addSpot(newSpot)
-
       const marker = new google.maps.Marker({
         position: addedSpotCoordinate,
         map: map,
