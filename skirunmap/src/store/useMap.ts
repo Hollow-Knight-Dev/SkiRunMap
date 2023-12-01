@@ -8,6 +8,7 @@ interface MapStore {
   map: google.maps.Map | null
   setMap: (newMap: google.maps.Map | null) => void
   markers: MarkerWithSpotId[]
+  setMarkers: (newMarkers: MarkerWithSpotId[] | []) => void
   addMarker: (marker: MarkerWithSpotId) => void
   updateMarker: (spotID: string, newMarker: MarkerWithSpotId) => void
   removeMarker: (spotID: string) => void
@@ -19,6 +20,7 @@ export const useMapStore = create<MapStore>((set) => ({
   map: null,
   setMap: (newMap) => set({ map: newMap }),
   markers: [],
+  setMarkers: (newMarkers) => set({ markers: newMarkers }),
   addMarker: (newMarker) => set((state) => ({ markers: [...state.markers, newMarker] })),
   updateMarker: (spotID, newMarker) =>
     set((state) => {

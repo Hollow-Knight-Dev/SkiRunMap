@@ -453,7 +453,7 @@ const EditRoute: React.FC = () => {
       <div className='h-screen-64px flex w-full'>
         <div className='h-full w-2/3 bg-zinc-100'>
           {gpxUrl ? (
-            <Map gpxUrl={gpxUrl} />
+            <Map gpxUrl={gpxUrl} createMode={true} />
           ) : (
             <div className='h-full w-full p-4'>
               <div

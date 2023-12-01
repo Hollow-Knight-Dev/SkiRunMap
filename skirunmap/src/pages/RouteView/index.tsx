@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
+import { useMapStore } from '../../store/useMap'
 import { Route, Spot } from '../../store/useRoute'
 import BookmarkIcon from './bookmark.png'
 import ClickedArrow from './clicked-arrow.png'
 import SearchIcon from './search-icon.png'
 import ShareIcon from './share-icon.png'
-import SmallMap from './small-map.png'
 import UnclickedArrow from './unclicked-arrow.png'
 import ProfileIcon from './User-icon.png'
 
@@ -18,6 +18,7 @@ interface VisibilityState {
 
 const RouteView = () => {
   const { id } = useParams<{ id: string }>()
+  const { map, infoWindow, setInfoWindow } = useMapStore()
   const [data, setData] = useState<Route>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
 
@@ -49,12 +50,40 @@ const RouteView = () => {
     setFormattedTime(formattedDate)
   }
 
+  const markSpots = (spots: Spot[]) => {
+    spots.forEach((spot) => {
+      const marker = new google.maps.Marker({
+        position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
+        map: map,
+        icon: {
+          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
+          scaledSize: new google.maps.Size(25, 25)
+        },
+        animation: google.maps.Animation.DROP,
+        draggable: false,
+        title: `${spot.spotDescription}`
+      })
+      const openMarkerInfoWindow = () => {
+        if (infoWindow) {
+          infoWindow.close()
+        }
+        const contentString = `${spot.spotTitle}`
+        const newInfoWindow = new google.maps.InfoWindow({
+          content: contentString
+        })
+        newInfoWindow.open(map, marker)
+        setInfoWindow(newInfoWindow)
+      }
+      marker.addListener('click', () => openMarkerInfoWindow())
+    })
+  }
+
   useEffect(() => {
     if (id) {
       onSnapshot(doc(db, 'routes', id), (doc) => {
         const routeData = doc.data()
         if (routeData) {
-          console.log(routeData)
+          // console.log(routeData)
           setData(routeData as Route)
           const initialVisibility: VisibilityState = routeData.spots.reduce(
             (acc: VisibilityState, _: Spot, index: number) => ({ ...acc, [index]: true }),
@@ -69,12 +98,18 @@ const RouteView = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (data) {
+      markSpots(data.spots)
+    }
+  }, [map])
+
   return (
     <div className='h-screen-64px flex'>
       {data ? (
         <>
           <div className='flex w-2/3 flex-col bg-zinc-100'>
-            {data.gpxUrl && <Map gpxUrl={data.gpxUrl} />}
+            {data.gpxUrl && <Map gpxUrl={data.gpxUrl} createMode={false} />}
           </div>
 
           <div className='flex w-1/3 flex-col overflow-x-hidden overflow-y-scroll bg-zinc-200 p-2'>
@@ -86,14 +121,14 @@ const RouteView = () => {
               <img className='absolute left-3 top-2 w-5' src={SearchIcon} alt='Search Icon' />
             </div>
 
-            <div className='relative'>
-              <img className='h-auto w-full' src={SmallMap} alt='Small Map' />
-              <div className='absolute bottom-2 end-14 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-amber-100 bg-opacity-70 hover:bg-white hover:bg-opacity-100'>
+            <div className='relative flex justify-end gap-2'>
+              <div className='z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'>
                 <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
               </div>
-              <div className='absolute bottom-2 end-2 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-amber-100 bg-opacity-70 hover:bg-white hover:bg-opacity-100'>
+              <div className='z-10 mr-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'>
                 <img className='h-auto w-3/5' src={ShareIcon} alt='Share Icon' />
               </div>
+              <div className='absolute top-2 h-4 w-full rounded-full bg-zinc-300' />
             </div>
 
             <div className='flex flex-col gap-4 p-2'>
@@ -153,7 +188,7 @@ const RouteView = () => {
                           xmlns='http://www.w3.org/2000/svg'
                           fill='none'
                           viewBox='0 0 24 24'
-                          stroke-width='1.5'
+                          strokeWidth='1.5'
                           stroke='currentColor'
                           className='h-6 w-6'
                         >
@@ -168,7 +203,7 @@ const RouteView = () => {
                           xmlns='http://www.w3.org/2000/svg'
                           fill='none'
                           viewBox='0 0 24 24'
-                          stroke-width='1.5'
+                          strokeWidth='1.5'
                           stroke='currentColor'
                           className='h-6 w-6'
                         >
@@ -184,6 +219,8 @@ const RouteView = () => {
                     {spotsVisibility[index] && (
                       <div className='mb-2 flex flex-col gap-2 bg-zinc-100'>
                         {spot.spotDescription && <p>Description: {spot.spotDescription}</p>}
+                        <p>Spot Latitude: {spot.spotCoordinate.lat}</p>
+                        <p>Spot Longitude: {spot.spotCoordinate.lng}</p>
                         {spot.imageUrls && (
                           <div className='flex gap-2'>
                             {spot.imageUrls.map((url, i) => (
@@ -216,7 +253,7 @@ const RouteView = () => {
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
                     viewBox='0 0 24 24'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                     stroke='currentColor'
                     className='h-6 w-6'
                   >
@@ -231,7 +268,7 @@ const RouteView = () => {
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
                     viewBox='0 0 24 24'
-                    stroke-width='1.5'
+                    strokeWidth='1.5'
                     stroke='currentColor'
                     className='h-6 w-6'
                   >
