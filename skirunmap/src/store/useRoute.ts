@@ -1,7 +1,13 @@
 import { FieldValue } from 'firebase/firestore'
 import { create } from 'zustand'
 
+export interface Coordinate {
+  lat: number | undefined
+  lng: number | undefined
+}
+
 export interface Spot {
+  spotID: string
   spotTitle: string
   spotDescription: string
   spotCoordinate: { lat: number; lng: number }
@@ -21,7 +27,7 @@ export interface Route {
   routeID: string
   routeTitle: string
   gpxUrl: string
-  routeCoordinate: { lat: number; lng: number }
+  routeCoordinate: Coordinate
   tags: string[]
   snowBuddies: string[]
   isPublic: boolean
@@ -185,4 +191,14 @@ export const useSpotStore = create<SpotStore>()((set) => ({
     set((state) => ({
       spots: state.spots.map((spot, i) => (i === index ? { ...spot, ...alteredSpot } : spot))
     }))
+}))
+
+interface CoordinateStore {
+  routeCoordinate: Coordinate
+  setRouteCoordinate: (coordinate: Coordinate) => void
+}
+
+export const useCoordinateStore = create<CoordinateStore>((set) => ({
+  routeCoordinate: { lat: undefined, lng: undefined },
+  setRouteCoordinate: (coordinate) => set({ routeCoordinate: coordinate })
 }))

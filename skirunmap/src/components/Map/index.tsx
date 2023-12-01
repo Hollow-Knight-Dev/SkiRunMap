@@ -1,6 +1,7 @@
 import GPX from 'gpx-parser-builder'
 import { useEffect, useState } from 'react'
 import { useMapStore } from '../../store/useMap'
+import { useCoordinateStore } from '../../store/useRoute'
 
 interface MapProps {
   gpxUrl: string
@@ -23,8 +24,10 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
     width: '100%'
   }
 
-  const { map, setMap, routeCoordinate, setRouteCoordinate, spotCoordinates, addSpotCoordinates } =
-    useMapStore()
+  const { map, setMap, infoWindow, setInfoWindow } = useMapStore()
+
+  const { routeCoordinate, setRouteCoordinate } = useCoordinateStore()
+
   const [gpxTrackPoint, setGpxTrackPoint] = useState<google.maps.LatLngLiteral[] | undefined>(
     undefined
   )
@@ -140,11 +143,15 @@ const Map: React.FC<MapProps> = ({ gpxUrl }) => {
         map: map
       })
 
-      let infoWindow = new google.maps.InfoWindow({
-        content: 'Click the map to create new marker!',
+      const newInfoWindow = new google.maps.InfoWindow({
+        content: 'You can also add marker on the spot!',
         position: { lat: routeCoordinate.lat, lng: routeCoordinate.lng }
       })
-      infoWindow.open(map)
+      if (infoWindow) {
+        infoWindow.close()
+      }
+      setInfoWindow(newInfoWindow)
+      newInfoWindow.open(map)
 
       // map.addListener('click', (mapsMouseEvent: google.maps.MapMouseEvent) => {
       //   if (infoWindow) {
