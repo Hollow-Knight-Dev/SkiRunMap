@@ -67,13 +67,44 @@ const RouteView = () => {
         if (infoWindow) {
           infoWindow.close()
         }
-        const contentString = `${spot.spotTitle}`
+        const generateContentHTML = (spot: Spot) => {
+          const imageElements = spot.imageUrls
+            .map((imageUrl) => `<img src=${imageUrl} alt=${spot.spotTitle}>`)
+            .join('')
+          const videoElements = spot.videoUrls
+            .map((videoUrl) => `<iframe src=${videoUrl} width='300' height='200'></iframe>`)
+            .join('')
+
+          return `
+            <div class='info-window-container'>
+              <div class='info-window-text-row'>
+                <p class='info-window-title'>Spot Title:</p>
+                <p class='info-window-text'>${spot.spotTitle}</p>
+              </div>
+              <div class='info-window-text-row'>
+                <p class='info-window-title'>Spot Description:</p>
+                <p class='info-window-text'>${spot.spotDescription}</p>
+              </div>
+              <div class='info-window-text-row'>
+                <p class='info-window-title'>Spot Coordinate:</p>
+                <p class='info-window-text'>lat: ${spot.spotCoordinate.lat}<br>lng: ${spot.spotCoordinate.lng}</p>
+              </div>
+              <div class='info-window-media'>
+              ${imageElements}
+              ${videoElements}
+              </div>
+            </div>
+          `
+        }
+
+        const contentHTML = generateContentHTML(spot)
         const newInfoWindow = new google.maps.InfoWindow({
-          content: contentString
+          content: contentHTML
         })
         newInfoWindow.open(map, marker)
         setInfoWindow(newInfoWindow)
       }
+
       marker.addListener('click', () => openMarkerInfoWindow())
     })
   }

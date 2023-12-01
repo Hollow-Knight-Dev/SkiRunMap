@@ -3,6 +3,10 @@ textarea {
   outline: 0;
 }
 
+p {
+  font-family: 'Philosopher', sans-serif;
+}
+
 @layer {
   .h-screen-256px {
     min-height: calc(100vh - 256px);
@@ -31,4 +35,32 @@ textarea {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #888;
+}
+
+/* InfoWindow */
+.info-window-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.info-window-text-row {
+  display: flex;
+  gap: 14px;
+}
+
+.info-window-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.info-window-text {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.info-window-media {
+  display: flex;
+  overflow-x: scroll;
+  align-items: center;
 }
