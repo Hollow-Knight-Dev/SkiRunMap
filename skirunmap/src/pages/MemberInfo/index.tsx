@@ -1,5 +1,9 @@
 const MemberInfo = () => {
-  return <p>Member Info</p>
+  return (
+    <div className='h-screen-256px bg-zinc-200'>
+      <p>member info</p>
+    </div>
+  )
 }
 
 export default MemberInfo

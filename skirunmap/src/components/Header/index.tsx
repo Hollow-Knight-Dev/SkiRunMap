@@ -37,18 +37,6 @@ const Header: React.FC = () => {
         <div className='relative ml-8 flex h-full items-center gap-8 text-lg font-bold'>
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
-              name='Explore'
-              url='/'
-              isHovered={hoveredItem === 'Explore'}
-              onMouseEnter={() => handleItemHover('Explore')}
-            />
-            {hoveredItem === 'Explore' && (
-              <SubNavItem items={[{ name: 'Niseko Ski Resort', url: '/' }]} />
-            )}
-          </div>
-
-          <div className='h-full' onMouseLeave={handleItemLeave}>
-            <NavItem
               name='Route'
               url='/route'
               isHovered={hoveredItem === 'Route'}
@@ -63,12 +51,23 @@ const Header: React.FC = () => {
               />
             )}
           </div>
+          <div className='h-full' onMouseLeave={handleItemLeave}>
+            <NavItem
+              name='Explore'
+              url='/'
+              isHovered={hoveredItem === 'Explore'}
+              onMouseEnter={() => handleItemHover('Explore')}
+            />
+            {hoveredItem === 'Explore' && (
+              <SubNavItem items={[{ name: 'Niseko Ski Resort', url: '/' }]} />
+            )}
+          </div>
         </div>
       </div>
       <div className='relative flex items-center'>
-        <div onMouseLeave={handleItemLeave} className='h-full text-lg'>
+        <div onMouseLeave={handleItemLeave} className='h-full text-lg hover:translate-y-[-2px]'>
           <Link
-            className={`flex h-full transform items-center transition-transform duration-200 hover:translate-y-[-2px] focus:outline-none ${
+            className={`flex h-full transform items-center transition-transform duration-200 focus:outline-none ${
               !isSignIn && 'pl-20'
             }`}
             to='/member'
@@ -78,7 +77,7 @@ const Header: React.FC = () => {
             <img className='mr-2 h-auto w-6' src={DefaultUserIcon} alt='Default user icon' />
           </Link>
           {hoveredItem === 'Member' && (
-            <div className='absolute right-28 top-14 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+            <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
               <Link
                 to='/member'
                 className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
@@ -164,7 +163,7 @@ interface SubNavItemProps {
 
 const SubNavItem: React.FC<SubNavItemProps> = ({ items }) => {
   return (
-    <div className='absolute top-14 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+    <div className='absolute top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
       {items.map(({ name, url }, index) => (
         <Link
           key={index}
