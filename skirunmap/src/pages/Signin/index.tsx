@@ -16,11 +16,6 @@ const SignIn: React.FC = () => {
   const setIsSignIn = useIsSignIn((state) => state.setIsSignIn)
 
   useEffect(() => {
-    setEmail('')
-    setPassword('')
-  }, [])
-
-  useEffect(() => {
     console.log(userID)
   }, [userID])
 
@@ -39,7 +34,7 @@ const SignIn: React.FC = () => {
       .then((userCredential) => {
         const userID = userCredential.user.uid
         console.log(userID)
-        toast.success('Sign up successed!', {
+        toast.success('Sign up successed! Please finish your personal profile', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -129,7 +124,7 @@ const SignIn: React.FC = () => {
           className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
           onClick={() => handleSignUp()}
         >
-          Sign Up
+          Next step
         </button>
       ) : (
         <button
