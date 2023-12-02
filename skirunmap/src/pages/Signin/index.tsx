@@ -13,8 +13,12 @@ const SignIn: React.FC = () => {
   const [password, setPassword] = useState<string>('')
   const userID = useUserID((state) => state.userID)
   const setUserID = useUserID((state) => state.setUserID)
-  // const isSignIn = useIsSignIn((state) => state.isSignIn)
   const setIsSignIn = useIsSignIn((state) => state.setIsSignIn)
+
+  useEffect(() => {
+    setEmail('')
+    setPassword('')
+  }, [])
 
   useEffect(() => {
     console.log(userID)
@@ -43,10 +47,11 @@ const SignIn: React.FC = () => {
           pauseOnHover: false,
           draggable: false,
           progress: undefined,
-          theme: 'light'
+          theme: 'light',
+          onClose: () => {
+            navigate('/member-info')
+          }
         })
-        setEmail('')
-        setPassword('')
       })
       .catch((error) => {
         console.log(error)
@@ -68,11 +73,11 @@ const SignIn: React.FC = () => {
           pauseOnHover: false,
           draggable: false,
           progress: undefined,
-          theme: 'light'
+          theme: 'light',
+          onClose: () => {
+            navigate('/member')
+          }
         })
-        setEmail('')
-        setPassword('')
-        navigate('/member')
       })
       .catch((error) => {
         console.log(error.code, ': ', error.message)

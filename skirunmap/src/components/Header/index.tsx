@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useIsSignIn, useUserID } from '../../store/useUser'
+import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
 import Notification from './notification-icon.png'
 
@@ -62,28 +63,46 @@ const Header: React.FC = () => {
               />
             )}
           </div>
-
-          <div className='h-full' onMouseLeave={handleItemLeave}>
-            <NavItem
-              name='Member'
-              url='/member'
-              isHovered={hoveredItem === 'Member'}
-              onMouseEnter={() => handleItemHover('Member')}
-            />
-            {hoveredItem === 'Member' && (
-              <SubNavItem
-                items={[
-                  { name: 'My Page', url: '/member' },
-                  { name: 'My Friend', url: '/friend' }
-                ]}
-              />
-            )}
-          </div>
         </div>
       </div>
-      <div className='flex items-center'>
-        {isSignIn && <p className='pr-2'>Hi, username</p>}
+      <div className='relative flex items-center'>
+        <div onMouseLeave={handleItemLeave} className='h-full text-lg'>
+          <Link
+            className={`flex h-full transform items-center transition-transform duration-200 hover:translate-y-[-2px] focus:outline-none ${
+              !isSignIn && 'pl-20'
+            }`}
+            to='/member'
+            onMouseEnter={() => handleItemHover('Member')}
+          >
+            {isSignIn && <p className='pr-2'>Hi, username</p>}
+            <img className='mr-2 h-auto w-6' src={DefaultUserIcon} alt='Default user icon' />
+          </Link>
+          {hoveredItem === 'Member' && (
+            <div className='absolute right-28 top-14 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+              <Link
+                to='/member'
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                My Page
+              </Link>
+              <Link
+                to='/member-info'
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                My Info
+              </Link>
+              <Link
+                to='/friend'
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                My Friend
+              </Link>
+            </div>
+          )}
+        </div>
+
         <img className='mr-2 h-auto w-6' src={Notification} alt='Notification icon' />
+
         {isSignIn ? (
           <button
             className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'

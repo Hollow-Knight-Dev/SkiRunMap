@@ -434,7 +434,7 @@ const EditRoute: React.FC = () => {
       await setDoc(doc(db, 'routes', routeID), data)
       toast.success('Submitted route!', {
         position: 'top-right',
-        autoClose: 2000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: false,

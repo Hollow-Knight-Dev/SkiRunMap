@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Friend from './pages/Friend'
 import Home from './pages/Home'
 import Member from './pages/Member'
+import MemberInfo from './pages/MemberInfo'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
 import SignIn from './pages/Signin'
@@ -21,6 +22,7 @@ const App: React.FC = () => {
         <Route path='/' element={<Home />} />
         <Route path='/signin' element={<SignIn />} />
         <Route path='/member' element={<Member />} />
+        <Route path='/member-info' element={<MemberInfo />} />
         <Route path='/route/:id' element={<RouteView />} />
         <Route path='/edit-route' element={<RouteEdit />} />
         <Route path='/friend' element={<Friend />} />
