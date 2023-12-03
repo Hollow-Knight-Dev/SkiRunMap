@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -11,33 +11,35 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const auth = getAuth()
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const { userID, setUserID, setIsSignIn } = useUserStore()
+  const { userID, setUserID, setIsSignIn, userEmail, setUserEmail, userPassword, setUserPassword } =
+    useUserStore()
 
   useEffect(() => {
-    console.log(userID)
+    if (userID) {
+      console.log(userID)
+    }
   }, [userID])
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
-    setEmail(input)
+    setUserEmail(input)
   }
 
   const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
-    setPassword(input)
+    setUserPassword(input)
   }
 
   const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, userEmail, userPassword)
       .then(async (userCredential) => {
         const userID = userCredential.user.uid
-        console.log(userID)
+        setUserID(userID)
+        // console.log(userID)
 
         const data: User = {
           userID: userID,
-          userEmail: email,
+          userEmail: userEmail,
           userJoinedTime: serverTimestamp(),
           username: '',
           userIconUrl:
@@ -52,9 +54,21 @@ const SignIn: React.FC = () => {
           userFriends: [],
           userFriendReqs: [],
           userSentFriendReqs: [],
-          userRouteIDs: []
+          userRouteIDs: [],
+          userFinishedInfo: false
         }
         await setDoc(doc(db, 'users', userID), data)
+
+        signInWithEmailAndPassword(auth, userEmail, userPassword)
+          .then((userCredential) => {
+            const userID = userCredential.user.uid
+            // console.log(userID)
+            setUserID(userID)
+            setIsSignIn(true)
+          })
+          .catch((error) => {
+            console.log(error.code, ': ', error.message)
+          })
 
         toast.success('Sign up successed!', {
           position: 'top-right',
@@ -76,25 +90,45 @@ const SignIn: React.FC = () => {
   }
 
   const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const userUID = userCredential.user.uid
-        console.log(userUID)
-        setUserID(userUID)
+    signInWithEmailAndPassword(auth, userEmail, userPassword)
+      .then(async (userCredential) => {
+        const userID = userCredential.user.uid
+        // console.log(userID)
+        setUserID(userID)
         setIsSignIn(true)
-        toast.success(`Welcome back, ${userUID}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light',
-          onClose: () => {
-            navigate('/member')
-          }
-        })
+
+        const userDoc = await getDoc(doc(db, 'users', userID))
+        // console.log(userDoc.data()?.userFinishedInfo)
+
+        if (userDoc.data()?.userFinishedInfo) {
+          toast.success(`Welcome back, ${userID}`, {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: 'light',
+            onClose: () => {
+              navigate('/member')
+            }
+          })
+        } else {
+          toast.success(`Remember to finish your profile`, {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: 'light',
+            onClose: () => {
+              navigate('/member-info')
+            }
+          })
+        }
       })
       .catch((error) => {
         console.log(error.code, ': ', error.message)
@@ -127,7 +161,7 @@ const SignIn: React.FC = () => {
           <input
             className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
             type='email'
-            value={email}
+            value={userEmail}
             onChange={(e) => handleEmail(e)}
           />
         </div>
@@ -136,7 +170,7 @@ const SignIn: React.FC = () => {
           <input
             className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
             type='text'
-            value={password}
+            value={userPassword}
             onChange={(e) => handlePassword(e)}
           />
         </div>

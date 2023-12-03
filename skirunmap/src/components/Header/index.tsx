@@ -71,7 +71,7 @@ const Header: React.FC = () => {
             onMouseEnter={() => handleItemHover('Member')}
           >
             {isSignIn && <p className='pr-2'>Hi, username</p>}
-            <img className='mr-2 h-auto w-6' src={DefaultUserIcon} alt='Default user icon' />
+            <img className='mr-2 h-auto w-6' src={DefaultUserIcon} alt='User icon' />
           </Link>
           {hoveredItem === 'Member' && (
             <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>

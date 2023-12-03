@@ -1,19 +1,34 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 // import { useLocation } from 'react-router-dom'
-import { storage } from '../../auth/CloudStorage'
-import { useUserStore } from '../../store/useUser'
+import { doc, updateDoc } from 'firebase/firestore'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { db, storage } from '../../auth/CloudStorage'
+import { User, useUserStore } from '../../store/useUser'
 
 const MemberInfo = () => {
+  const navigate = useNavigate()
   const {
     userID,
-    setUserID,
-    userEmail,
-    setUserEmail,
-    userPassword,
-    setUserPassword,
     userIconUrl,
-    setUserIconUrl
+    setUserIconUrl,
+    username,
+    setUsername,
+    userSkiAge,
+    setUserSkiAge,
+    userSnowboardAge,
+    setUserSnowboardAge,
+    userCountry,
+    setUserCountry,
+    userGender,
+    setUserGender,
+    userDescription,
+    setUserDescription
   } = useUserStore()
+
+  const [isHoverOnIcon, setIsHoverOnIcon] = useState<boolean>(false)
 
   // useEffect(() => {
   //   const location = useLocation()
@@ -23,7 +38,7 @@ const MemberInfo = () => {
   //   setUserPassword(signUpPassword)
   // }, [])
 
-  const uploadAndDownloadImage = async (file: File, fileName: string) => {
+  const uploadAndDownloadIcon = async (file: File, fileName: string) => {
     const usersRef = ref(storage, 'users')
     const userRef = ref(usersRef, userID)
     const userIconRef = ref(userRef, fileName)
@@ -43,7 +58,7 @@ const MemberInfo = () => {
     if (files) {
       const file: File = files[0]
       if (file.name) {
-        uploadAndDownloadImage(file, userID)
+        uploadAndDownloadIcon(file, userID)
       } else {
         alert('Invalid file type. Please upload an image.')
       }
@@ -53,15 +68,99 @@ const MemberInfo = () => {
     }
   }
 
+  const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim()
+    setUsername(input)
+  }
+
+  const handleSkiAge = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim()
+    setUserSkiAge(input)
+  }
+
+  const handleSnowboardAge = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim()
+    setUserSnowboardAge(input)
+  }
+
+  const handleCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim()
+    setUserCountry(input)
+  }
+
+  const handleGender = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim()
+    setUserGender(input)
+  }
+
+  const handleDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim()
+    setUserDescription(input)
+  }
+
+  const handleMemberInfoSubmit = async () => {
+    const userRef = doc(db, 'users', userID)
+    const data: Partial<User> = {
+      username: username,
+      userIconUrl: userIconUrl,
+      userSkiAge: userSkiAge,
+      userSnowboardAge: userSnowboardAge,
+      userCountry: userCountry,
+      userGender: userGender,
+      userDescription: userDescription,
+      userFinishedInfo: true
+    }
+    console.log(data)
+    await updateDoc(userRef, data)
+
+    toast.success('Updated personal info!', {
+      position: 'top-right',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+      onClose: () => {
+        navigate('/member')
+      }
+    })
+  }
+
   return (
     <div className='h-screen-256px flex flex-col items-center justify-center bg-zinc-200'>
       <div className='flex w-4/5 gap-8'>
-        <div className='w-1/6'>
+        <div className='relative h-fit w-1/6'>
           <label
             htmlFor='userIcon'
-            className='cursor-pointer rounded-r-2xl pr-4 underline underline-offset-2'
+            className='h-fit w-fit cursor-pointer'
+            onMouseLeave={() => setIsHoverOnIcon(false)}
           >
-            <img src={userIconUrl} alt='Default user icon' />
+            <img
+              src={userIconUrl}
+              alt='User icon'
+              className={`rounded-full shadow-[10px_15px_30px_-10px_#4da5fd] ${
+                isHoverOnIcon && 'opacity-30'
+              }`}
+              onMouseEnter={() => setIsHoverOnIcon(true)}
+            />
+            {isHoverOnIcon && (
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth='1.5'
+                stroke='black'
+                className='absolute inset-1/2 z-10 h-6 w-6 -translate-x-1/2 -translate-y-1/2'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5'
+                />
+              </svg>
+            )}
           </label>
           <input
             className='hidden'
@@ -78,8 +177,8 @@ const MemberInfo = () => {
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
                 type='text'
-                // value={password}
-                // onChange={(e) => handlePassword(e)}
+                value={username}
+                onChange={(e) => handleUsername(e)}
               />
             </div>
             <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
@@ -87,8 +186,8 @@ const MemberInfo = () => {
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
                 type='text'
-                // value={password}
-                // onChange={(e) => handlePassword(e)}
+                value={userSkiAge}
+                onChange={(e) => handleSkiAge(e)}
               />
             </div>
           </div>
@@ -98,8 +197,8 @@ const MemberInfo = () => {
             <input
               className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
               type='text'
-              // value={password}
-              // onChange={(e) => handlePassword(e)}
+              value={userSnowboardAge}
+              onChange={(e) => handleSnowboardAge(e)}
             />
           </div>
 
@@ -109,8 +208,8 @@ const MemberInfo = () => {
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
                 type='text'
-                // value={password}
-                // onChange={(e) => handlePassword(e)}
+                value={userCountry}
+                onChange={(e) => handleCountry(e)}
               />
             </div>
             <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
@@ -118,8 +217,8 @@ const MemberInfo = () => {
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
                 type='text'
-                // value={password}
-                // onChange={(e) => handlePassword(e)}
+                value={userGender}
+                onChange={(e) => handleGender(e)}
               />
             </div>
           </div>
@@ -129,8 +228,8 @@ const MemberInfo = () => {
             <input
               className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
               type='text'
-              // value={password}
-              // onChange={(e) => handlePassword(e)}
+              value={userDescription}
+              onChange={(e) => handleDescription(e)}
             />
           </div>
 
@@ -157,7 +256,10 @@ const MemberInfo = () => {
         </div>
       </div>
       <div className='flex gap-8'>
-        <button className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'>
+        <button
+          className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
+          onClick={() => handleMemberInfoSubmit()}
+        >
           Submit
         </button>
       </div>

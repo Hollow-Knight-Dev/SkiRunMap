@@ -18,6 +18,7 @@ export interface User {
   userFriendReqs: string[]
   userSentFriendReqs: string[]
   userRouteIDs: string[]
+  userFinishedInfo: boolean
 }
 
 interface UserStore {
@@ -29,8 +30,20 @@ interface UserStore {
   setUserEmail: (email: string) => void
   userPassword: string
   setUserPassword: (email: string) => void
+  username: string
+  setUsername: (name: string) => void
   userIconUrl: string
   setUserIconUrl: (userID: string) => void
+  userSkiAge: string
+  setUserSkiAge: (age: string) => void
+  userSnowboardAge: string
+  setUserSnowboardAge: (age: string) => void
+  userCountry: string
+  setUserCountry: (country: string) => void
+  userGender: string
+  setUserGender: (gender: string) => void
+  userDescription: string
+  setUserDescription: (description: string) => void
 }
 
 export const useUserStore = create<UserStore>()((set) => ({
@@ -39,10 +52,22 @@ export const useUserStore = create<UserStore>()((set) => ({
   userID: '',
   setUserID: (newUserID) => set(() => ({ userID: newUserID })),
   userEmail: '',
-  setUserEmail: (newEmail) => set(() => ({ userEmail: newEmail })),
+  setUserEmail: (email) => set(() => ({ userEmail: email })),
   userPassword: '',
-  setUserPassword: (newEmail) => set(() => ({ userEmail: newEmail })),
+  setUserPassword: (password) => set(() => ({ userPassword: password })),
+  username: '',
+  setUsername: (name) => set(() => ({ username: name })),
   userIconUrl:
     'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777',
-  setUserIconUrl: (newUrl) => set(() => ({ userIconUrl: newUrl }))
+  setUserIconUrl: (newUrl) => set(() => ({ userIconUrl: newUrl })),
+  userSkiAge: '',
+  setUserSkiAge: (age) => set(() => ({ userSkiAge: age })),
+  userSnowboardAge: '',
+  setUserSnowboardAge: (age) => set(() => ({ userSnowboardAge: age })),
+  userCountry: '',
+  setUserCountry: (country) => set(() => ({ userCountry: country })),
+  userGender: '',
+  setUserGender: (gender) => set(() => ({ userGender: gender })),
+  userDescription: '',
+  setUserDescription: (description) => set(() => ({ userDescription: description }))
 }))
