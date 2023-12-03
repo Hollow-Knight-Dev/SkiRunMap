@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useIsSignIn, useUserID } from '../../store/useUser'
+import { useUserStore } from '../../store/useUser'
 import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
 import Notification from './notification-icon.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const userID = useUserID((state) => state.userID)
-  const setUserID = useUserID((state) => state.setUserID)
-  const isSignIn = useIsSignIn((state) => state.isSignIn)
-  const setIsSignIn = useIsSignIn((state) => state.setIsSignIn)
+  const { userID, setUserID, isSignIn, setIsSignIn } = useUserStore()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
@@ -121,14 +118,14 @@ const Header: React.FC = () => {
               navigate('/')
             }}
           >
-            Log out
+            Sign out
           </button>
         ) : (
           <Link
             className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
             to='/signin'
           >
-            Log in
+            Sign in
           </Link>
         )}
       </div>

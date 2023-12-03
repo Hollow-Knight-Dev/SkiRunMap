@@ -1,9 +1,11 @@
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useIsSignIn, useUserID } from '../../store/useUser'
+import { db } from '../../auth/CloudStorage'
+import { User, useUserStore } from '../../store/useUser'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -11,9 +13,7 @@ const SignIn: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const userID = useUserID((state) => state.userID)
-  const setUserID = useUserID((state) => state.setUserID)
-  const setIsSignIn = useIsSignIn((state) => state.setIsSignIn)
+  const { userID, setUserID, setIsSignIn } = useUserStore()
 
   useEffect(() => {
     console.log(userID)
@@ -31,10 +31,32 @@ const SignIn: React.FC = () => {
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const userID = userCredential.user.uid
         console.log(userID)
-        toast.success('Sign up successed! Please finish your personal profile', {
+
+        const data: User = {
+          userID: userID,
+          userEmail: email,
+          userJoinedTime: serverTimestamp(),
+          username: '',
+          userIconUrl:
+            'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777',
+          userSkiAge: '',
+          userSnowboardAge: '',
+          userCountry: '',
+          userGender: '',
+          userDescription: '',
+          userFollows: [],
+          userFollowers: [],
+          userFriends: [],
+          userFriendReqs: [],
+          userSentFriendReqs: [],
+          userRouteIDs: []
+        }
+        await setDoc(doc(db, 'users', userID), data)
+
+        toast.success('Sign up successed!', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
@@ -124,7 +146,7 @@ const SignIn: React.FC = () => {
           className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
           onClick={() => handleSignUp()}
         >
-          Next step
+          Sign up
         </button>
       ) : (
         <button

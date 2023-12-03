@@ -26,11 +26,11 @@ import {
   useTagInput,
   useTags
 } from '../../store/useRoute'
-import { useUserID } from '../../store/useUser'
+import { useUserStore } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
-  const userID = useUserID((state) => state.userID)
+  const userID = useUserStore((state) => state.userID)
   const routeID = useRouteID((state) => state.routeID)
   const setRouteID = useRouteID((state) => state.setRouteID)
   const routeTitle = useRouteTitle((state) => state.routeTitle)
