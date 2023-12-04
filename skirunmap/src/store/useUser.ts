@@ -24,6 +24,8 @@ export interface User {
 interface UserStore {
   isSignIn: boolean
   setIsSignIn: (signState: boolean) => void
+  userDoc: User
+  setUserDoc: (doc: User) => void
   userID: string
   setUserID: (userID: string) => void
   userEmail: string
@@ -49,6 +51,8 @@ interface UserStore {
 export const useUserStore = create<UserStore>()((set) => ({
   isSignIn: false,
   setIsSignIn: (signState) => set(() => ({ isSignIn: signState })),
+  userDoc: {} as User,
+  setUserDoc: (doc) => set({ userDoc: doc }),
   userID: '',
   setUserID: (newUserID) => set(() => ({ userID: newUserID })),
   userEmail: '',

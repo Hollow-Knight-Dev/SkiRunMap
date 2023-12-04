@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import { getAuth, signOut } from 'firebase/auth'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
-import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
 import Notification from './notification-icon.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const { userID, setUserID, isSignIn, setIsSignIn } = useUserStore()
+  const { isSignIn, userDoc } = useUserStore()
+  const auth = getAuth()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
@@ -20,7 +21,20 @@ const Header: React.FC = () => {
     setHoveredItem(null)
   }
 
-  useEffect(() => {}, [userID])
+  const handleSignOut = async () => {
+    await signOut(auth)
+    toast.success('Log out successed!', {
+      position: 'top-right',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light'
+    })
+    navigate('/')
+  }
 
   return (
     <div className='flex justify-between bg-white pl-8 pr-8'>
@@ -70,8 +84,12 @@ const Header: React.FC = () => {
             to='/member'
             onMouseEnter={() => handleItemHover('Member')}
           >
-            {isSignIn && <p className='pr-2'>Hi, username</p>}
-            <img className='mr-2 h-auto w-6' src={DefaultUserIcon} alt='User icon' />
+            {isSignIn && <p className='pr-2'>Hi, {userDoc.username}</p>}
+            <img
+              className='mr-2 h-auto w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+              src={userDoc.userIconUrl}
+              alt='User icon'
+            />
           </Link>
           {hoveredItem === 'Member' && (
             <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
@@ -102,21 +120,7 @@ const Header: React.FC = () => {
         {isSignIn ? (
           <button
             className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-            onClick={() => {
-              setIsSignIn(false)
-              setUserID('')
-              toast.success('Log out successed!', {
-                position: 'top-right',
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: 'light'
-              })
-              navigate('/')
-            }}
+            onClick={() => handleSignOut()}
           >
             Sign out
           </button>

@@ -11,7 +11,7 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const auth = getAuth()
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
-  const { userID, setUserID, setIsSignIn, userEmail, setUserEmail, userPassword, setUserPassword } =
+  const { userID, setUserID, userEmail, setUserEmail, userPassword, setUserPassword } =
     useUserStore()
 
   useEffect(() => {
@@ -60,15 +60,15 @@ const SignIn: React.FC = () => {
         await setDoc(doc(db, 'users', userID), data)
 
         signInWithEmailAndPassword(auth, userEmail, userPassword)
-          .then((userCredential) => {
-            const userID = userCredential.user.uid
-            // console.log(userID)
-            setUserID(userID)
-            setIsSignIn(true)
-          })
-          .catch((error) => {
-            console.log(error.code, ': ', error.message)
-          })
+        // .then((userCredential) => {
+        //   // const userID = userCredential.user.uid
+        //   // console.log(userID)
+        //   // setUserID(userID)
+        //   // setIsSignIn(true)
+        // })
+        // .catch((error) => {
+        //   console.log(error.code, ': ', error.message)
+        // })
 
         toast.success('Sign up successed!', {
           position: 'top-right',
@@ -94,8 +94,8 @@ const SignIn: React.FC = () => {
       .then(async (userCredential) => {
         const userID = userCredential.user.uid
         // console.log(userID)
-        setUserID(userID)
-        setIsSignIn(true)
+        // setUserID(userID)
+        // setIsSignIn(true)
 
         const userDoc = await getDoc(doc(db, 'users', userID))
         // console.log(userDoc.data()?.userFinishedInfo)
@@ -115,7 +115,7 @@ const SignIn: React.FC = () => {
             }
           })
         } else {
-          toast.success(`Remember to finish your profile`, {
+          toast.warn(`You haven't finish your profile`, {
             position: 'top-right',
             autoClose: 1000,
             hideProgressBar: false,

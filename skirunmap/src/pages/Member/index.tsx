@@ -1,48 +1,50 @@
-import ProfileIcon from './User-icon.png'
+import { useUserStore } from '../../store/useUser'
 import LeftArrow from './left_arrow.png'
 import RightArrow from './right_arrow.png'
 
 const Member = () => {
+  const { userDoc } = useUserStore()
+
   return (
     <div className='p-8'>
-      <div className='w-full mb-8'>
+      <div className='mb-8 w-full'>
         <div className='flex'>
           <img
-            className='w-28 ml-10 mr-10'
-            src={ProfileIcon}
+            className='ml-10 mr-10 w-28 rounded-full shadow-[10px_15px_30px_-10px_#4da5fd]'
+            src={userDoc.userIconUrl}
             alt='Profile Icon'
           />
           <div className='flex w-full justify-between'>
             <div className='flex flex-col'>
-              <p className='font-bold text-3xl mb-4'>I Am Groot</p>
-              <div className='flex gap-1 mb-2'>
-                <p className='font-bold text-xl'>Joined Time:</p>
+              <p className='mb-4 text-3xl font-bold'>I Am Groot</p>
+              <div className='mb-2 flex gap-1'>
+                <p className='text-xl font-bold'>Joined Time:</p>
                 <p className='text-lg'>November 15, 2023</p>
               </div>
               <div className='flex gap-3'>
                 <div className='flex gap-1'>
-                  <p className='font-bold text-xl'>Routes:</p>
+                  <p className='text-xl font-bold'>Routes:</p>
                   <p className='text-lg'>10</p>
                 </div>
                 <div className='flex gap-1'>
-                  <p className='font-bold text-xl'>Views:</p>
+                  <p className='text-xl font-bold'>Views:</p>
                   <p className='text-lg'>10</p>
                 </div>
                 <div className='flex gap-1'>
-                  <p className='font-bold text-xl'>Friends:</p>
+                  <p className='text-xl font-bold'>Friends:</p>
                   <p className='text-lg'>10</p>
                 </div>
                 <div className='flex gap-1'>
-                  <p className='font-bold text-xl'>Followers:</p>
+                  <p className='text-xl font-bold'>Followers:</p>
                   <p className='text-lg'>10</p>
                 </div>
               </div>
             </div>
             <div className='flex flex-col gap-2'>
-              <button className='w-20 h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 text-lg font-bold'>
+              <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
                 Invite
               </button>
-              <button className='w-20 h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 text-lg font-bold'>
+              <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
                 Follow
               </button>
               {/* <button className='w-20 h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 text-lg font-bold'>
@@ -58,40 +60,40 @@ const Member = () => {
           </div>
         </div>
       </div>
-      <div className='w-full border border-zinc-300 mb-8' />
+      <div className='mb-8 w-full border border-zinc-300' />
       <div className='mb-16'>
-        <p className='font-bold text-2xl mb-8'>My Routes</p>
-        <div className='flex justify-center items-center'>
-          <img className='w-20 h-20' src={LeftArrow} alt='Left arrow' />
-          <div className='w-fit grid grid-cols-4 gap-4'>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
+        <p className='mb-8 text-2xl font-bold'>My Routes</p>
+        <div className='flex items-center justify-center'>
+          <img className='h-20 w-20' src={LeftArrow} alt='Left arrow' />
+          <div className='grid w-fit grid-cols-4 gap-4'>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
           </div>
-          <img className='w-20 h-20' src={RightArrow} alt='Right arrow' />
+          <img className='h-20 w-20' src={RightArrow} alt='Right arrow' />
         </div>
       </div>
-      <div className='w-full border border-zinc-300 mb-8' />
+      <div className='mb-8 w-full border border-zinc-300' />
       <div className='mb-16'>
-        <p className='font-bold text-2xl mb-8'>My Favorite Routes</p>
-        <div className='flex justify-center items-center'>
-          <img className='w-20 h-20' src={LeftArrow} alt='Left arrow' />
-          <div className='w-fit grid grid-cols-4 gap-4'>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
-            <div className='w-40 h-40 bg-zinc-300 rounded-2xl'></div>
+        <p className='mb-8 text-2xl font-bold'>My Favorite Routes</p>
+        <div className='flex items-center justify-center'>
+          <img className='h-20 w-20' src={LeftArrow} alt='Left arrow' />
+          <div className='grid w-fit grid-cols-4 gap-4'>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
+            <div className='h-40 w-40 rounded-2xl bg-zinc-300'></div>
           </div>
-          <img className='w-20 h-20' src={RightArrow} alt='Right arrow' />
+          <img className='h-20 w-20' src={RightArrow} alt='Right arrow' />
         </div>
       </div>
     </div>

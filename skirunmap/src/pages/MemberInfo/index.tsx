@@ -129,7 +129,7 @@ const MemberInfo = () => {
   }
 
   return (
-    <div className='h-screen-256px flex flex-col items-center justify-center bg-zinc-200'>
+    <div className='h-screen-64px flex flex-col items-center justify-center bg-zinc-200'>
       <div className='flex w-4/5 gap-8'>
         <div className='relative h-fit w-1/6'>
           <label
