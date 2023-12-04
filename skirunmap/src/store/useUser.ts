@@ -35,7 +35,7 @@ interface UserStore {
   username: string
   setUsername: (name: string) => void
   userIconUrl: string
-  setUserIconUrl: (userID: string) => void
+  setUserIconUrl: (url: string) => void
   userSkiAge: string
   setUserSkiAge: (age: string) => void
   userSnowboardAge: string

@@ -1,7 +1,6 @@
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
-// import { useLocation } from 'react-router-dom'
 import { doc, updateDoc } from 'firebase/firestore'
-import { useState } from 'react'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -25,18 +24,23 @@ const MemberInfo = () => {
     userGender,
     setUserGender,
     userDescription,
-    setUserDescription
+    setUserDescription,
+    userDoc
   } = useUserStore()
 
-  const [isHoverOnIcon, setIsHoverOnIcon] = useState<boolean>(false)
+  useEffect(() => {
+    if (userDoc) {
+      setUserIconUrl(userDoc.userIconUrl)
+      setUsername(userDoc.username)
+      setUserSkiAge(userDoc.userSkiAge)
+      setUserSnowboardAge(userDoc.userSnowboardAge)
+      setUserCountry(userDoc.userCountry)
+      setUserGender(userDoc.userGender)
+      setUserDescription(userDoc.userDescription)
+    }
+  }, [userDoc])
 
-  // useEffect(() => {
-  //   const location = useLocation()
-  //   const { signUpUid, signUpEmail, signUpPassword } = location.state
-  //   setUserID(signUpUid)
-  //   setUserEmail(signUpEmail)
-  //   setUserPassword(signUpPassword)
-  // }, [])
+  const [isHoverOnIcon, setIsHoverOnIcon] = useState<boolean>(false)
 
   const uploadAndDownloadIcon = async (file: File, fileName: string) => {
     const usersRef = ref(storage, 'users')

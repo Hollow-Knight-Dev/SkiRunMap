@@ -24,7 +24,7 @@ const Header: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut(auth)
-    toast.success('Log out successed!', {
+    toast.success('Sign out successed!', {
       position: 'top-right',
       autoClose: 1000,
       hideProgressBar: false,
