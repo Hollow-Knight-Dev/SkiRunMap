@@ -18,6 +18,7 @@ export interface User {
   userFriendReqs: string[]
   userSentFriendReqs: string[]
   userRouteIDs: string[]
+  userDraftRouteIDs: string[]
   userFinishedInfo: boolean
 }
 

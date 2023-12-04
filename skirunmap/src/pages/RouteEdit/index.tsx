@@ -1,4 +1,12 @@
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc
+} from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -30,7 +38,7 @@ import { useUserStore } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
-  const userID = useUserStore((state) => state.userID)
+  const { userID, userDoc } = useUserStore()
   const routeID = useRouteID((state) => state.routeID)
   const setRouteID = useRouteID((state) => state.setRouteID)
   const routeTitle = useRouteTitle((state) => state.routeTitle)
@@ -81,10 +89,6 @@ const EditRoute: React.FC = () => {
     // console.log('latestSpotsRef are altered: ', latestSpotsRef.current)
   }, [spots])
 
-  // useEffect(() => {
-  //   console.log('markers are altered: ', markers)
-  // }, [markers])
-
   const toggleRouteVisibility = () => {
     setRouteVisibility((prevVisibility) => !prevVisibility)
   }
@@ -129,6 +133,7 @@ const EditRoute: React.FC = () => {
 
   const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && tagInput.trim() !== '') {
+      event.preventDefault()
       setTags([...tags, tagInput.trim()])
       setTagInput('')
     }
@@ -151,6 +156,7 @@ const EditRoute: React.FC = () => {
 
   const handleBuddyInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && buddyInput.trim() !== '') {
+      event.preventDefault()
       setBuddies([...buddies, buddyInput.trim()])
       setBuddyInput('')
     }
@@ -378,7 +384,7 @@ const EditRoute: React.FC = () => {
     if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
       const data: Route = {
         userID: userID,
-        username: 'I Am Groot',
+        username: userDoc.username,
         routeID: routeID,
         routeTitle: routeTitle,
         gpxUrl: gpxUrl,
@@ -389,24 +395,32 @@ const EditRoute: React.FC = () => {
         isPublic: accessRight,
         isSubmitted: false,
         createTime: serverTimestamp(),
-        likeUsers: ['2', '3', '4'],
-        dislikeUsers: ['5'],
-        likeCount: 2,
-        viewCount: 1000,
+        likeUsers: [],
+        dislikeUsers: [],
+        likeCount: 0,
+        viewCount: 0,
         comments: []
       }
-      await setDoc(doc(db, 'routes', routeID), data).then(() =>
-        toast.success('Draft saved!', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
-      )
+      await setDoc(doc(db, 'routes', routeID), data)
+
+      const userRef = doc(db, 'users', userID)
+      const docSnap = await getDoc(userRef)
+      if (docSnap.exists()) {
+        if (!docSnap.data()?.userDraftRouteIDs.includes(routeID)) {
+          await updateDoc(userRef, { userDraftRouteIDs: arrayUnion(routeID) })
+        }
+      }
+
+      toast.success('Draft saved!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -414,7 +428,7 @@ const EditRoute: React.FC = () => {
     if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
       const data: Route = {
         userID: userID,
-        username: 'I Am Groot',
+        username: userDoc.username,
         routeID: routeID,
         routeTitle: routeTitle,
         gpxUrl: gpxUrl,
@@ -425,13 +439,25 @@ const EditRoute: React.FC = () => {
         isPublic: accessRight,
         isSubmitted: true,
         createTime: serverTimestamp(),
-        likeUsers: ['2', '3', '4'],
-        dislikeUsers: ['5'],
-        likeCount: 2,
-        viewCount: 1000,
+        likeUsers: [],
+        dislikeUsers: [],
+        likeCount: 0,
+        viewCount: 0,
         comments: []
       }
       await setDoc(doc(db, 'routes', routeID), data)
+
+      const userRef = doc(db, 'users', userID)
+      const docSnap = await getDoc(userRef)
+      if (docSnap.exists()) {
+        if (!docSnap.data()?.userRouteIDs.includes(routeID)) {
+          await updateDoc(userRef, { userRouteIDs: arrayUnion(routeID) })
+        }
+        if (docSnap.data()?.userDraftRouteIDs.includes(routeID)) {
+          await updateDoc(userRef, { userDraftRouteIDs: arrayRemove(routeID) })
+        }
+      }
+
       toast.success('Submitted route!', {
         position: 'top-right',
         autoClose: 1000,
@@ -606,13 +632,6 @@ const EditRoute: React.FC = () => {
               <label className='w-40 text-lg font-bold'>Date:</label>
               <input type='text' className='h-10 p-2' />
               <label className='text-lg font-bold'>Tag this route:</label>
-              <textarea
-                className='h-fit w-full resize-none p-2'
-                placeholder='Press Enter to add tag ex. niseko, gondola, the-best-lift'
-                onChange={(event) => handleTagInput(event)}
-                onKeyDown={handleTagInputKeyDown}
-                value={tagInput}
-              />
               <div className='flex gap-2'>
                 {tags.map((tag, index) => (
                   <span
@@ -624,14 +643,15 @@ const EditRoute: React.FC = () => {
                   </span>
                 ))}
               </div>
-              <label className='text-lg font-bold'>Tag snow buddy:</label>
               <textarea
                 className='h-fit w-full resize-none p-2'
-                placeholder='Press Enter to tag snow buddy with this route'
-                onChange={(event) => handleBuddyInput(event)}
-                onKeyDown={handleBuddyInputKeyDown}
-                value={buddyInput}
+                placeholder='Press Enter to add tag ex. niseko, gondola, the-best-lift'
+                onChange={(event) => handleTagInput(event)}
+                onKeyDown={handleTagInputKeyDown}
+                value={tagInput}
               />
+
+              <label className='text-lg font-bold'>Tag snow buddy:</label>
               <div className='flex gap-2'>
                 {buddies.map((buddy, index) => (
                   <span
@@ -643,6 +663,13 @@ const EditRoute: React.FC = () => {
                   </span>
                 ))}
               </div>
+              <textarea
+                className='h-fit w-full resize-none p-2'
+                placeholder='Press Enter to tag snow buddy with this route'
+                onChange={(event) => handleBuddyInput(event)}
+                onKeyDown={handleBuddyInputKeyDown}
+                value={buddyInput}
+              />
 
               <p className='w-40 text-lg font-bold'>Set Access Right:</p>
               <div className='flex gap-4'>
@@ -761,6 +788,17 @@ const EditRoute: React.FC = () => {
                       handleUpdateSpot(index, { ...spot, spotDescription: event.target.value })
                     }
                   />
+
+                  <div className='flex w-full flex-wrap items-start gap-2'>
+                    {spot.imageUrls.map((url, i) => (
+                      <img
+                        key={i}
+                        src={url}
+                        alt={`Image ${i}`}
+                        className='h-auto w-40 object-cover'
+                      />
+                    ))}
+                  </div>
                   <label
                     htmlFor={`imageFile${index}`}
                     className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
@@ -771,12 +809,15 @@ const EditRoute: React.FC = () => {
                     className='hidden'
                     type='file'
                     id={`imageFile${index}`}
-                    accept='image/jpeg, image/png, image/svg+xml'
+                    accept='image/jpeg, image/png, image/svg+xml, image/gif'
                     onChange={(event) => handleImages(event, index)}
                   />
-                  <div className='flex gap-2'>
-                    {spot.imageUrls.map((url, i) => (
-                      <img key={i} src={url} alt={`Image ${i}`} className='h-auto w-8' />
+
+                  <div className='flex w-full flex-wrap gap-2'>
+                    {spot.videoUrls.map((url, i) => (
+                      <video key={i} controls width='150' height='100'>
+                        <source src={url} type='video/mp4' />
+                      </video>
                     ))}
                   </div>
                   <label
@@ -792,13 +833,6 @@ const EditRoute: React.FC = () => {
                     accept='video/mp4'
                     onChange={(event) => handleVideos(event, index)}
                   />
-                  <div className='flex gap-2'>
-                    {spot.videoUrls.map((url, i) => (
-                      <video key={i} controls width='150' height='100'>
-                        <source src={url} type='video/mp4' />
-                      </video>
-                    ))}
-                  </div>
                 </div>
               ))}
 

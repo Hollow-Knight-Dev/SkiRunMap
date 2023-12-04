@@ -88,17 +88,17 @@ const MemberInfo = () => {
   }
 
   const handleCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.trim()
+    const input = e.target.value
     setUserCountry(input)
   }
 
   const handleGender = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.trim()
+    const input = e.target.value
     setUserGender(input)
   }
 
   const handleDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.trim()
+    const input = e.target.value
     setUserDescription(input)
   }
 
@@ -119,7 +119,7 @@ const MemberInfo = () => {
 
     toast.success('Updated personal info!', {
       position: 'top-right',
-      autoClose: 1000,
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: false,
@@ -264,7 +264,7 @@ const MemberInfo = () => {
           className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
           onClick={() => handleMemberInfoSubmit()}
         >
-          Submit
+          Save profile
         </button>
       </div>
     </div>

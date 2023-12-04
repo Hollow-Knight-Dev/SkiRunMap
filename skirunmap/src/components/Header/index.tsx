@@ -50,7 +50,7 @@ const Header: React.FC = () => {
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
               name='Route'
-              url='/route'
+              url='/'
               isHovered={hoveredItem === 'Route'}
               onMouseEnter={() => handleItemHover('Route')}
             />
@@ -58,7 +58,7 @@ const Header: React.FC = () => {
               <SubNavItem
                 items={[
                   { name: 'Create Route', url: '/edit-route' },
-                  { name: 'My Route', url: '/' }
+                  { name: 'My Route', url: '/member' }
                 ]}
               />
             )}

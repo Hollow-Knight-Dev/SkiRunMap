@@ -69,10 +69,15 @@ const RouteView = () => {
         }
         const generateContentHTML = (spot: Spot) => {
           const imageElements = spot.imageUrls
-            .map((imageUrl) => `<img src=${imageUrl} alt=${spot.spotTitle}>`)
+            .map(
+              (imageUrl) => `<img class='info-window-image' src=${imageUrl} alt=${spot.spotTitle}>`
+            )
             .join('')
           const videoElements = spot.videoUrls
-            .map((videoUrl) => `<iframe src=${videoUrl} width='300' height='200'></iframe>`)
+            .map(
+              (videoUrl) =>
+                `<iframe src=${videoUrl} height='300' width='400' allowfullscreen></iframe>`
+            )
             .join('')
 
           return `
@@ -253,16 +258,21 @@ const RouteView = () => {
                         <p>Spot Latitude: {spot.spotCoordinate.lat}</p>
                         <p>Spot Longitude: {spot.spotCoordinate.lng}</p>
                         {spot.imageUrls && (
-                          <div className='flex gap-2'>
+                          <div className='flex gap-2 overflow-x-auto'>
                             {spot.imageUrls.map((url, i) => (
-                              <img key={i} src={url} alt={`Image ${i}`} className='h-auto w-8' />
+                              <img
+                                key={i}
+                                src={url}
+                                alt={`Image ${i}`}
+                                className='h-auto w-40 object-cover'
+                              />
                             ))}
                           </div>
                         )}
                         {spot.videoUrls && (
-                          <div className='flex gap-2'>
+                          <div className='flex gap-2 overflow-x-auto'>
                             {spot.videoUrls.map((url, i) => (
-                              <video key={i} controls width='150' height='100'>
+                              <video key={i} controls width='160' height='auto'>
                                 <source src={url} type='video/mp4' />
                               </video>
                             ))}
