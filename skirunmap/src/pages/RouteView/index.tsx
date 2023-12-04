@@ -1,16 +1,29 @@
-import { doc, onSnapshot, Timestamp } from 'firebase/firestore'
+import {
+  Timestamp,
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc
+} from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import { useMapStore } from '../../store/useMap'
 import { Route, Spot } from '../../store/useRoute'
+import { useUserStore } from '../../store/useUser'
+import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
-import ClickedArrow from './clicked-arrow.png'
+import ClickedDislikeArrow from './clicked-dislike-arrow.png'
+import ClickedLikeArrow from './clicked-like-arrow.png'
 import SearchIcon from './search-icon.png'
 import ShareIcon from './share-icon.png'
-import UnclickedArrow from './unclicked-arrow.png'
-import ProfileIcon from './User-icon.png'
+import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
+import UnclickedLikeArrow from './unclicked-like-arrow.png'
 
 interface VisibilityState {
   [spotIndex: number]: boolean
@@ -19,6 +32,9 @@ interface VisibilityState {
 const RouteView = () => {
   const { id } = useParams<{ id: string }>()
   const { map, infoWindow, setInfoWindow } = useMapStore()
+  const { userDoc, isSignIn } = useUserStore()
+  const [isLike, setIsLike] = useState<boolean>(false)
+  const [isDislike, setIsDislike] = useState<boolean>(false)
   const [data, setData] = useState<Route>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
 
@@ -127,6 +143,12 @@ const RouteView = () => {
           )
           setSpotsVisibility(initialVisibility)
           formatTimestamp(routeData?.createTime)
+          if (routeData.likeUsers.includes(userDoc.userID)) {
+            setIsLike(true)
+          }
+          if (routeData.dislikeUsers.includes(userDoc.userID)) {
+            setIsDislike(true)
+          }
         } else {
           console.error('Fail to get route data from Firestore')
         }
@@ -139,6 +161,90 @@ const RouteView = () => {
       markSpots(data.spots)
     }
   }, [map])
+
+  const handleShareLink = () => {
+    const pageUrl = window.location.href
+    navigator.clipboard.writeText(pageUrl).then(() => {
+      toast.success('Copied!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    })
+  }
+
+  useEffect(() => {}, [isLike, isDislike])
+
+  const handleLikeClick = async () => {
+    if (id && isSignIn) {
+      const routeRef = doc(db, 'routes', id)
+      const docSnap = await getDoc(routeRef)
+      if (isLike) {
+        setIsLike(false)
+        if (docSnap.data()?.likeUsers.includes(userDoc.userID)) {
+          await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
+        }
+      } else {
+        setIsDislike(false)
+        if (!docSnap.data()?.likeUsers.includes(userDoc.userID)) {
+          await updateDoc(routeRef, { likeUsers: arrayUnion(userDoc.userID) })
+        }
+        if (docSnap.data()?.dislikeUsers.includes(userDoc.userID)) {
+          await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
+        }
+        setIsLike(true)
+      }
+    } else {
+      toast.warn('Sign in to like this route!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
+  }
+
+  const handleDislikeClick = async () => {
+    if (id && isSignIn) {
+      const routeRef = doc(db, 'routes', id)
+      const docSnap = await getDoc(routeRef)
+      if (isDislike) {
+        setIsDislike(false)
+        if (docSnap.data()?.dislikeUsers.includes(userDoc.userID)) {
+          await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
+        }
+      } else {
+        setIsLike(false)
+        if (!docSnap.data()?.dislikeUsers.includes(userDoc.userID)) {
+          await updateDoc(routeRef, { dislikeUsers: arrayUnion(userDoc.userID) })
+        }
+        if (docSnap.data()?.likeUsers.includes(userDoc.userID)) {
+          await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
+        }
+        setIsDislike(true)
+      }
+    } else {
+      toast.warn('Sign in to dislike this route!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
+  }
 
   return (
     <div className='h-screen-64px flex'>
@@ -161,7 +267,11 @@ const RouteView = () => {
               <div className='z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'>
                 <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
               </div>
-              <div className='z-10 mr-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'>
+              <div
+                className='z-10 mr-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
+                onClick={() => handleShareLink()}
+                title='Click to Copy Link'
+              >
                 <img className='h-auto w-3/5' src={ShareIcon} alt='Share Icon' />
               </div>
               <div className='absolute top-2 h-4 w-full rounded-full bg-zinc-300' />
@@ -170,9 +280,33 @@ const RouteView = () => {
             <div className='flex flex-col gap-4 p-2'>
               <div className='ml-3 flex items-center gap-6'>
                 <div className='flex flex-col items-center'>
-                  <img className='h-auto w-4' src={ClickedArrow} alt='Clicked Arrow' />
+                  <div className='h-fit w-fit cursor-pointer' onClick={() => handleLikeClick()}>
+                    {isLike ? (
+                      <img className='h-auto w-4' src={ClickedLikeArrow} alt='Clicked like arrow' />
+                    ) : (
+                      <img
+                        className='h-auto w-4'
+                        src={UnclickedLikeArrow}
+                        alt='Unclicked like arrow'
+                      />
+                    )}
+                  </div>
                   <p>{data.likeCount}</p>
-                  <img className='h-auto w-4' src={UnclickedArrow} alt='Unclicked Arrow' />
+                  <div className='h-fit w-fit cursor-pointer' onClick={() => handleDislikeClick()}>
+                    {isDislike ? (
+                      <img
+                        className='h-auto w-4'
+                        src={ClickedDislikeArrow}
+                        alt='Clicked dislike arrow'
+                      />
+                    ) : (
+                      <img
+                        className='h-auto w-4'
+                        src={UnclickedDislikeArrow}
+                        alt='Unclicked dislike arrow'
+                      />
+                    )}
+                  </div>
                 </div>
                 <p className='text-2xl font-bold'>{data.routeTitle}</p>
               </div>
