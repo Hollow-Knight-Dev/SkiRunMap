@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
+import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
 import Notification from './notification-icon.png'
 
@@ -84,12 +85,21 @@ const Header: React.FC = () => {
             to='/member'
             onMouseEnter={() => handleItemHover('Member')}
           >
-            {isSignIn && <p className='pr-2'>Hi, {userDoc.username}</p>}
-            <img
-              className='mr-2 h-auto w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
-              src={userDoc.userIconUrl}
-              alt='User icon'
-            />
+            {isSignIn && userDoc.username && <p className='pr-2'>Hi, {userDoc.username}</p>}
+            {isSignIn && !userDoc.username && <p className='pr-2'>Hi, please create a username</p>}
+            {isSignIn ? (
+              <img
+                className='mr-2 h-6 w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+                src={userDoc.userIconUrl}
+                alt='User icon'
+              />
+            ) : (
+              <img
+                className='mr-2 h-6 w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+                src={DefaultUserIcon}
+                alt='User icon'
+              />
+            )}
           </Link>
           {hoveredItem === 'Member' && (
             <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
