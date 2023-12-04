@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { db } from './auth/CloudStorage'
 import Footer from './components/Footer'
@@ -45,12 +45,15 @@ const App: React.FC = () => {
 
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/signin' element={<SignIn />} />
-        <Route path='/member' element={<Member />} />
-        <Route path='/member-info' element={<MemberInfo />} />
         <Route path='/route/:id' element={<RouteView />} />
-        <Route path='/edit-route' element={<RouteEdit />} />
-        <Route path='/friend' element={<Friend />} />
+        <Route path='/signin' element={<SignIn />} />
+        <Route path='/member' element={isSignIn ? <Member /> : <Navigate to='/signin' />} />
+        <Route
+          path='/member-info'
+          element={isSignIn ? <MemberInfo /> : <Navigate to='/signin' />}
+        />
+        <Route path='/edit-route' element={isSignIn ? <RouteEdit /> : <Navigate to='/signin' />} />
+        <Route path='/friend' element={isSignIn ? <Friend /> : <Navigate to='/signin' />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -57,8 +57,8 @@ const Header: React.FC = () => {
             {hoveredItem === 'Route' && (
               <SubNavItem
                 items={[
-                  { name: 'View Route', url: '/route' },
-                  { name: 'Create Route', url: '/edit-route' }
+                  { name: 'Create Route', url: '/edit-route' },
+                  { name: 'My Route', url: '/' }
                 ]}
               />
             )}
