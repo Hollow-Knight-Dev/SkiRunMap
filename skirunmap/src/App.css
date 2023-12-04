@@ -64,3 +64,9 @@ p {
   overflow-x: scroll;
   align-items: center;
 }
+
+.info-window-image {
+  width: auto;
+  height: 300px;
+  object-fit: contain;
+}
