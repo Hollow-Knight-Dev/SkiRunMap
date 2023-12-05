@@ -25,7 +25,7 @@ export interface User {
   userRouteIDs: string[]
   userDraftRouteIDs: string[]
   userFinishedInfo: boolean
-  userStoreRoutes: StoreRouteLists[]
+  userRouteLists: StoreRouteLists[]
 }
 
 interface UserStore {

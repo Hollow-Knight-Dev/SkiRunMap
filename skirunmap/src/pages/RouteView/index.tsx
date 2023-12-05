@@ -15,7 +15,7 @@ import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import { useMapStore } from '../../store/useMap'
 import { Route, Spot } from '../../store/useRoute'
-import { StoreRouteLists, useUserStore } from '../../store/useUser'
+import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
@@ -35,16 +35,13 @@ const RouteView = () => {
   const { userDoc, isSignIn } = useUserStore()
   const [isLike, setIsLike] = useState<boolean>(false)
   const [isDislike, setIsDislike] = useState<boolean>(false)
-  const [data, setData] = useState<Route>()
+  const [routeDocData, setRouteDocData] = useState<Route>()
+  const [userDocData, setUserDocData] = useState<User>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
-  const [userStoreLists, setUserStoreList] = useState<StoreRouteLists[]>([])
+  const [userExistedLists, setUserExistedLists] = useState<StoreRouteLists[]>([])
   const [isCreatingList, setIsCreatingList] = useState<boolean>(false)
   const [createListName, setCreateListName] = useState<string>('')
   const [isOpeningBookmark, setIsOpeningBookmark] = useState<boolean>(false)
-
-  useEffect(() => {
-    setUserStoreList(userDoc.userStoreRoutes)
-  }, [userDoc])
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -144,7 +141,7 @@ const RouteView = () => {
         const routeData = doc.data()
         if (routeData) {
           // console.log(routeData)
-          setData(routeData as Route)
+          setRouteDocData(routeData as Route)
           const initialVisibility: VisibilityState = routeData.spots.reduce(
             (acc: VisibilityState, _: Spot, index: number) => ({ ...acc, [index]: true }),
             {}
@@ -169,10 +166,25 @@ const RouteView = () => {
   }, [])
 
   useEffect(() => {
-    if (data) {
-      markSpots(data.spots)
+    if (routeDocData) {
+      markSpots(routeDocData.spots)
     }
   }, [map])
+
+  useEffect(() => {
+    if (id && isSignIn) {
+      onSnapshot(doc(db, 'users', userDoc.userID), (doc) => {
+        const userData = doc.data() as User
+        setUserDocData(userData)
+      })
+    }
+  }, [userDoc])
+
+  useEffect(() => {
+    if (userDocData) {
+      setUserExistedLists(userDocData.userRouteLists)
+    }
+  }, [userDocData])
 
   const handleShareLink = () => {
     const pageUrl = window.location.href
@@ -278,27 +290,62 @@ const RouteView = () => {
     setIsCreatingList((prev) => !prev)
   }
 
-  // const handleStoreRoute = async () => {
-  //   if (id && isSignIn) {
-  //     const userRef = doc(db, 'users', userDoc.userID)
-  //     const docSnap = await getDoc(userRef)
-  //     const userData = docSnap.data() as User
-  //     const userListData = userData.userStoreRoutes
-  //     console.log(userListData)
-  //     setUserStoreList(userListData)
-  //   }
-  // }
+  const handleCreateList = async () => {
+    if (createListName.trim() === '') {
+      toast.warn("You haven't type in list name!", {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    } else if (id && isSignIn && userDocData) {
+      const userRef = doc(db, 'users', userDoc.userID)
+      const userListData = userDocData.userRouteLists
+      // console.log(userListData)
 
-  // const handleCreateList = () => {
+      const hasListName = userListData.some((item) => item.listName === createListName)
+      // console.log(hasListName)
 
-  // }
+      if (!hasListName) {
+        setIsCreatingList(false)
+        const data: StoreRouteLists = { listName: createListName, routeIDs: [] }
+        await updateDoc(userRef, { userRouteLists: arrayUnion(data) })
+        toast.success(`List ${createListName} created!`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+        setCreateListName('')
+      } else {
+        toast.warn('The list name is already created!', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+      }
+    }
+  }
 
   return (
     <div className='h-screen-64px flex'>
-      {data ? (
+      {routeDocData ? (
         <>
           <div className='flex w-2/3 flex-col bg-zinc-100'>
-            {data.gpxUrl && <Map gpxUrl={data.gpxUrl} createMode={false} />}
+            {routeDocData.gpxUrl && <Map gpxUrl={routeDocData.gpxUrl} createMode={false} />}
           </div>
 
           <div className='flex w-1/3 flex-col overflow-x-hidden overflow-y-scroll bg-zinc-200 p-2'>
@@ -311,7 +358,7 @@ const RouteView = () => {
             </div>
 
             <div className='relative flex justify-end gap-2'>
-              <div className='z-10 pl-6' onMouseLeave={() => setIsOpeningBookmark(false)}>
+              <div className='z-10 pl-10' onMouseLeave={() => setIsOpeningBookmark(false)}>
                 <div
                   className='mb-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
                   onClick={() => handleClickBookmark()}
@@ -321,8 +368,8 @@ const RouteView = () => {
                 </div>
                 {isOpeningBookmark && (
                   <div className='absolute right-14 top-6 mt-3 flex flex-col rounded-xl bg-white p-2 opacity-90'>
-                    {userStoreLists &&
-                      userStoreLists.map((list, index) => (
+                    {userExistedLists &&
+                      userExistedLists.map((list, index) => (
                         <div
                           className='w-full cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
                           key={index}
@@ -346,10 +393,18 @@ const RouteView = () => {
                           onChange={(e) => handleCreateListInput(e)}
                         />
                         <div className='flex w-full justify-between pl-2 pr-2'>
-                          <button className='rounded-xl bg-zinc-200 pl-2 pr-2'>Confirm</button>
+                          <button
+                            className='rounded-xl bg-zinc-200 pl-2 pr-2'
+                            onClick={() => handleCreateList()}
+                          >
+                            Confirm
+                          </button>
                           <button
                             className='rounded-xl bg-zinc-100 pl-2 pr-2'
-                            onClick={() => setIsCreatingList(false)}
+                            onClick={() => {
+                              setIsCreatingList(false)
+                              setCreateListName('')
+                            }}
                           >
                             Cancel
                           </button>
@@ -384,7 +439,7 @@ const RouteView = () => {
                       />
                     )}
                   </div>
-                  <p>{data.likeCount}</p>
+                  <p>{routeDocData.likeCount}</p>
                   <div className='h-fit w-fit cursor-pointer' onClick={() => handleDislikeClick()}>
                     {isDislike ? (
                       <img
@@ -401,43 +456,43 @@ const RouteView = () => {
                     )}
                   </div>
                 </div>
-                <p className='text-2xl font-bold'>{data.routeTitle}</p>
+                <p className='text-2xl font-bold'>{routeDocData.routeTitle}</p>
               </div>
 
               <div className='flex items-center'>
                 <img className='h-10 w-10' src={ProfileIcon} alt='Friend Profile Icon' />
                 <p className='w-fit pl-4'>
-                  {data.username} · {formattedTime}
+                  {routeDocData.username} · {formattedTime}
                 </p>
               </div>
 
               <div className='flex flex-wrap'>
                 <p className='w-full'>Route start coordinate:</p>
-                <p className='w-full'>Latitude: {data.routeCoordinate.lat}</p>
-                <p className='w-full'>Longtitude: {data.routeCoordinate.lng}</p>
+                <p className='w-full'>Latitude: {routeDocData.routeCoordinate.lat}</p>
+                <p className='w-full'>Longtitude: {routeDocData.routeCoordinate.lng}</p>
               </div>
 
               <div className='flex gap-2'>
                 <p>Tags:</p>
-                {data.tags.map((tag, index) => (
+                {routeDocData.tags.map((tag, index) => (
                   <p key={index}>#{tag}</p>
                 ))}
               </div>
 
               <div className='flex gap-2'>
                 <p>Snow buddies:</p>
-                {data.snowBuddies.map((buddy, index) => (
+                {routeDocData.snowBuddies.map((buddy, index) => (
                   <p key={index}>{buddy}</p>
                 ))}
               </div>
 
               <div className='flex gap-2'>
                 <p>View counts:</p>
-                <p>{data.viewCount}</p>
+                <p>{routeDocData.viewCount}</p>
               </div>
 
               <div className='flex flex-col gap-4'>
-                {data.spots.map((spot, index) => (
+                {routeDocData.spots.map((spot, index) => (
                   <div key={index} className='flex flex-col'>
                     <div
                       className='mb-2 flex cursor-pointer flex-wrap justify-between'

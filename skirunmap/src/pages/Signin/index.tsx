@@ -57,7 +57,7 @@ const SignIn: React.FC = () => {
           userRouteIDs: [],
           userDraftRouteIDs: [],
           userFinishedInfo: false,
-          userStoreRoutes: []
+          userRouteLists: []
         }
         await setDoc(doc(db, 'users', userID), data)
 
