@@ -1,6 +1,11 @@
 import { FieldValue } from 'firebase/firestore'
 import { create } from 'zustand'
 
+interface StoreRouteLists {
+  listName: string
+  routesInList: string[]
+}
+
 export interface User {
   userID: string
   userEmail: string
@@ -20,6 +25,7 @@ export interface User {
   userRouteIDs: string[]
   userDraftRouteIDs: string[]
   userFinishedInfo: boolean
+  userStoreRoutes: StoreRouteLists[]
 }
 
 interface UserStore {
