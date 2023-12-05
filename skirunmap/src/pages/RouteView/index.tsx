@@ -42,6 +42,7 @@ const RouteView = () => {
   const [isCreatingList, setIsCreatingList] = useState<boolean>(false)
   const [createListName, setCreateListName] = useState<string>('')
   const [isOpeningBookmark, setIsOpeningBookmark] = useState<boolean>(false)
+  const [selectedLists, setSelectedLists] = useState<string[]>([])
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -181,8 +182,15 @@ const RouteView = () => {
   }, [userDoc])
 
   useEffect(() => {
-    if (userDocData) {
-      setUserExistedLists(userDocData.userRouteLists)
+    if (userDocData && id) {
+      const userRouteLists = userDocData.userRouteLists
+      setUserExistedLists(userRouteLists)
+
+      const initialiseSelectedLists = userRouteLists
+        .filter((list) => list.routeIDs.includes(id))
+        .map((list) => list.listName)
+      setSelectedLists(initialiseSelectedLists)
+      console.log('selectedLists:', selectedLists)
     }
   }, [userDocData])
 
@@ -340,6 +348,51 @@ const RouteView = () => {
     }
   }
 
+  const handleListCheckboxChange = async (listName: string, isChecked: boolean) => {
+    setSelectedLists((prevSelectedLists) => {
+      return isChecked
+        ? [...prevSelectedLists, listName]
+        : prevSelectedLists.filter((name) => name !== listName)
+    })
+
+    if (id && isSignIn && userDocData) {
+      const userRef = doc(db, 'users', userDoc.userID)
+      const updatedUserRouteLists = userDocData.userRouteLists.map((list) => {
+        if (list.listName === listName) {
+          const routeIDs = isChecked
+            ? [...list.routeIDs, id]
+            : list.routeIDs.filter((routeID) => routeID !== id)
+          return { ...list, routeIDs }
+        }
+        return list
+      })
+      await updateDoc(userRef, { userRouteLists: updatedUserRouteLists })
+      if (isChecked) {
+        toast.success(`Route has been added into list: ${listName}`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+      } else {
+        toast.success(`Route has been removed from list: ${listName}`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+      }
+    }
+  }
+
   return (
     <div className='h-screen-64px flex'>
       {routeDocData ? (
@@ -371,9 +424,17 @@ const RouteView = () => {
                     {userExistedLists &&
                       userExistedLists.map((list, index) => (
                         <div
-                          className='w-full cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
+                          className='flex w-full cursor-pointer gap-2 rounded-xl pl-2 pr-2 hover:bg-zinc-200'
                           key={index}
                         >
+                          <input
+                            className='cursor-pointer'
+                            type='checkbox'
+                            checked={selectedLists.includes(list.listName)}
+                            onChange={(e) =>
+                              handleListCheckboxChange(list.listName, e.target.checked)
+                            }
+                          />
                           <p>{list.listName}</p>
                         </div>
                       ))}
