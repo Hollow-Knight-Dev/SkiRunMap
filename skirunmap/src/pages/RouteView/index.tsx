@@ -15,7 +15,7 @@ import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import { useMapStore } from '../../store/useMap'
 import { Route, Spot } from '../../store/useRoute'
-import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
+import { StoreRouteLists, useUserStore } from '../../store/useUser'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
@@ -38,6 +38,13 @@ const RouteView = () => {
   const [data, setData] = useState<Route>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
   const [userStoreLists, setUserStoreList] = useState<StoreRouteLists[]>([])
+  const [isCreatingList, setIsCreatingList] = useState<boolean>(false)
+  const [createListName, setCreateListName] = useState<string>('')
+  const [isOpeningBookmark, setIsOpeningBookmark] = useState<boolean>(false)
+
+  useEffect(() => {
+    setUserStoreList(userDoc.userStoreRoutes)
+  }, [userDoc])
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -245,14 +252,9 @@ const RouteView = () => {
     }
   }
 
-  const handleStoreRoute = async () => {
-    if (id && isSignIn) {
-      const userRef = doc(db, 'users', userDoc.userID)
-      const docSnap = await getDoc(userRef)
-      const userData = docSnap.data() as User
-      const userListData = userData.userStoreRoutes
-      console.log(userListData)
-      setUserStoreList(userListData)
+  const handleClickBookmark = () => {
+    if (isSignIn) {
+      setIsOpeningBookmark((prev) => !prev)
     } else {
       toast.warn('Sign in to save this route!', {
         position: 'top-right',
@@ -266,6 +268,30 @@ const RouteView = () => {
       })
     }
   }
+
+  const handleCreateListInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value
+    setCreateListName(input)
+  }
+
+  const handleClickCreateList = () => {
+    setIsCreatingList((prev) => !prev)
+  }
+
+  // const handleStoreRoute = async () => {
+  //   if (id && isSignIn) {
+  //     const userRef = doc(db, 'users', userDoc.userID)
+  //     const docSnap = await getDoc(userRef)
+  //     const userData = docSnap.data() as User
+  //     const userListData = userData.userStoreRoutes
+  //     console.log(userListData)
+  //     setUserStoreList(userListData)
+  //   }
+  // }
+
+  // const handleCreateList = () => {
+
+  // }
 
   return (
     <div className='h-screen-64px flex'>
@@ -285,26 +311,53 @@ const RouteView = () => {
             </div>
 
             <div className='relative flex justify-end gap-2'>
-              <div
-                className='z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
-                onClick={() => handleStoreRoute()}
-                title='Save to list'
-              >
-                <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
-              </div>
-              <div className='absolute right-14 top-10 z-10 flex flex-col items-end rounded-xl bg-white p-2 opacity-70'>
-                {userDoc.userStoreRoutes &&
-                  userDoc.userStoreRoutes.map((list, index) => (
-                    <div
-                      className='cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
-                      key={index}
+              <div className='z-10 pl-6' onMouseLeave={() => setIsOpeningBookmark(false)}>
+                <div
+                  className='mb-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
+                  onClick={() => handleClickBookmark()}
+                  title='Save to list'
+                >
+                  <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
+                </div>
+                {isOpeningBookmark && (
+                  <div className='absolute right-14 top-6 mt-3 flex flex-col rounded-xl bg-white p-2 opacity-90'>
+                    {userStoreLists &&
+                      userStoreLists.map((list, index) => (
+                        <div
+                          className='w-full cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
+                          key={index}
+                        >
+                          <p>{list.listName}</p>
+                        </div>
+                      ))}
+                    <p
+                      className='w-full cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
+                      onClick={() => handleClickCreateList()}
                     >
-                      <p>{list.listName}</p>
-                    </div>
-                  ))}
-                <p className='cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'>
-                  create new list
-                </p>
+                      + create new list
+                    </p>
+                    {isCreatingList && (
+                      <>
+                        <input
+                          className='m-2 rounded-xl border border-zinc-400 pl-2 placeholder-black placeholder-opacity-80'
+                          placeholder='Enter list name'
+                          type='text'
+                          value={createListName}
+                          onChange={(e) => handleCreateListInput(e)}
+                        />
+                        <div className='flex w-full justify-between pl-2 pr-2'>
+                          <button className='rounded-xl bg-zinc-200 pl-2 pr-2'>Confirm</button>
+                          <button
+                            className='rounded-xl bg-zinc-100 pl-2 pr-2'
+                            onClick={() => setIsCreatingList(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div
