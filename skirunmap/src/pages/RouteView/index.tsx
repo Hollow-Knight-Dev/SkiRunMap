@@ -149,16 +149,6 @@ const RouteView = () => {
           )
           setSpotsVisibility(initialVisibility)
           formatTimestamp(routeData?.createTime)
-          if (routeData.likeUsers.includes(userDoc.userID)) {
-            setIsLike(true)
-          } else {
-            setIsLike(false)
-          }
-          if (routeData.dislikeUsers.includes(userDoc.userID)) {
-            setIsDislike(true)
-          } else {
-            setIsDislike(false)
-          }
         } else {
           console.error('Fail to get route data from Firestore')
         }
@@ -182,6 +172,21 @@ const RouteView = () => {
   }, [userDoc])
 
   useEffect(() => {
+    if (userDoc && routeDocData) {
+      if (routeDocData?.likeUsers.includes(userDoc.userID)) {
+        setIsLike(true)
+      } else {
+        setIsLike(false)
+      }
+      if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
+        setIsDislike(true)
+      } else {
+        setIsDislike(false)
+      }
+    }
+  }, [routeDocData, userDoc])
+
+  useEffect(() => {
     if (userDocData && id) {
       const userRouteLists = userDocData.userRouteLists
       setUserExistedLists(userRouteLists)
@@ -190,7 +195,7 @@ const RouteView = () => {
         .filter((list) => list.routeIDs.includes(id))
         .map((list) => list.listName)
       setSelectedLists(initialiseSelectedLists)
-      console.log('selectedLists:', selectedLists)
+      // console.log('selectedLists:', selectedLists)
     }
   }, [userDocData])
 
@@ -211,6 +216,7 @@ const RouteView = () => {
   }
 
   const handleLikeClick = async () => {
+    console.log('click like')
     if (id && isSignIn) {
       const routeRef = doc(db, 'routes', id)
       const docSnap = await getDoc(routeRef)
@@ -242,6 +248,7 @@ const RouteView = () => {
   }
 
   const handleDislikeClick = async () => {
+    console.log('click dislike')
     if (id && isSignIn) {
       const routeRef = doc(db, 'routes', id)
       const docSnap = await getDoc(routeRef)
