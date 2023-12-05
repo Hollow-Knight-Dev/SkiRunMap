@@ -26,7 +26,7 @@ const App: React.FC = () => {
         const userDoc = await getDoc(doc(db, 'users', user.uid))
         const userDocData = userDoc.data() as User
         setUserDoc(userDocData)
-        console.log('App.tsx user state management: ', userDocData)
+        console.log('App.tsx userDoc has been updated: ', userDocData)
       } else {
         setIsSignIn(false)
         setUserID('')

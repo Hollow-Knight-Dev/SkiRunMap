@@ -15,7 +15,7 @@ import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import { useMapStore } from '../../store/useMap'
 import { Route, Spot } from '../../store/useRoute'
-import { useUserStore } from '../../store/useUser'
+import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
@@ -37,6 +37,7 @@ const RouteView = () => {
   const [isDislike, setIsDislike] = useState<boolean>(false)
   const [data, setData] = useState<Route>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
+  const [userStoreLists, setUserStoreList] = useState<StoreRouteLists[]>([])
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -186,15 +187,16 @@ const RouteView = () => {
     if (id && isSignIn) {
       const routeRef = doc(db, 'routes', id)
       const docSnap = await getDoc(routeRef)
+      const routeData = docSnap.data() as Route
       if (isLike) {
-        if (docSnap.data()?.likeUsers.includes(userDoc.userID)) {
+        if (routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
         }
       } else {
-        if (docSnap.data()?.dislikeUsers.includes(userDoc.userID)) {
+        if (routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
         }
-        if (!docSnap.data()?.likeUsers.includes(userDoc.userID)) {
+        if (!routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayUnion(userDoc.userID) })
         }
       }
@@ -216,20 +218,43 @@ const RouteView = () => {
     if (id && isSignIn) {
       const routeRef = doc(db, 'routes', id)
       const docSnap = await getDoc(routeRef)
+      const routeData = docSnap.data() as Route
       if (isDislike) {
-        if (docSnap.data()?.dislikeUsers.includes(userDoc.userID)) {
+        if (routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
         }
       } else {
-        if (docSnap.data()?.likeUsers.includes(userDoc.userID)) {
+        if (routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
         }
-        if (!docSnap.data()?.dislikeUsers.includes(userDoc.userID)) {
+        if (!routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayUnion(userDoc.userID) })
         }
       }
     } else {
       toast.warn('Sign in to dislike this route!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
+  }
+
+  const handleStoreRoute = async () => {
+    if (id && isSignIn) {
+      const userRef = doc(db, 'users', userDoc.userID)
+      const docSnap = await getDoc(userRef)
+      const userData = docSnap.data() as User
+      const userListData = userData.userStoreRoutes
+      console.log(userListData)
+      setUserStoreList(userListData)
+    } else {
+      toast.warn('Sign in to save this route!', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -260,9 +285,28 @@ const RouteView = () => {
             </div>
 
             <div className='relative flex justify-end gap-2'>
-              <div className='z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'>
+              <div
+                className='z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
+                onClick={() => handleStoreRoute()}
+                title='Save to list'
+              >
                 <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
               </div>
+              <div className='absolute right-14 top-10 z-10 flex flex-col items-end rounded-xl bg-white p-2 opacity-70'>
+                {userDoc.userStoreRoutes &&
+                  userDoc.userStoreRoutes.map((list, index) => (
+                    <div
+                      className='cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
+                      key={index}
+                    >
+                      <p>{list.listName}</p>
+                    </div>
+                  ))}
+                <p className='cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'>
+                  create new list
+                </p>
+              </div>
+
               <div
                 className='z-10 mr-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
                 onClick={() => handleShareLink()}
@@ -457,7 +501,7 @@ const RouteView = () => {
           </div>
         </>
       ) : (
-        <p>No such route</p>
+        <p>No such route QQ... Please come back to home page</p>
       )}
     </div>
   )
