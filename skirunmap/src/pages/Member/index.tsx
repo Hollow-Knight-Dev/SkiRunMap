@@ -30,16 +30,26 @@ const Member = () => {
   const [userCreatedRoutes, setUserCreatedRoutes] = useState<DocumentData[]>([])
   const [userStoredLists, setUserStoredLists] = useState<RouteDocsInList[]>([])
 
-  const userJoinedTime = userDoc.userJoinedTime as Timestamp
-  const formattedDate = userJoinedTime.toDate().toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
+  const formatTimestamp = (timestamp: Timestamp) => {
+    const time = timestamp
+      .toDate()
+      .toLocaleDateString('en-UK', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour12: false,
+        hour: 'numeric',
+        minute: 'numeric'
+      })
+      .replace(',', ' at')
+
+    return time
+  }
+
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!userDoc.username) {
+    if (Object.keys(userDoc).length !== 0 && userDoc.username === undefined) {
       toast.warn(`You haven't finish your profile`, {
         position: 'top-right',
         autoClose: 1000,
@@ -54,7 +64,7 @@ const Member = () => {
         }
       })
     }
-  }, [])
+  }, [userDoc])
 
   const getMemberDoc = async () => {
     if (memberID) {
@@ -130,7 +140,10 @@ const Member = () => {
               <p className='mb-4 text-3xl font-bold'>{memberDoc?.username}</p>
               <div className='mb-2 flex gap-1'>
                 <p className='text-xl font-bold'>Joined Time:</p>
-                <p className='text-lg'>{formattedDate}</p>
+                <p className='text-lg'>
+                  {memberDoc?.userJoinedTime &&
+                    formatTimestamp(memberDoc?.userJoinedTime as Timestamp)}
+                </p>
               </div>
               <div className='flex gap-3'>
                 <div className='flex gap-1'>

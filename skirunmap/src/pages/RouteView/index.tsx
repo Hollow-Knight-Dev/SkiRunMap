@@ -24,7 +24,6 @@ import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import BookmarkIcon from './bookmark.png'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
 import ClickedLikeArrow from './clicked-like-arrow.png'
-import ProfileIcon from './hollowknight.png'
 import SearchIcon from './search-icon.png'
 import ShareIcon from './share-icon.png'
 import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
@@ -50,6 +49,7 @@ const RouteView = () => {
   const [selectedLists, setSelectedLists] = useState<string[]>([])
   const [commentInput, setCommentInput] = useState<string>('')
   const [commentsDocData, setCommentsDocData] = useState<Comment[]>()
+  const [authorLatestIconUrl, setAuthorLatestIconUrl] = useState<string>('')
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -155,6 +155,19 @@ const RouteView = () => {
         setCommentsDocData(updatedComments)
       })
     }
+  }, [routeDocData])
+
+  const updateAuthorIconUrl = async () => {
+    if (routeDocData) {
+      const userRef = doc(db, 'users', routeDocData.userID)
+      const userDoc = await getDoc(userRef)
+      const userData = userDoc.data() as User
+      setAuthorLatestIconUrl(userData.userIconUrl)
+    }
+  }
+
+  useEffect(() => {
+    updateAuthorIconUrl()
   }, [routeDocData])
 
   // useEffect(() => {
@@ -621,7 +634,7 @@ const RouteView = () => {
                   {/* need to use dynamic user icon */}
                   <img
                     className='h-10 w-10 rounded-full'
-                    src={ProfileIcon}
+                    src={authorLatestIconUrl}
                     alt='Friend Profile Icon'
                   />
                 </Link>
