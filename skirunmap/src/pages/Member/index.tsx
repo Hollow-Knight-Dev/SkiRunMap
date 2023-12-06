@@ -91,7 +91,8 @@ const Member = () => {
       await Promise.all(
         storeRoutes.map(async (map) => {
           console.log(map)
-          if (map.routeIDs) {
+          if (map.routeIDs.length > 0) {
+            console.log('map.routeIDs', map.routeIDs)
             const routesQuery = query(
               collection(db, 'routes'),
               where('routeID', 'in', map.routeIDs)
@@ -101,6 +102,11 @@ const Member = () => {
             routeLists.push({
               listName: map.listName,
               routeDoc: routesData
+            })
+          } else {
+            routeLists.push({
+              listName: map.listName,
+              routeDoc: []
             })
           }
         })
