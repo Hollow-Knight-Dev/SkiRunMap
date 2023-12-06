@@ -1,10 +1,15 @@
 import {
   Timestamp,
+  addDoc,
   arrayRemove,
   arrayUnion,
+  collection,
   doc,
   getDoc,
   onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
   updateDoc
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
@@ -14,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import { useMapStore } from '../../store/useMap'
-import { Route, Spot } from '../../store/useRoute'
+import { Comment, Route, Spot } from '../../store/useRoute'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
@@ -43,6 +48,8 @@ const RouteView = () => {
   const [createListName, setCreateListName] = useState<string>('')
   const [isOpeningBookmark, setIsOpeningBookmark] = useState<boolean>(false)
   const [selectedLists, setSelectedLists] = useState<string[]>([])
+  const [commentInput, setCommentInput] = useState<string>('')
+  const [commentsDocData, setCommentsDocData] = useState<Comment[]>()
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -57,7 +64,7 @@ const RouteView = () => {
   }
   const [formattedTime, setFormattedTime] = useState<string>('')
 
-  const formatTimestamp = (timestamp: Timestamp) => {
+  const formatTimestampSingle = (timestamp: Timestamp) => {
     const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6
     const date = new Date(milliseconds)
     const options: Intl.DateTimeFormatOptions = {
@@ -70,6 +77,22 @@ const RouteView = () => {
     }
     const formattedDate = date.toLocaleString('en-UK', options).replace(',', ' at')
     setFormattedTime(formattedDate)
+  }
+
+  const formatTimestamp = (timestamp: Timestamp) => {
+    const time = timestamp
+      .toDate()
+      .toLocaleDateString('en-UK', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour12: false,
+        hour: 'numeric',
+        minute: 'numeric'
+      })
+      .replace(',', ' at')
+
+    return time
   }
 
   const markSpots = (spots: Spot[]) => {
@@ -148,7 +171,7 @@ const RouteView = () => {
             {}
           )
           setSpotsVisibility(initialVisibility)
-          formatTimestamp(routeData?.createTime)
+          formatTimestampSingle(routeData?.createTime)
         } else {
           console.error('Fail to get route data from Firestore')
         }
@@ -198,6 +221,28 @@ const RouteView = () => {
       // console.log('selectedLists:', selectedLists)
     }
   }, [userDocData])
+
+  useEffect(() => {
+    if (id && isSignIn) {
+      const routeRef = doc(db, 'routes', id)
+      const commentsRef = collection(routeRef, 'comments')
+      const orderedCommentsQuery = query(commentsRef, orderBy('commentTimestamp', 'desc'))
+      onSnapshot(orderedCommentsQuery, (snapshot) => {
+        let updatedComments: Comment[] = []
+        snapshot.docs.map((doc) => {
+          updatedComments.push(doc.data() as Comment)
+        })
+        // console.log('comments:', updatedComments)
+        setCommentsDocData(updatedComments)
+      })
+    }
+  }, [routeDocData])
+
+  // useEffect(() => {
+  //   if (commentsDocData) {
+  //     console.log('commentsDocData:', commentsDocData)
+  //   }
+  // }, [commentsDocData])
 
   const handleShareLink = () => {
     const pageUrl = window.location.href
@@ -397,6 +442,67 @@ const RouteView = () => {
           theme: 'light'
         })
       }
+    }
+  }
+
+  const handleCommentInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const input = e.target.value
+    if (input.length <= 250) {
+      setCommentInput(input)
+    } else {
+      toast.warn('Comment exceeds 250 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+      setCommentInput(input.slice(0, 250))
+    }
+  }
+
+  const handleCommentSubmit = async () => {
+    if (id && isSignIn) {
+      const routeRef = doc(db, 'routes', id)
+      const newComment = {
+        userID: userDoc.userID,
+        username: userDoc.username,
+        userIconUrl: userDoc.userIconUrl,
+        comment: commentInput,
+        commentTimestamp: serverTimestamp()
+      }
+      await addDoc(collection(routeRef, 'comments'), newComment)
+      toast.success('Comment submitted!', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+      setCommentInput('')
+    } else {
+      toast.warn('Sign in to leave your comment', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
+  }
+
+  const handleCommentEnterSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && commentInput.trim() !== '') {
+      handleCommentSubmit()
     }
   }
 
@@ -669,8 +775,41 @@ const RouteView = () => {
                 <div className='w-full border border-zinc-300' />
               </div>
               {commentVisibility && (
-                <div>
-                  <textarea className='h-20 w-full resize-none' />
+                <div className='mb-4 flex flex-col items-start'>
+                  <textarea
+                    className='mb-4 h-32 w-full resize-none p-2'
+                    value={commentInput}
+                    placeholder='Comment this route'
+                    onChange={(e) => handleCommentInput(e)}
+                    onKeyDown={(e) => handleCommentEnterSubmit(e)}
+                  />
+                  <button
+                    className='mb-6 self-end rounded-xl bg-blue-200 pl-2 pr-2'
+                    onClick={() => handleCommentSubmit()}
+                  >
+                    Submit
+                  </button>
+                  {commentsDocData &&
+                    commentsDocData.map((comment, index) => (
+                      <div key={index} className='mb-4 h-fit w-full'>
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center gap-2'>
+                            <img
+                              className='h-4 w-4 rounded-full'
+                              src={comment.userIconUrl}
+                              alt='User icon'
+                            />
+                            <p>{comment.username}</p>
+                          </div>
+                          <p className='justify-self-end text-sm'>
+                            {comment.commentTimestamp &&
+                              formatTimestamp(comment.commentTimestamp as Timestamp)}
+                          </p>
+                        </div>
+
+                        <p>{comment.comment}</p>
+                      </div>
+                    ))}
                 </div>
               )}
             </div>
