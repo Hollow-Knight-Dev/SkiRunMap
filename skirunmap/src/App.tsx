@@ -47,7 +47,10 @@ const App: React.FC = () => {
         <Route path='/' element={<Home />} />
         <Route path='/route/:id' element={<RouteView />} />
         <Route path='/signin' element={<SignIn />} />
-        <Route path='/member' element={isSignIn ? <Member /> : <Navigate to='/signin' />} />
+        <Route
+          path='/member/:memberID'
+          element={isSignIn ? <Member /> : <Navigate to='/signin' />}
+        />
         <Route
           path='/member-info'
           element={isSignIn ? <MemberInfo /> : <Navigate to='/signin' />}

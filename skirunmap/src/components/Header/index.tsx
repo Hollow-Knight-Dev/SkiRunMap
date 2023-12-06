@@ -58,7 +58,7 @@ const Header: React.FC = () => {
               <SubNavItem
                 items={[
                   { name: 'Create Route', url: '/edit-route' },
-                  { name: 'My Route', url: '/member' }
+                  { name: 'My Route', url: `/member/${userDoc.userID}` }
                 ]}
               />
             )}
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
             className={`flex h-full transform items-center transition-transform duration-200 focus:outline-none ${
               !isSignIn && 'pl-20'
             }`}
-            to='/member'
+            to={`/member/${userDoc.userID}`}
             onMouseEnter={() => handleItemHover('Member')}
           >
             {isSignIn && userDoc.username && <p className='pr-2'>Hi, {userDoc.username}</p>}
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
           {hoveredItem === 'Member' && (
             <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
               <Link
-                to='/member'
+                to={`/member/${userDoc.userID}`}
                 className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
               >
                 My Page

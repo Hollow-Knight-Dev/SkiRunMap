@@ -13,7 +13,7 @@ import {
   updateDoc
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
@@ -21,10 +21,10 @@ import Map from '../../components/Map'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
-import ProfileIcon from './User-icon.png'
 import BookmarkIcon from './bookmark.png'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
 import ClickedLikeArrow from './clicked-like-arrow.png'
+import ProfileIcon from './hollowknight.png'
 import SearchIcon from './search-icon.png'
 import ShareIcon from './share-icon.png'
 import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
@@ -634,10 +634,18 @@ const RouteView = () => {
               </div>
 
               <div className='flex items-center'>
-                <img className='h-10 w-10' src={ProfileIcon} alt='Friend Profile Icon' />
-                <p className='w-fit pl-4'>
-                  {routeDocData.username} · {formattedTime}
-                </p>
+                <Link to={`/member/${routeDocData.userID}`} className='h-fit w-fit'>
+                  {/* need to use dynamic user icon */}
+                  <img
+                    className='h-10 w-10 rounded-full'
+                    src={ProfileIcon}
+                    alt='Friend Profile Icon'
+                  />
+                </Link>
+                <Link to={`/member/${routeDocData.userID}`} className='w-fit pl-4'>
+                  {routeDocData.username}
+                </Link>
+                <p className='w-fit pl-4'>{formattedTime}</p>
               </div>
 
               <div className='flex flex-wrap'>
@@ -793,14 +801,17 @@ const RouteView = () => {
                     commentsDocData.map((comment, index) => (
                       <div key={index} className='mb-4 h-fit w-full'>
                         <div className='flex items-center justify-between'>
-                          <div className='flex items-center gap-2'>
+                          <Link
+                            to={`/member/${comment.userID}`}
+                            className='flex items-center gap-2'
+                          >
                             <img
                               className='h-4 w-4 rounded-full'
                               src={comment.userIconUrl}
                               alt='User icon'
                             />
                             <p>{comment.username}</p>
-                          </div>
+                          </Link>
                           <p className='justify-self-end text-sm'>
                             {comment.commentTimestamp &&
                               formatTimestamp(comment.commentTimestamp as Timestamp)}

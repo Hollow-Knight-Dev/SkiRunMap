@@ -1,10 +1,19 @@
-import { DocumentData, Timestamp, collection, getDocs, query, where } from 'firebase/firestore'
+import {
+  DocumentData,
+  Timestamp,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where
+} from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
-import { useUserStore } from '../../store/useUser'
+import { User, useUserStore } from '../../store/useUser'
 
 // import LeftArrow from './left_arrow.png'
 // import RightArrow from './right_arrow.png'
@@ -15,7 +24,9 @@ interface RouteDocsInList {
 }
 
 const Member = () => {
+  const { memberID } = useParams<{ memberID: string }>()
   const { userDoc } = useUserStore()
+  const [memberDoc, setMemberDoc] = useState<User>()
   const [userCreatedRoutes, setUserCreatedRoutes] = useState<DocumentData[]>([])
   const [userStoredLists, setUserStoredLists] = useState<RouteDocsInList[]>([])
 
@@ -45,39 +56,58 @@ const Member = () => {
     }
   }, [])
 
+  const getMemberDoc = async () => {
+    if (memberID) {
+      const userDoc = await getDoc(doc(db, 'users', memberID))
+      const userDocData = userDoc.data() as User
+      setMemberDoc(userDocData)
+    }
+  }
+
+  useEffect(() => {
+    getMemberDoc()
+  }, [memberID])
+
   const getUserCreatedRoutes = async () => {
-    const routeIDs = userDoc.userRouteIDs
-    const routesQuery = query(collection(db, 'routes'), where('routeID', 'in', routeIDs))
-    const routeDocsSnapshot = await getDocs(routesQuery)
-    const userRoutesData = routeDocsSnapshot.docs.map((doc) => doc.data())
-    setUserCreatedRoutes(userRoutesData)
-    // console.log(userRoutesData)
+    if (memberDoc) {
+      const routeIDs = memberDoc.userRouteIDs
+      const routesQuery = query(collection(db, 'routes'), where('routeID', 'in', routeIDs))
+      const routeDocsSnapshot = await getDocs(routesQuery)
+      const userRoutesData = routeDocsSnapshot.docs.map((doc) => doc.data())
+      setUserCreatedRoutes(userRoutesData)
+      // console.log(userRoutesData)
+    }
   }
 
   useEffect(() => {
     getUserCreatedRoutes()
     getUserStoredLists()
-  }, [userDoc])
+  }, [memberID, memberDoc])
 
   const getUserStoredLists = async () => {
-    const storeRoutes = userDoc.userRouteLists
-    let routeLists: RouteDocsInList[] = []
-    await Promise.all(
-      storeRoutes.map(async (map) => {
-        console.log(map)
-        if (map.routeIDs) {
-          const routesQuery = query(collection(db, 'routes'), where('routeID', 'in', map.routeIDs))
-          const routeDocsSnapshot = await getDocs(routesQuery)
-          const routesData = routeDocsSnapshot.docs.map((doc) => doc.data())
-          routeLists.push({
-            listName: map.listName,
-            routeDoc: routesData
-          })
-        }
-      })
-    )
-    setUserStoredLists(routeLists)
-    console.log(routeLists)
+    if (memberDoc) {
+      const storeRoutes = memberDoc.userRouteLists
+      let routeLists: RouteDocsInList[] = []
+      await Promise.all(
+        storeRoutes.map(async (map) => {
+          console.log(map)
+          if (map.routeIDs) {
+            const routesQuery = query(
+              collection(db, 'routes'),
+              where('routeID', 'in', map.routeIDs)
+            )
+            const routeDocsSnapshot = await getDocs(routesQuery)
+            const routesData = routeDocsSnapshot.docs.map((doc) => doc.data())
+            routeLists.push({
+              listName: map.listName,
+              routeDoc: routesData
+            })
+          }
+        })
+      )
+      setUserStoredLists(routeLists)
+      console.log(routeLists)
+    }
   }
 
   return (
@@ -86,12 +116,12 @@ const Member = () => {
         <div className='flex'>
           <img
             className='ml-10 mr-10 h-28 w-28 rounded-full shadow-[10px_15px_30px_-10px_#4da5fd]'
-            src={userDoc.userIconUrl}
+            src={memberDoc?.userIconUrl}
             alt='Profile Icon'
           />
           <div className='flex w-full justify-between'>
             <div className='flex flex-col'>
-              <p className='mb-4 text-3xl font-bold'>{userDoc.username}</p>
+              <p className='mb-4 text-3xl font-bold'>{memberDoc?.username}</p>
               <div className='mb-2 flex gap-1'>
                 <p className='text-xl font-bold'>Joined Time:</p>
                 <p className='text-lg'>{formattedDate}</p>
@@ -99,7 +129,7 @@ const Member = () => {
               <div className='flex gap-3'>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Routes:</p>
-                  <p className='text-lg'>{userDoc.userRouteIDs.length}</p>
+                  <p className='text-lg'>{memberDoc?.userRouteIDs.length}</p>
                 </div>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Views:</p>
@@ -107,34 +137,34 @@ const Member = () => {
                 </div>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Friends:</p>
-                  <p className='text-lg'>{userDoc.userFriends.length}</p>
+                  <p className='text-lg'>{memberDoc?.userFriends.length}</p>
                 </div>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Followers:</p>
-                  <p className='text-lg'>{userDoc.userFollowers.length}</p>
+                  <p className='text-lg'>{memberDoc?.userFollowers.length}</p>
                 </div>
               </div>
               <div className='flex gap-3'>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Gender:</p>
-                  <p className='text-lg'>{userDoc.userGender}</p>
+                  <p className='text-lg'>{memberDoc?.userGender}</p>
                 </div>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Country:</p>
-                  <p className='text-lg'>{userDoc.userCountry}</p>
+                  <p className='text-lg'>{memberDoc?.userCountry}</p>
                 </div>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Ski Age:</p>
-                  <p className='text-lg'>{userDoc.userSkiAge}</p>
+                  <p className='text-lg'>{memberDoc?.userSkiAge}</p>
                 </div>
                 <div className='flex gap-1'>
                   <p className='text-xl font-bold'>Snowboard Age:</p>
-                  <p className='text-lg'>{userDoc.userSnowboardAge}</p>
+                  <p className='text-lg'>{memberDoc?.userSnowboardAge}</p>
                 </div>
               </div>
               <div className='flex gap-1'>
                 <p className='text-xl font-bold'>About me:</p>
-                <p className='text-lg'>{userDoc.userDescription}</p>
+                <p className='text-lg'>{memberDoc?.userDescription}</p>
               </div>
             </div>
             <div className='flex flex-col gap-2'>
