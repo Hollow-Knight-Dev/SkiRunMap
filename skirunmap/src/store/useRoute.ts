@@ -40,7 +40,6 @@ export interface Route {
   dislikeUsers: string[]
   likeCount: number
   viewCount: number
-  comments: Comment[]
 }
 interface RouteID {
   routeID: string

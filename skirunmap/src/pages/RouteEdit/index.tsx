@@ -398,8 +398,7 @@ const EditRoute: React.FC = () => {
         likeUsers: [],
         dislikeUsers: [],
         likeCount: 0,
-        viewCount: 0,
-        comments: []
+        viewCount: 0
       }
       await setDoc(doc(db, 'routes', routeID), data)
 
@@ -442,8 +441,7 @@ const EditRoute: React.FC = () => {
         likeUsers: [],
         dislikeUsers: [],
         likeCount: 0,
-        viewCount: 0,
-        comments: []
+        viewCount: 0
       }
       await setDoc(doc(db, 'routes', routeID), data)
 
