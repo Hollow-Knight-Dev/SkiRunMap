@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" creator="GPS Visualizer http://www.gpsvisualizer.com/" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<wpt lat="25.0318384" lon="121.5374565">
+  <name>地下停車場</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1453-trans-parking.png</sym>
+</wpt>
+<wpt lat="25.033534" lon="121.534869">
+  <name>捷運大安森林公園站</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1459-trans-train.png</sym>
+</wpt>
+<wpt lat="25.0333233" lon="121.5345356">
+  <name>捷運2號出口</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0332917" lon="121.5351042">
+  <name>捷運3號出口</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0333403" lon="121.5348923">
+  <name>大安森林公園1號出入口(信義路)</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1371-rec-hiking.png</sym>
+</wpt>
+<wpt lat="25.0325529" lon="121.5348843">
+  <name>大安森林公園4號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0316464" lon="121.5344122">
+  <name>生態池</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0306463" lon="121.5344712">
+  <name>大安森林公園3號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0301299" lon="121.5354609">
+  <name>露天音樂台</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0294605" lon="121.535185">
+  <name>大安森林公園2號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0277615" lon="121.5351726">
+  <name>大安森林公園1號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0266764" lon="121.5362431">
+  <name>大安森林公園7號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.026042" lon="121.5363018">
+  <name>大安森林公園7號出入口(和平東路)</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1059-biz-outdoor.png</sym>
+</wpt>
+<wpt lat="25.0289391" lon="121.5371226">
+  <name>大安森林公園5號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0299306" lon="121.5373868">
+  <name>大安森林公園4號出入口(建國南路)</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1059-biz-outdoor.png</sym>
+</wpt>
+<wpt lat="25.0322345" lon="121.5370622">
+  <name>大安森林公園6號公共廁所</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0327983" lon="121.536818">
+  <name>大安森林公園兒童小舞台</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.03186" lon="121.5365513">
+  <name>大安森林公園 兒童遊戲場旁草坪</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0317014" lon="121.5359562">
+  <name>大安森林公園籃球場</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.031201" lon="121.5353332">
+  <name>大安森林公園痛痛腳底按摩步道</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0325377" lon="121.5362187">
+  <name>大安森林公園兒童遊戲場</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</sym>
+</wpt>
+<wpt lat="25.0309683" lon="121.5338194">
+  <name>大安森林公園10號出入口(新生南路)</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1059-biz-outdoor.png</sym>
+</wpt>
+<wpt lat="25.0288491" lon="121.5345705">
+  <name>大安森林公園9號出入口(新生南路)</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1059-biz-outdoor.png</sym>
+</wpt>
+<wpt lat="25.0304045" lon="121.5338597">
+  <name>金華新生路口站</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1423-trans-bus.png</sym>
+</wpt>
+<wpt lat="25.0298747" lon="121.5374029">
+  <name>大安國宅站</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1423-trans-bus.png</sym>
+</wpt>
+<wpt lat="25.0260153" lon="121.5363461">
+  <name>大安森林公園站(和平東路)</name>
+  <sym>http://www.gstatic.com/mapspro/images/stock/1423-trans-bus.png</sym>
+</wpt>
+<trk>
+  <name>大安森林公園步道</name>
+  <trkseg>
+    <trkpt lat="25.033292" lon="121.534882">
+      <ele>14.0</ele>
+    </trkpt>
+    <trkpt lat="25.033019" lon="121.534875">
+      <ele>14.0</ele>
+    </trkpt>
+    <trkpt lat="25.032935" lon="121.534873">
+      <ele>14.0</ele>
+    </trkpt>
+    <trkpt lat="25.033052" lon="121.534646">
+      <ele>14.0</ele>
+    </trkpt>
+    <trkpt lat="25.033052" lon="121.534553">
+      <ele>14.0</ele>
+    </trkpt>
+    <trkpt lat="25.033052" lon="121.534217">
+      <ele>14.0</ele>
+    </trkpt>
+    <trkpt lat="25.033023" lon="121.534045">
+      <ele>14.4</ele>
+    </trkpt>
+    <trkpt lat="25.032989" lon="121.533914">
+      <ele>14.8</ele>
+    </trkpt>
+    <trkpt lat="25.032949" lon="121.533879">
+      <ele>15.1</ele>
+    </trkpt>
+    <trkpt lat="25.032912" lon="121.533844">
+      <ele>19.0</ele>
+    </trkpt>
+    <trkpt lat="25.032864" lon="121.533805">
+      <ele>19.0</ele>
+    </trkpt>
+    <trkpt lat="25.032795" lon="121.533748">
+      <ele>19.0</ele>
+    </trkpt>
+    <trkpt lat="25.032673" lon="121.533648">
+      <ele>19.0</ele>
+    </trkpt>
+    <trkpt lat="25.03244" lon="121.533626">
+      <ele>17.1</ele>
+    </trkpt>
+    <trkpt lat="25.032043" lon="121.534002">
+      <ele>14.1</ele>
+    </trkpt>
+    <trkpt lat="25.032019" lon="121.533978">
+      <ele>13.8</ele>
+    </trkpt>
+    <trkpt lat="25.031954" lon="121.534034">
+      <ele>13.5</ele>
+    </trkpt>
+    <trkpt lat="25.031976" lon="121.534058">
+      <ele>13.3</ele>
+    </trkpt>
+    <trkpt lat="25.031933" lon="121.534081">
+      <ele>13.1</ele>
+    </trkpt>
+    <trkpt lat="25.03188" lon="121.534128">
+      <ele>12.9</ele>
+    </trkpt>
+    <trkpt lat="25.031608" lon="121.53419">
+      <ele>12.6</ele>
+    </trkpt>
+    <trkpt lat="25.03108" lon="121.534386">
+      <ele>10.4</ele>
+    </trkpt>
+    <trkpt lat="25.030982" lon="121.53442">
+      <ele>10.5</ele>
+    </trkpt>
+    <trkpt lat="25.030732" lon="121.534473">
+      <ele>10.9</ele>
+    </trkpt>
+    <trkpt lat="25.030679" lon="121.534653">
+      <ele>11.1</ele>
+    </trkpt>
+    <trkpt lat="25.030255" lon="121.534653">
+      <ele>12.1</ele>
+    </trkpt>
+    <trkpt lat="25.030209" lon="121.5347">
+      <ele>12.4</ele>
+    </trkpt>
+    <trkpt lat="25.029896" lon="121.534758">
+      <ele>12.0</ele>
+    </trkpt>
+    <trkpt lat="25.029865" lon="121.534843">
+      <ele>11.7</ele>
+    </trkpt>
+    <trkpt lat="25.029835" lon="121.534948">
+      <ele>11.3</ele>
+    </trkpt>
+    <trkpt lat="25.029857" lon="121.534996">
+      <ele>11.0</ele>
+    </trkpt>
+    <trkpt lat="25.029883" lon="121.535053">
+      <ele>6.3</ele>
+    </trkpt>
+    <trkpt lat="25.02965" lon="121.535206">
+      <ele>6.7</ele>
+    </trkpt>
+    <trkpt lat="25.029533" lon="121.535255">
+      <ele>6.8</ele>
+    </trkpt>
+    <trkpt lat="25.029437" lon="121.535325">
+      <ele>6.8</ele>
+    </trkpt>
+    <trkpt lat="25.029398" lon="121.535464">
+      <ele>6.8</ele>
+    </trkpt>
+    <trkpt lat="25.029224" lon="121.535526">
+      <ele>6.9</ele>
+    </trkpt>
+    <trkpt lat="25.029112" lon="121.535254">
+      <ele>6.4</ele>
+    </trkpt>
+    <trkpt lat="25.029032" lon="121.535275">
+      <ele>6.3</ele>
+    </trkpt>
+    <trkpt lat="25.028947" lon="121.535254">
+      <ele>6.1</ele>
+    </trkpt>
+    <trkpt lat="25.028921" lon="121.535203">
+      <ele>6.0</ele>
+    </trkpt>
+    <trkpt lat="25.028787" lon="121.535263">
+      <ele>5.9</ele>
+    </trkpt>
+    <trkpt lat="25.028645" lon="121.535378">
+      <ele>5.8</ele>
+    </trkpt>
+    <trkpt lat="25.028621" lon="121.535427">
+      <ele>5.7</ele>
+    </trkpt>
+    <trkpt lat="25.028232" lon="121.535489">
+      <ele>6.6</ele>
+    </trkpt>
+    <trkpt lat="25.02774" lon="121.535545">
+      <ele>8.6</ele>
+    </trkpt>
+    <trkpt lat="25.027646" lon="121.535567">
+      <ele>9.0</ele>
+    </trkpt>
+    <trkpt lat="25.027716" lon="121.535463">
+      <ele>9.4</ele>
+    </trkpt>
+    <trkpt lat="25.027771" lon="121.53533">
+      <ele>9.8</ele>
+    </trkpt>
+    <trkpt lat="25.027744" lon="121.535276">
+      <ele>10.3</ele>
+    </trkpt>
+    <trkpt lat="25.027665" lon="121.535276">
+      <ele>10.9</ele>
+    </trkpt>
+    <trkpt lat="25.027556" lon="121.535324">
+      <ele>11.4</ele>
+    </trkpt>
+    <trkpt lat="25.027473" lon="121.535405">
+      <ele>11.8</ele>
+    </trkpt>
+    <trkpt lat="25.026944" lon="121.535503">
+      <ele>13.7</ele>
+    </trkpt>
+    <trkpt lat="25.026486" lon="121.535514">
+      <ele>14.1</ele>
+    </trkpt>
+    <trkpt lat="25.026469" lon="121.535486">
+      <ele>14.2</ele>
+    </trkpt>
+    <trkpt lat="25.026486" lon="121.535514">
+      <ele>17.0</ele>
+    </trkpt>
+    <trkpt lat="25.026437" lon="121.53632">
+      <ele>15.2</ele>
+    </trkpt>
+    <trkpt lat="25.026334" lon="121.536633">
+      <ele>14.7</ele>
+    </trkpt>
+    <trkpt lat="25.026278" lon="121.53675">
+      <ele>15.0</ele>
+    </trkpt>
+    <trkpt lat="25.02639" lon="121.536905">
+      <ele>15.3</ele>
+    </trkpt>
+    <trkpt lat="25.026652" lon="121.536927">
+      <ele>15.4</ele>
+    </trkpt>
+    <trkpt lat="25.026925" lon="121.536949">
+      <ele>13.8</ele>
+    </trkpt>
+    <trkpt lat="25.027461" lon="121.536949">
+      <ele>12.8</ele>
+    </trkpt>
+    <trkpt lat="25.027578" lon="121.536913">
+      <ele>14.5</ele>
+    </trkpt>
+    <trkpt lat="25.027656" lon="121.536865">
+      <ele>15.9</ele>
+    </trkpt>
+    <trkpt lat="25.027744" lon="121.536844">
+      <ele>17.1</ele>
+    </trkpt>
+    <trkpt lat="25.027836" lon="121.536821">
+      <ele>18.1</ele>
+    </trkpt>
+    <trkpt lat="25.027934" lon="121.536836">
+      <ele>18.9</ele>
+    </trkpt>
+    <trkpt lat="25.028051" lon="121.53682">
+      <ele>19.7</ele>
+    </trkpt>
+    <trkpt lat="25.028182" lon="121.536741">
+      <ele>20.3</ele>
+    </trkpt>
+    <trkpt lat="25.02828" lon="121.536806">
+      <ele>20.9</ele>
+    </trkpt>
+    <trkpt lat="25.028505" lon="121.536896">
+      <ele>21.1</ele>
+    </trkpt>
+    <trkpt lat="25.028674" lon="121.536943">
+      <ele>21.0</ele>
+    </trkpt>
+    <trkpt lat="25.029008" lon="121.53695">
+      <ele>21.9</ele>
+    </trkpt>
+    <trkpt lat="25.029174" lon="121.536927">
+      <ele>21.7</ele>
+    </trkpt>
+    <trkpt lat="25.029246" lon="121.536917">
+      <ele>21.5</ele>
+    </trkpt>
+    <trkpt lat="25.029395" lon="121.536894">
+      <ele>21.3</ele>
+    </trkpt>
+    <trkpt lat="25.029722" lon="121.536879">
+      <ele>20.7</ele>
+    </trkpt>
+    <trkpt lat="25.029826" lon="121.536861">
+      <ele>19.6</ele>
+    </trkpt>
+    <trkpt lat="25.029944" lon="121.536848">
+      <ele>18.5</ele>
+    </trkpt>
+    <trkpt lat="25.030037" lon="121.536828">
+      <ele>17.4</ele>
+    </trkpt>
+    <trkpt lat="25.030257" lon="121.536886">
+      <ele>15.2</ele>
+    </trkpt>
+    <trkpt lat="25.030336" lon="121.536898">
+      <ele>14.1</ele>
+    </trkpt>
+    <trkpt lat="25.030402" lon="121.536981">
+      <ele>13.0</ele>
+    </trkpt>
+    <trkpt lat="25.030785" lon="121.537061">
+      <ele>9.8</ele>
+    </trkpt>
+    <trkpt lat="25.031032" lon="121.537076">
+      <ele>8.8</ele>
+    </trkpt>
+    <trkpt lat="25.031215" lon="121.53706">
+      <ele>8.5</ele>
+    </trkpt>
+    <trkpt lat="25.031437" lon="121.536988">
+      <ele>8.8</ele>
+    </trkpt>
+    <trkpt lat="25.031526" lon="121.536952">
+      <ele>9.0</ele>
+    </trkpt>
+    <trkpt lat="25.032743" lon="121.536891">
+      <ele>10.9</ele>
+    </trkpt>
+    <trkpt lat="25.032852" lon="121.536886">
+      <ele>11.0</ele>
+    </trkpt>
+    <trkpt lat="25.032838" lon="121.536523">
+      <ele>13.4</ele>
+    </trkpt>
+    <trkpt lat="25.032858" lon="121.53618">
+      <ele>14.8</ele>
+    </trkpt>
+    <trkpt lat="25.032864" lon="121.535984">
+      <ele>15.0</ele>
+    </trkpt>
+    <trkpt lat="25.032877" lon="121.535762">
+      <ele>15.8</ele>
+    </trkpt>
+    <trkpt lat="25.032868" lon="121.535714">
+      <ele>16.1</ele>
+    </trkpt>
+    <trkpt lat="25.032882" lon="121.535635">
+      <ele>16.4</ele>
+    </trkpt>
+    <trkpt lat="25.033286" lon="121.535656">
+      <ele>17.3</ele>
+    </trkpt>
+    <trkpt lat="25.033299" lon="121.534941">
+      <ele>18.6</ele>
+    </trkpt>
+  </trkseg>
+</trk>
+</gpx>

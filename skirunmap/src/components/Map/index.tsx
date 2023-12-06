@@ -92,16 +92,16 @@ const Map: React.FC<MapProps> = ({ gpxUrl, createMode }) => {
           fullscreenControlOptions: {
             position: google.maps.ControlPosition.BOTTOM_RIGHT
           },
-          heading: 320,
-          tilt: 47.5,
-          restriction: {
-            latLngBounds: {
-              north: 45.551483,
-              south: 24.396308,
-              east: 153.986672,
-              west: 122.93457
-            }
-          },
+          // heading: 320,
+          // tilt: 47.5,
+          // restriction: {
+          //   latLngBounds: {
+          //     north: 45.551483,
+          //     south: 24.396308,
+          //     east: 153.986672,
+          //     west: 122.93457
+          //   }
+          // },
           draggableCursor: 'pointer'
         })
         setMap(googleMap)
