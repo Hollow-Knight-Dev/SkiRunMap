@@ -613,7 +613,7 @@ const RouteView = () => {
                       />
                     )}
                   </div>
-                  <p>{routeDocData.likeCount}</p>
+                  <p>{routeDocData.likeUsers.length - routeDocData.dislikeUsers.length}</p>
                   <div className='h-fit w-fit cursor-pointer' onClick={() => handleDislikeClick()}>
                     {isDislike ? (
                       <img
