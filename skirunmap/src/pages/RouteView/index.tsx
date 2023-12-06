@@ -257,7 +257,6 @@ const RouteView = () => {
   }
 
   const handleLikeClick = async () => {
-    console.log('click like')
     if (id && isSignIn) {
       const routeRef = doc(db, 'routes', id)
       const docSnap = await getDoc(routeRef)
@@ -289,7 +288,6 @@ const RouteView = () => {
   }
 
   const handleDislikeClick = async () => {
-    console.log('click dislike')
     if (id && isSignIn) {
       const routeRef = doc(db, 'routes', id)
       const docSnap = await getDoc(routeRef)

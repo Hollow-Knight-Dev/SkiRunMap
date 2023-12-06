@@ -1,11 +1,14 @@
 import {
   DocumentData,
   Timestamp,
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   getDoc,
   getDocs,
   query,
+  updateDoc,
   where
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
@@ -29,6 +32,22 @@ const Member = () => {
   const [memberDoc, setMemberDoc] = useState<User>()
   const [userCreatedRoutes, setUserCreatedRoutes] = useState<DocumentData[]>([])
   const [userStoredLists, setUserStoredLists] = useState<RouteDocsInList[]>([])
+  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+  const [isInviting, setIsInviting] = useState<boolean>(false)
+  const [isFriend, setIsFriend] = useState<boolean>(false)
+  const [isMyself, setIsMyself] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (Object.keys(userDoc).length !== 0 && userDoc.userID === memberID) {
+      setIsMyself(true)
+      // console.log('userDoc.userID', userDoc.userID)
+      // console.log('memberID', memberID)
+    } else {
+      setIsMyself(false)
+      // console.log('2userDoc.userID', userDoc.userID)
+      // console.log('2memberID', memberID)
+    }
+  }, [userDoc])
 
   const formatTimestamp = (timestamp: Timestamp) => {
     const time = timestamp
@@ -78,6 +97,24 @@ const Member = () => {
     getMemberDoc()
   }, [memberID])
 
+  const initialiseFriendStatus = () => {
+    if (memberDoc) {
+      if (memberDoc.userFollowers.includes(userDoc.userID)) {
+        setIsFollowing(true)
+      }
+      if (memberDoc.userFriends.includes(userDoc.userID)) {
+        setIsFriend(true)
+      }
+      if (memberDoc.userFriendReqs.includes(userDoc.userID)) {
+        setIsInviting(true)
+      }
+    }
+  }
+
+  useEffect(() => {
+    initialiseFriendStatus()
+  }, [userDoc, memberDoc])
+
   const getUserCreatedRoutes = async () => {
     if (memberDoc) {
       const routeIDs = memberDoc.userRouteIDs
@@ -89,20 +126,15 @@ const Member = () => {
     }
   }
 
-  useEffect(() => {
-    getUserCreatedRoutes()
-    getUserStoredLists()
-  }, [memberID, memberDoc])
-
   const getUserStoredLists = async () => {
     if (memberDoc) {
       const storeRoutes = memberDoc.userRouteLists
       let routeLists: RouteDocsInList[] = []
       await Promise.all(
         storeRoutes.map(async (map) => {
-          console.log(map)
+          // console.log(map)
           if (map.routeIDs.length > 0) {
-            console.log('map.routeIDs', map.routeIDs)
+            // console.log('map.routeIDs', map.routeIDs)
             const routesQuery = query(
               collection(db, 'routes'),
               where('routeID', 'in', map.routeIDs)
@@ -122,7 +154,34 @@ const Member = () => {
         })
       )
       setUserStoredLists(routeLists)
-      console.log(routeLists)
+      // console.log(routeLists)
+    }
+  }
+
+  useEffect(() => {
+    getUserCreatedRoutes()
+    getUserStoredLists()
+  }, [memberID, memberDoc])
+
+  const handleFollow = async () => {
+    console.log('click Follow')
+    if (memberID && userDoc.userID) {
+      const myUserRef = doc(db, 'users', userDoc.userID)
+      const otherUserRef = doc(db, 'users', memberID)
+      await updateDoc(otherUserRef, { userFollowers: arrayUnion(userDoc.userID) })
+      await updateDoc(myUserRef, { userFollows: arrayUnion(memberID) })
+      setIsFollowing(true)
+    }
+  }
+
+  const handleUnfollow = async () => {
+    console.log('click Unfollow')
+    if (memberID && userDoc.userID) {
+      const myUserRef = doc(db, 'users', userDoc.userID)
+      const otherUserRef = doc(db, 'users', memberID)
+      await updateDoc(otherUserRef, { userFollowers: arrayRemove(userDoc.userID) })
+      await updateDoc(myUserRef, { userFollows: arrayRemove(memberID) })
+      setIsFollowing(false)
     }
   }
 
@@ -186,23 +245,39 @@ const Member = () => {
                 <p className='text-lg'>{memberDoc?.userDescription}</p>
               </div>
             </div>
-            <div className='flex flex-col gap-2'>
-              <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                Invite
-              </button>
-              <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                Follow
-              </button>
-              {/* <button className='w-20 h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 text-lg font-bold'>
-                Invited
-              </button>
-              <button className='w-20 h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 text-lg font-bold'>
-                Following
-              </button>
-              <button className='w-20 h-fit bg-zinc-300 rounded-2xl pl-4 pr-4 text-lg font-bold'>
-                Friend
-              </button> */}
-            </div>
+            {!isMyself && (
+              <div className='flex flex-col gap-2'>
+                {isFollowing ? (
+                  <button
+                    className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                    onClick={() => handleUnfollow()}
+                  >
+                    Following
+                  </button>
+                ) : (
+                  <button
+                    className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                    onClick={() => handleFollow()}
+                  >
+                    Follow
+                  </button>
+                )}
+
+                {isFriend ? (
+                  <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
+                    Friend
+                  </button>
+                ) : isInviting ? (
+                  <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
+                    Sent friend invitation
+                  </button>
+                ) : (
+                  <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
+                    Invite
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
