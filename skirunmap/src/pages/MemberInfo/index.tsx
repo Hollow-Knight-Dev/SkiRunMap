@@ -127,7 +127,7 @@ const MemberInfo = () => {
       progress: undefined,
       theme: 'light',
       onClose: () => {
-        navigate('/member')
+        navigate(`/member/${userID}`)
       }
     })
   }
