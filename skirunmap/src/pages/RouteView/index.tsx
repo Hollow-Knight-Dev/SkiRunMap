@@ -62,22 +62,6 @@ const RouteView = () => {
   const toggleCommentVisibility = () => {
     setCommentVisibility((prev) => !prev)
   }
-  const [formattedTime, setFormattedTime] = useState<string>('')
-
-  const formatTimestampSingle = (timestamp: Timestamp) => {
-    const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6
-    const date = new Date(milliseconds)
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour12: false,
-      hour: 'numeric',
-      minute: 'numeric'
-    }
-    const formattedDate = date.toLocaleString('en-UK', options).replace(',', ' at')
-    setFormattedTime(formattedDate)
-  }
 
   const formatTimestamp = (timestamp: Timestamp) => {
     const time = timestamp
@@ -95,70 +79,6 @@ const RouteView = () => {
     return time
   }
 
-  const markSpots = (spots: Spot[]) => {
-    spots.forEach((spot) => {
-      const marker = new google.maps.Marker({
-        position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
-        map: map,
-        icon: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
-          scaledSize: new google.maps.Size(25, 25)
-        },
-        animation: google.maps.Animation.DROP,
-        draggable: false,
-        title: `${spot.spotDescription}`
-      })
-      const openMarkerInfoWindow = () => {
-        if (infoWindow) {
-          infoWindow.close()
-        }
-        const generateContentHTML = (spot: Spot) => {
-          const imageElements = spot.imageUrls
-            .map(
-              (imageUrl) => `<img class='info-window-image' src=${imageUrl} alt=${spot.spotTitle}>`
-            )
-            .join('')
-          const videoElements = spot.videoUrls
-            .map(
-              (videoUrl) =>
-                `<iframe src=${videoUrl} height='300' width='400' allowfullscreen></iframe>`
-            )
-            .join('')
-
-          return `
-            <div class='info-window-container'>
-              <div class='info-window-text-row'>
-                <p class='info-window-title'>Spot Title:</p>
-                <p class='info-window-text'>${spot.spotTitle}</p>
-              </div>
-              <div class='info-window-text-row'>
-                <p class='info-window-title'>Spot Description:</p>
-                <p class='info-window-text'>${spot.spotDescription}</p>
-              </div>
-              <div class='info-window-text-row'>
-                <p class='info-window-title'>Spot Coordinate:</p>
-                <p class='info-window-text'>lat: ${spot.spotCoordinate.lat}<br>lng: ${spot.spotCoordinate.lng}</p>
-              </div>
-              <div class='info-window-media'>
-              ${imageElements}
-              ${videoElements}
-              </div>
-            </div>
-          `
-        }
-
-        const contentHTML = generateContentHTML(spot)
-        const newInfoWindow = new google.maps.InfoWindow({
-          content: contentHTML
-        })
-        newInfoWindow.open(map, marker)
-        setInfoWindow(newInfoWindow)
-      }
-
-      marker.addListener('click', () => openMarkerInfoWindow())
-    })
-  }
-
   useEffect(() => {
     if (id) {
       onSnapshot(doc(db, 'routes', id), (doc) => {
@@ -171,7 +91,6 @@ const RouteView = () => {
             {}
           )
           setSpotsVisibility(initialVisibility)
-          formatTimestampSingle(routeData?.createTime)
         } else {
           console.error('Fail to get route data from Firestore')
         }
@@ -243,6 +162,70 @@ const RouteView = () => {
   //     console.log('commentsDocData:', commentsDocData)
   //   }
   // }, [commentsDocData])
+
+  const markSpots = (spots: Spot[]) => {
+    spots.forEach((spot) => {
+      const marker = new google.maps.Marker({
+        position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
+        map: map,
+        icon: {
+          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
+          scaledSize: new google.maps.Size(25, 25)
+        },
+        animation: google.maps.Animation.DROP,
+        draggable: false,
+        title: `${spot.spotDescription}`
+      })
+      const openMarkerInfoWindow = () => {
+        if (infoWindow) {
+          infoWindow.close()
+        }
+        const generateContentHTML = (spot: Spot) => {
+          const imageElements = spot.imageUrls
+            .map(
+              (imageUrl) => `<img class='info-window-image' src=${imageUrl} alt=${spot.spotTitle}>`
+            )
+            .join('')
+          const videoElements = spot.videoUrls
+            .map(
+              (videoUrl) =>
+                `<iframe src=${videoUrl} height='300' width='400' allowfullscreen></iframe>`
+            )
+            .join('')
+
+          return `
+            <div class='info-window-container'>
+              <div class='info-window-text-row'>
+                <p class='info-window-title'>Spot Title:</p>
+                <p class='info-window-text'>${spot.spotTitle}</p>
+              </div>
+              <div class='info-window-text-row'>
+                <p class='info-window-title'>Spot Description:</p>
+                <p class='info-window-text'>${spot.spotDescription}</p>
+              </div>
+              <div class='info-window-text-row'>
+                <p class='info-window-title'>Spot Coordinate:</p>
+                <p class='info-window-text'>lat: ${spot.spotCoordinate.lat}<br>lng: ${spot.spotCoordinate.lng}</p>
+              </div>
+              <div class='info-window-media'>
+              ${imageElements}
+              ${videoElements}
+              </div>
+            </div>
+          `
+        }
+
+        const contentHTML = generateContentHTML(spot)
+        const newInfoWindow = new google.maps.InfoWindow({
+          content: contentHTML
+        })
+        newInfoWindow.open(map, marker)
+        setInfoWindow(newInfoWindow)
+      }
+
+      marker.addListener('click', () => openMarkerInfoWindow())
+    })
+  }
 
   const handleShareLink = () => {
     const pageUrl = window.location.href
@@ -645,7 +628,9 @@ const RouteView = () => {
                 <Link to={`/member/${routeDocData.userID}`} className='w-fit pl-4'>
                   {routeDocData.username}
                 </Link>
-                <p className='w-fit pl-4'>{formattedTime}</p>
+                <p className='w-fit pl-4'>
+                  {routeDocData.createTime && formatTimestamp(routeDocData.createTime as Timestamp)}
+                </p>
               </div>
 
               <div className='flex flex-wrap'>
