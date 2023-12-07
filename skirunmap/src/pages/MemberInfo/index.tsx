@@ -25,11 +25,13 @@ const MemberInfo = () => {
     setUserGender,
     userDescription,
     setUserDescription,
-    userDoc
+    userDoc,
+    isSignIn,
+    isLoadedUserDoc
   } = useUserStore()
 
   useEffect(() => {
-    if (userDoc) {
+    if (isLoadedUserDoc && isSignIn) {
       setUserIconUrl(userDoc.userIconUrl)
       setUsername(userDoc.username)
       setUserSkiAge(userDoc.userSkiAge)
@@ -37,6 +39,20 @@ const MemberInfo = () => {
       setUserCountry(userDoc.userCountry)
       setUserGender(userDoc.userGender)
       setUserDescription(userDoc.userDescription)
+    } else if (isLoadedUserDoc && !isSignIn) {
+      toast.warn(`You haven\'t sign in`, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        onClose: () => {
+          navigate('/signin')
+        }
+      })
     }
   }, [userDoc])
 

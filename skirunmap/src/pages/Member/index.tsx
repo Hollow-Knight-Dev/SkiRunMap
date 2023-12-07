@@ -28,7 +28,7 @@ interface RouteDocsInList {
 
 const Member = () => {
   const { memberID } = useParams<{ memberID: string }>()
-  const { userDoc } = useUserStore()
+  const { userDoc, isLoadedUserDoc, isSignIn } = useUserStore()
   const [memberDoc, setMemberDoc] = useState<User>()
   const [userCreatedRoutes, setUserCreatedRoutes] = useState<DocumentData[]>([])
   const [userStoredLists, setUserStoredLists] = useState<RouteDocsInList[]>([])
@@ -38,7 +38,7 @@ const Member = () => {
   const [isMyself, setIsMyself] = useState<boolean>(false)
 
   useEffect(() => {
-    if (Object.keys(userDoc).length !== 0 && userDoc.userID === memberID) {
+    if (isLoadedUserDoc && userDoc.userID === memberID) {
       setIsMyself(true)
       // console.log('userDoc.userID', userDoc.userID)
       // console.log('memberID', memberID)
@@ -68,7 +68,21 @@ const Member = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (Object.keys(userDoc).length !== 0 && userDoc.username === undefined) {
+    if (isLoadedUserDoc && !isSignIn) {
+      toast.warn(`You haven\'t sign in`, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        onClose: () => {
+          navigate('/signin')
+        }
+      })
+    } else if (isLoadedUserDoc && userDoc.username === undefined) {
       toast.warn(`You haven't finish your profile`, {
         position: 'top-right',
         autoClose: 1000,

@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { db } from './auth/CloudStorage'
 import Footer from './components/Footer'
@@ -16,7 +16,7 @@ import SignIn from './pages/Signin'
 import { User, useUserStore } from './store/useUser'
 
 const App: React.FC = () => {
-  const { isSignIn, setIsSignIn, setUserID, setUserDoc } = useUserStore()
+  const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc } = useUserStore()
   const auth = getAuth()
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -26,10 +26,12 @@ const App: React.FC = () => {
         const userDoc = await getDoc(doc(db, 'users', user.uid))
         const userDocData = userDoc.data() as User
         setUserDoc(userDocData)
+        setIsLoadedUserDoc(true)
         console.log('App.tsx userDoc has been updated: ', userDocData)
       } else {
         setIsSignIn(false)
         setUserID('')
+        setIsLoadedUserDoc(true)
       }
     })
 
@@ -46,14 +48,11 @@ const App: React.FC = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/route/:id' element={<RouteView />} />
+        <Route path='/edit-route' element={<RouteEdit />} />
         <Route path='/signin' element={<SignIn />} />
         <Route path='/member/:memberID' element={<Member />} />
-        <Route
-          path='/member-info'
-          element={isSignIn ? <MemberInfo /> : <Navigate to='/signin' />}
-        />
-        <Route path='/edit-route' element={isSignIn ? <RouteEdit /> : <Navigate to='/signin' />} />
-        <Route path='/friend' element={isSignIn ? <Friend /> : <Navigate to='/signin' />} />
+        <Route path='/member-info' element={<MemberInfo />} />
+        <Route path='/friend' element={<Friend />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -33,6 +33,8 @@ interface UserStore {
   setIsSignIn: (signState: boolean) => void
   userDoc: User
   setUserDoc: (doc: User) => void
+  isLoadedUserDoc: boolean
+  setIsLoadedUserDoc: (status: boolean) => void
   userID: string
   setUserID: (userID: string) => void
   userEmail: string
@@ -60,6 +62,8 @@ export const useUserStore = create<UserStore>()((set) => ({
   setIsSignIn: (signState) => set(() => ({ isSignIn: signState })),
   userDoc: {} as User,
   setUserDoc: (doc) => set({ userDoc: doc }),
+  isLoadedUserDoc: false,
+  setIsLoadedUserDoc: (status) => set({ isLoadedUserDoc: status }),
   userID: '',
   setUserID: (newUserID) => set(() => ({ userID: newUserID })),
   userEmail: '',

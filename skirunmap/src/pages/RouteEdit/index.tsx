@@ -38,7 +38,7 @@ import { useUserStore } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
-  const { userID, userDoc } = useUserStore()
+  const { userID, userDoc, isSignIn, isLoadedUserDoc } = useUserStore()
   const routeID = useRouteID((state) => state.routeID)
   const setRouteID = useRouteID((state) => state.setRouteID)
   const routeTitle = useRouteTitle((state) => state.routeTitle)
@@ -76,12 +76,28 @@ const EditRoute: React.FC = () => {
   const [spotVisibility, setSpotVisibility] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!routeID) {
-      const id = uuidv4()
-      setRouteID(id)
-      alert(`Created route id:${id}!`)
+    if (isLoadedUserDoc && !isSignIn) {
+      toast.warn(`You haven\'t sign in`, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        onClose: () => {
+          navigate('/signin')
+        }
+      })
+    } else if (isLoadedUserDoc && isSignIn) {
+      if (!routeID) {
+        const id = uuidv4()
+        setRouteID(id)
+        alert(`Created route id:${id}!`)
+      }
     }
-  }, [])
+  }, [userDoc])
 
   useEffect(() => {
     latestSpotsRef.current = spots
