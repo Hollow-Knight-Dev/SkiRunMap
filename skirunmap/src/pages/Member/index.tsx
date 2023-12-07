@@ -185,6 +185,39 @@ const Member = () => {
     }
   }
 
+  const handleFriendInvite = async () => {
+    console.log('Click wanna be friend')
+    if (memberID && userDoc.userID) {
+      const myUserRef = doc(db, 'users', userDoc.userID)
+      const otherUserRef = doc(db, 'users', memberID)
+      await updateDoc(otherUserRef, { userFriendReqs: arrayUnion(userDoc.userID) })
+      await updateDoc(myUserRef, { userSentFriendReqs: arrayUnion(memberID) })
+      setIsInviting(true)
+    }
+  }
+
+  const handleWithdrawInvitation = async () => {
+    console.log('Withdraw Invitation')
+    if (memberID && userDoc.userID) {
+      const myUserRef = doc(db, 'users', userDoc.userID)
+      const otherUserRef = doc(db, 'users', memberID)
+      await updateDoc(otherUserRef, { userFriendReqs: arrayRemove(userDoc.userID) })
+      await updateDoc(myUserRef, { userSentFriendReqs: arrayRemove(memberID) })
+      setIsInviting(false)
+    }
+  }
+
+  const handleFriendBreakUp = async () => {
+    console.log('FriendBreakUp')
+    if (memberID && userDoc.userID) {
+      const myUserRef = doc(db, 'users', userDoc.userID)
+      const otherUserRef = doc(db, 'users', memberID)
+      await updateDoc(otherUserRef, { userFriends: arrayRemove(userDoc.userID) })
+      await updateDoc(myUserRef, { userFriends: arrayRemove(memberID) })
+      setIsFriend(false)
+    }
+  }
+
   return (
     <div className='p-8'>
       <div className='mb-8 w-full'>
@@ -196,7 +229,51 @@ const Member = () => {
           />
           <div className='flex w-full justify-between'>
             <div className='flex flex-col'>
-              <p className='mb-4 text-3xl font-bold'>{memberDoc?.username}</p>
+              <div className='mb-4 flex items-center justify-between gap-10'>
+                <p className='text-3xl font-bold'>{memberDoc?.username}</p>
+                {!isMyself && (
+                  <div className='flex gap-2'>
+                    {isFollowing ? (
+                      <button
+                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        onClick={() => handleUnfollow()}
+                      >
+                        Following
+                      </button>
+                    ) : (
+                      <button
+                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        onClick={() => handleFollow()}
+                      >
+                        Follow
+                      </button>
+                    )}
+
+                    {isFriend ? (
+                      <button
+                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        onClick={() => handleFriendBreakUp()}
+                      >
+                        Friend
+                      </button>
+                    ) : isInviting ? (
+                      <button
+                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        onClick={() => handleWithdrawInvitation()}
+                      >
+                        Sent friend invitation
+                      </button>
+                    ) : (
+                      <button
+                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        onClick={() => handleFriendInvite()}
+                      >
+                        Invite
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
               <div className='mb-2 flex gap-1'>
                 <p className='text-xl font-bold'>Joined Time:</p>
                 <p className='text-lg'>
@@ -245,39 +322,6 @@ const Member = () => {
                 <p className='text-lg'>{memberDoc?.userDescription}</p>
               </div>
             </div>
-            {!isMyself && (
-              <div className='flex flex-col gap-2'>
-                {isFollowing ? (
-                  <button
-                    className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-                    onClick={() => handleUnfollow()}
-                  >
-                    Following
-                  </button>
-                ) : (
-                  <button
-                    className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-                    onClick={() => handleFollow()}
-                  >
-                    Follow
-                  </button>
-                )}
-
-                {isFriend ? (
-                  <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                    Friend
-                  </button>
-                ) : isInviting ? (
-                  <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                    Sent friend invitation
-                  </button>
-                ) : (
-                  <button className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'>
-                    Invite
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>
