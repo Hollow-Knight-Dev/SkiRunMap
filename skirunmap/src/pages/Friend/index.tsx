@@ -1,4 +1,13 @@
-import { arrayRemove, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import {
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where
+} from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -20,6 +29,7 @@ const Friends = () => {
   const [followList, setFollowList] = useState<UserSimpleData[]>()
   const [followerList, setFollowerList] = useState<UserSimpleData[]>()
   const [friendList, setFriendList] = useState<UserSimpleData[]>()
+  const [friendReqList, setFriendReqList] = useState<UserSimpleData[]>()
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
@@ -66,6 +76,11 @@ const Friends = () => {
     setFriendList(friendsData)
   }
 
+  const retrieveFriendeqs = async (list: string[]) => {
+    const friendReqData = await retrieveUserSimpleData(list)
+    setFriendReqList(friendReqData)
+  }
+
   useEffect(() => {
     if (isLoadedUserDoc) {
       const userFollowList = userDoc.userFollows
@@ -88,14 +103,16 @@ const Friends = () => {
   }, [userDoc])
 
   useEffect(() => {
-    console.log('friendList:', friendList)
-  }, [friendList])
-
-  useEffect(() => {
     if (isLoadedUserDoc) {
       const userFriendReqList = userDoc.userFriendReqs
+      retrieveFriendeqs(userFriendReqList)
     }
   }, [userDoc])
+
+  useEffect(() => {
+    console.log('friendList:', friendList)
+    console.log('friendReqList:', friendReqList)
+  }, [friendReqList])
 
   useEffect(() => {
     if (isLoadedUserDoc) {
@@ -122,13 +139,42 @@ const Friends = () => {
   }
 
   const handleBreakUpFriends = async (id: string) => {
-    console.log('Break up with friend')
     const myUserRef = doc(db, 'users', userDoc.userID)
     const otherUserRef = doc(db, 'users', id)
     await updateDoc(myUserRef, { userFriends: arrayRemove(id) })
     await updateDoc(otherUserRef, { userFriends: arrayRemove(userDoc.userID) })
     const updateFriendList = friendList?.filter((user) => user.userID !== id)
     setFriendList(updateFriendList)
+  }
+
+  const handleAcceptFriendReqs = async (id: string) => {
+    console.log('Accept')
+    const myUserRef = doc(db, 'users', userDoc.userID)
+    const otherUserRef = doc(db, 'users', id)
+    await updateDoc(myUserRef, { userFriends: arrayUnion(id) })
+    await updateDoc(myUserRef, { userFriendReqs: arrayRemove(id) })
+    await updateDoc(otherUserRef, { userFriends: arrayUnion(userDoc.userID) })
+    await updateDoc(otherUserRef, { userSentFriendReqs: arrayRemove(userDoc.userID) })
+    const updateFriendReqList = friendReqList?.filter((user) => user.userID !== id)
+    setFriendReqList(updateFriendReqList)
+    const otherUserData = friendReqList?.find((user) => user.userID === id)
+    if (friendList && otherUserData) {
+      const updateFriendList = [...friendList, otherUserData]
+      setFriendList(updateFriendList)
+    } else if (otherUserData) {
+      const updateFriendList = [otherUserData]
+      setFriendList(updateFriendList)
+    }
+  }
+
+  const handleRejectFriendReqs = async (id: string) => {
+    console.log('Reject')
+    const myUserRef = doc(db, 'users', userDoc.userID)
+    const otherUserRef = doc(db, 'users', id)
+    await updateDoc(myUserRef, { userFriendReqs: arrayRemove(id) })
+    await updateDoc(otherUserRef, { userSentFriendReqs: arrayRemove(userDoc.userID) })
+    const updateFriendReqList = friendReqList?.filter((user) => user.userID !== id)
+    setFriendReqList(updateFriendReqList)
   }
 
   return (
@@ -156,7 +202,7 @@ const Friends = () => {
                   <p className='text-xl'>{user.username}</p>
                 </Link>
                 <button
-                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-zinc-300'
+                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
                   onClick={() => handleUnfollowFollows(user.userID)}
                 >
                   Unfollow
@@ -181,7 +227,7 @@ const Friends = () => {
                   <p className='text-xl'>{user.username}</p>
                 </Link>
                 <button
-                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-zinc-300'
+                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
                   onClick={() => handleRemoveFollowers(user.userID)}
                 >
                   Remove
@@ -206,7 +252,7 @@ const Friends = () => {
                   <p className='text-xl'>{user.username}</p>
                 </Link>
                 <button
-                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-zinc-300'
+                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
                   onClick={() => handleBreakUpFriends(user.userID)}
                 >
                   Break up
@@ -218,11 +264,34 @@ const Friends = () => {
       <div className='mb-16'>
         <p className='mb-4 text-2xl font-bold'>Friend Request</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
-          <div className='flex items-center'>
-            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
-            <p className='w-40 bg-zinc-100 text-center'>I Am Not Groot</p>
-          </div>
+        <div className='flex flex-col gap-4'>
+          {friendReqList &&
+            friendReqList.map((user, index) => (
+              <div key={index} className='flex items-center justify-between'>
+                <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                  <img
+                    className='h-20 w-20 rounded-full object-cover'
+                    src={user.userIconUrl}
+                    alt='Friend Profile Icon'
+                  />
+                  <p className='text-xl'>{user.username}</p>
+                </Link>
+                <div className='flex gap-4'>
+                  <button
+                    className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-green-200'
+                    onClick={() => handleAcceptFriendReqs(user.userID)}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
+                    onClick={() => handleRejectFriendReqs(user.userID)}
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
       <div className='mb-16'>
