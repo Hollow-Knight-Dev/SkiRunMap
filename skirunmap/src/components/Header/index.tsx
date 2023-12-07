@@ -57,8 +57,11 @@ const Header: React.FC = () => {
             {hoveredItem === 'Route' && (
               <SubNavItem
                 items={[
-                  { name: 'Create Route', url: '/edit-route' },
-                  { name: 'My Route', url: `/member/${userDoc.userID}` }
+                  { name: 'Create New Route', url: '/edit-route' },
+                  { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
+                  { name: 'My Route', url: `/member/${userDoc.userID}` },
+                  { name: 'Followed User Routes', url: '/' },
+                  { name: 'Friend Routes', url: '/' }
                 ]}
               />
             )}
@@ -71,17 +74,23 @@ const Header: React.FC = () => {
               onMouseEnter={() => handleItemHover('Explore')}
             />
             {hoveredItem === 'Explore' && (
-              <SubNavItem items={[{ name: 'Niseko Ski Resort', url: '/' }]} />
+              <SubNavItem
+                items={[
+                  { name: 'Niseko Ski Resort', url: '/' },
+                  { name: 'Popular Users', url: '/' }
+                ]}
+              />
             )}
           </div>
         </div>
       </div>
       <div className='relative flex items-center'>
-        <div onMouseLeave={handleItemLeave} className='h-full text-lg hover:translate-y-[-2px]'>
+        <div
+          onMouseLeave={handleItemLeave}
+          className='h-full text-lg duration-200 hover:translate-y-[-2px]'
+        >
           <Link
-            className={`flex h-full transform items-center transition-transform duration-200 focus:outline-none ${
-              !isSignIn && 'pl-20'
-            }`}
+            className={`flex h-full items-center focus:outline-none ${!isSignIn && 'pl-20'}`}
             to={`/member/${userDoc.userID}`}
             onMouseEnter={() => handleItemHover('Member')}
           >
@@ -110,33 +119,37 @@ const Header: React.FC = () => {
                 My Page
               </Link>
               <Link
-                to='/member-info'
-                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
-              >
-                My Info
-              </Link>
-              <Link
                 to='/friend'
                 className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
               >
                 My Friend
               </Link>
+              <Link
+                to='/member-info'
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                Edit Info
+              </Link>
             </div>
           )}
         </div>
 
-        <img className='mr-2 h-auto w-6' src={Notification} alt='Notification icon' />
+        <img
+          className='mr-2 h-auto w-6 cursor-pointer duration-200 hover:translate-y-[-2px]'
+          src={Notification}
+          alt='Notification icon'
+        />
 
         {isSignIn ? (
           <button
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold duration-200 hover:translate-y-[-2px]'
             onClick={() => handleSignOut()}
           >
             Sign out
           </button>
         ) : (
           <Link
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold duration-200 hover:translate-y-[-2px]'
             to='/signin'
           >
             Sign in
