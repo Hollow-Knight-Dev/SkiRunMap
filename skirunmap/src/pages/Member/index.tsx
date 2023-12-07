@@ -237,7 +237,7 @@ const Member = () => {
       <div className='mb-8 w-full'>
         <div className='flex'>
           <img
-            className='ml-10 mr-10 h-28 w-28 rounded-full shadow-[10px_15px_30px_-10px_#4da5fd]'
+            className='ml-10 mr-10 h-28 w-28 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
             src={memberDoc?.userIconUrl}
             alt='Profile Icon'
           />
@@ -249,14 +249,14 @@ const Member = () => {
                   <div className='flex gap-2'>
                     {isFollowing ? (
                       <button
-                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleUnfollow()}
                       >
                         Following
                       </button>
                     ) : (
                       <button
-                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleFollow()}
                       >
                         Follow
@@ -265,21 +265,21 @@ const Member = () => {
 
                     {isFriend ? (
                       <button
-                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleFriendBreakUp()}
                       >
                         Friend
                       </button>
                     ) : isInviting ? (
                       <button
-                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleWithdrawInvitation()}
                       >
-                        Sent friend invitation
+                        Inviting
                       </button>
                     ) : (
                       <button
-                        className='h-fit w-20 rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleFriendInvite()}
                       >
                         Invite

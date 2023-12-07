@@ -38,8 +38,8 @@ const Friends = () => {
         />
       </div>
       <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>My Friend</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <p className='mb-8 text-2xl font-bold'>My Friend</p>
         <div className='flex items-center justify-center'>
           <div className='flex items-center'>
             <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
@@ -49,8 +49,8 @@ const Friends = () => {
         </div>
       </div>
       <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>Friend Request</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <p className='mb-8 text-2xl font-bold'>Friend Request</p>
         <div className='flex items-center justify-center'>
           <div className='flex items-center'>
             <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
@@ -60,8 +60,8 @@ const Friends = () => {
         </div>
       </div>
       <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>Sent Invitation</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <p className='mb-8 text-2xl font-bold'>Sent Invitation</p>
         <div className='flex items-center justify-center'>
           <div className='flex items-center'>
             <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
@@ -71,8 +71,18 @@ const Friends = () => {
         </div>
       </div>
       <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>Following</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <p className='mb-8 text-2xl font-bold'>Popular Users</p>
+        <div className='flex items-center justify-center'>
+          <div className='flex items-center'>
+            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
+            <p className='w-40 bg-zinc-100 text-center'>I Am Not Groot</p>
+          </div>
+        </div>
+      </div>
+      <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>Followers</p>
+        <div className='mb-8 w-full border border-zinc-300' />
         <div className='flex items-center justify-center'>
           <div className='flex items-center'>
             <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
