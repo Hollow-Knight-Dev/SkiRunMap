@@ -1,14 +1,23 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { arrayRemove, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { db } from '../../auth/CloudStorage'
 import { useUserStore } from '../../store/useUser'
 import ProfileIcon from './User-icon.png'
 import SearchIcon from './search-icon.png'
 
+interface UserSimpleData {
+  userID: string
+  username: string
+  userIconUrl: string
+}
+
 const Friends = () => {
   const navigate = useNavigate()
   const { isSignIn, userDoc, isLoadedUserDoc } = useUserStore()
+  const [followList, setFollowList] = useState<UserSimpleData[]>()
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
@@ -28,6 +37,61 @@ const Friends = () => {
     }
   }, [userDoc])
 
+  const retrieveFollows = async (list: string[]) => {
+    const userQuery = query(collection(db, 'users'), where('userID', 'in', list))
+    const userDocsSnapshot = await getDocs(userQuery)
+    const followsData = userDocsSnapshot.docs.map((doc) => {
+      const { userID, username, userIconUrl } = doc.data()
+      return { userID, username, userIconUrl }
+    })
+    setFollowList(followsData)
+  }
+
+  useEffect(() => {
+    if (isLoadedUserDoc) {
+      const userFollowList = userDoc.userFollows
+      retrieveFollows(userFollowList)
+    }
+  }, [userDoc])
+
+  useEffect(() => {
+    console.log('followList:', followList)
+  }, [followList])
+
+  useEffect(() => {
+    if (isLoadedUserDoc) {
+      const userFollowersList = userDoc.userFollowers
+    }
+  }, [userDoc])
+
+  useEffect(() => {
+    if (isLoadedUserDoc) {
+      const userFriendList = userDoc.userFriends
+    }
+  }, [userDoc])
+
+  useEffect(() => {
+    if (isLoadedUserDoc) {
+      const userFriendReqList = userDoc.userFriendReqs
+    }
+  }, [userDoc])
+
+  useEffect(() => {
+    if (isLoadedUserDoc) {
+      const userFriendSentReqList = userDoc.userSentFriendReqs
+    }
+  }, [userDoc])
+
+  const handleUnfollowFollows = async (followID: string) => {
+    console.log('Unfollow')
+    const myUserRef = doc(db, 'users', userDoc.userID)
+    const otherUserRef = doc(db, 'users', followID)
+    await updateDoc(myUserRef, { userFollows: arrayRemove(followID) })
+    await updateDoc(otherUserRef, { userFollowers: arrayRemove(userDoc.userID) })
+    const updateFollowList = followList?.filter((user) => user.userID !== followID)
+    setFollowList(updateFollowList)
+  }
+
   return (
     <div className='flex flex-col p-8'>
       <div className='relative mb-8 w-1/3 self-end'>
@@ -36,6 +100,42 @@ const Friends = () => {
           className='w-full rounded-3xl border border-zinc-300 p-2 pl-16'
           placeholder='Search user by username'
         />
+      </div>
+      <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>Following</p>
+        <div className='mb-8 w-full border border-zinc-300' />
+        <div className='flex flex-col gap-4'>
+          {followList &&
+            followList.map((user, index) => (
+              <div key={index} className='flex items-center justify-between'>
+                <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                  <img
+                    className='h-20 w-20 rounded-full object-cover'
+                    src={user.userIconUrl}
+                    alt='Friend Profile Icon'
+                  />
+                  <p className='text-xl'>{user.username}</p>
+                </Link>
+                <button
+                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-zinc-300'
+                  onClick={() => handleUnfollowFollows(user.userID)}
+                >
+                  Unfollow
+                </button>
+              </div>
+            ))}
+        </div>
+      </div>
+      <div className='mb-16'>
+        <p className='mb-4 text-2xl font-bold'>Followers</p>
+        <div className='mb-8 w-full border border-zinc-300' />
+        <div className='flex items-center justify-center'>
+          <div className='flex items-center'>
+            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
+            <button className='h-10 w-20 bg-zinc-100'>YES</button>
+            <button className='h-10 w-20 bg-zinc-100'>NO</button>
+          </div>
+        </div>
       </div>
       <div className='mb-16'>
         <p className='mb-4 text-2xl font-bold'>My Friend</p>
@@ -54,34 +154,12 @@ const Friends = () => {
         <div className='flex items-center justify-center'>
           <div className='flex items-center'>
             <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
-            <button className='h-10 w-20 bg-zinc-100'>YES</button>
-            <button className='h-10 w-20 bg-zinc-100'>NO</button>
-          </div>
-        </div>
-      </div>
-      <div className='mb-16'>
-        <p className='mb-4 text-2xl font-bold'>Sent Invitation</p>
-        <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
-          <div className='flex items-center'>
-            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
-            <button className='h-10 w-20 bg-zinc-100'>YES</button>
-            <button className='h-10 w-20 bg-zinc-100'>NO</button>
-          </div>
-        </div>
-      </div>
-      <div className='mb-16'>
-        <p className='mb-4 text-2xl font-bold'>Following</p>
-        <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
-          <div className='flex items-center'>
-            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
             <p className='w-40 bg-zinc-100 text-center'>I Am Not Groot</p>
           </div>
         </div>
       </div>
       <div className='mb-16'>
-        <p className='mb-4 text-2xl font-bold'>Followers</p>
+        <p className='mb-4 text-2xl font-bold'>Sent Invitation</p>
         <div className='mb-8 w-full border border-zinc-300' />
         <div className='flex items-center justify-center'>
           <div className='flex items-center'>
