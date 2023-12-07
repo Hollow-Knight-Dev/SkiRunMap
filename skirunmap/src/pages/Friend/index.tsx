@@ -12,7 +12,7 @@ const Friends = () => {
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
-      toast.warn(`You haven\'t sign in`, {
+      toast.warn('Please sign in to view your friends', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,

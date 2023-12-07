@@ -69,7 +69,7 @@ const Member = () => {
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
-      toast.warn(`You haven\'t sign in`, {
+      toast.warn('Please sign in to view your page', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -83,7 +83,7 @@ const Member = () => {
         }
       })
     } else if (isLoadedUserDoc && userDoc.username === undefined) {
-      toast.warn(`You haven't finish your profile`, {
+      toast.warn("You haven't finish your profile", {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,

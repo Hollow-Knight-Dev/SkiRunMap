@@ -40,7 +40,7 @@ const MemberInfo = () => {
       setUserGender(userDoc.userGender)
       setUserDescription(userDoc.userDescription)
     } else if (isLoadedUserDoc && !isSignIn) {
-      toast.warn(`You haven\'t sign in`, {
+      toast.warn('Please sign in to edit your info', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,

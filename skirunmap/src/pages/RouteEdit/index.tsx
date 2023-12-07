@@ -77,7 +77,7 @@ const EditRoute: React.FC = () => {
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
-      toast.warn(`You haven\'t sign in`, {
+      toast.warn('Please sign in to create a new route', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,

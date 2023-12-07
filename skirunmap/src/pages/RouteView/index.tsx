@@ -289,7 +289,7 @@ const RouteView = () => {
         }
       }
     } else {
-      toast.warn('Sign in to like this route!', {
+      toast.warn('Sign in to like this route', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -320,7 +320,7 @@ const RouteView = () => {
         }
       }
     } else {
-      toast.warn('Sign in to dislike this route!', {
+      toast.warn('Sign in to dislike this route', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -337,7 +337,7 @@ const RouteView = () => {
     if (isSignIn) {
       setIsOpeningBookmark((prev) => !prev)
     } else {
-      toast.warn('Sign in to save this route!', {
+      toast.warn('Sign in to save this route', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -361,7 +361,7 @@ const RouteView = () => {
 
   const handleCreateList = async () => {
     if (createListName.trim() === '') {
-      toast.warn("You haven't type in list name!", {
+      toast.warn('List name cannot be empty', {
         position: 'top-right',
         autoClose: 1000,
         hideProgressBar: false,
@@ -395,7 +395,7 @@ const RouteView = () => {
         })
         setCreateListName('')
       } else {
-        toast.warn('The list name is already created!', {
+        toast.warn('This list name already exists', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
