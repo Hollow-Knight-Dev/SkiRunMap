@@ -6,6 +6,7 @@ import {
   collection,
   doc,
   getDoc,
+  increment,
   onSnapshot,
   orderBy,
   query,
@@ -78,6 +79,20 @@ const RouteView = () => {
 
     return time
   }
+
+  const addViewCount = async (id: string) => {
+    const routeRef = doc(db, 'routes', id)
+    const docSnapshot = await getDoc(routeRef)
+    if (docSnapshot.exists()) {
+      await updateDoc(routeRef, { viewCount: increment(1) })
+    }
+  }
+
+  useEffect(() => {
+    if (id) {
+      addViewCount(id)
+    }
+  }, [])
 
   useEffect(() => {
     if (id) {
