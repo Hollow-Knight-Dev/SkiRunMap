@@ -18,6 +18,7 @@ const Friends = () => {
   const navigate = useNavigate()
   const { isSignIn, userDoc, isLoadedUserDoc } = useUserStore()
   const [followList, setFollowList] = useState<UserSimpleData[]>()
+  const [followerList, setFollowerList] = useState<UserSimpleData[]>()
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
@@ -37,14 +38,26 @@ const Friends = () => {
     }
   }, [userDoc])
 
+  const retrieveUserSimpleData = async (list: string[]) => {
+    if (list.length > 0) {
+      const userQuery = query(collection(db, 'users'), where('userID', 'in', list))
+      const userDocsSnapshot = await getDocs(userQuery)
+      const userSimpleData = userDocsSnapshot.docs.map((doc) => {
+        const { userID, username, userIconUrl } = doc.data()
+        return { userID, username, userIconUrl }
+      })
+      return userSimpleData
+    }
+  }
+
   const retrieveFollows = async (list: string[]) => {
-    const userQuery = query(collection(db, 'users'), where('userID', 'in', list))
-    const userDocsSnapshot = await getDocs(userQuery)
-    const followsData = userDocsSnapshot.docs.map((doc) => {
-      const { userID, username, userIconUrl } = doc.data()
-      return { userID, username, userIconUrl }
-    })
+    const followsData = await retrieveUserSimpleData(list)
     setFollowList(followsData)
+  }
+
+  const retrieveFollowers = async (list: string[]) => {
+    const followersData = await retrieveUserSimpleData(list)
+    setFollowerList(followersData)
   }
 
   useEffect(() => {
@@ -55,14 +68,15 @@ const Friends = () => {
   }, [userDoc])
 
   useEffect(() => {
-    console.log('followList:', followList)
-  }, [followList])
-
-  useEffect(() => {
     if (isLoadedUserDoc) {
       const userFollowersList = userDoc.userFollowers
+      retrieveFollowers(userFollowersList)
     }
   }, [userDoc])
+
+  useEffect(() => {
+    console.log('followerList:', followerList)
+  }, [followerList])
 
   useEffect(() => {
     if (isLoadedUserDoc) {
@@ -90,6 +104,16 @@ const Friends = () => {
     await updateDoc(otherUserRef, { userFollowers: arrayRemove(userDoc.userID) })
     const updateFollowList = followList?.filter((user) => user.userID !== followID)
     setFollowList(updateFollowList)
+  }
+
+  const handleRemoveFollowers = async (followID: string) => {
+    console.log('RemoveFollowers')
+    const myUserRef = doc(db, 'users', userDoc.userID)
+    const otherUserRef = doc(db, 'users', followID)
+    await updateDoc(myUserRef, { userFollowers: arrayRemove(followID) })
+    await updateDoc(otherUserRef, { userFollows: arrayRemove(userDoc.userID) })
+    const updateFollowerList = followerList?.filter((user) => user.userID !== followID)
+    setFollowerList(updateFollowerList)
   }
 
   return (
@@ -129,12 +153,26 @@ const Friends = () => {
       <div className='mb-16'>
         <p className='mb-4 text-2xl font-bold'>Followers</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
-          <div className='flex items-center'>
-            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
-            <button className='h-10 w-20 bg-zinc-100'>YES</button>
-            <button className='h-10 w-20 bg-zinc-100'>NO</button>
-          </div>
+        <div className='flex flex-col gap-4'>
+          {followerList &&
+            followerList.map((user, index) => (
+              <div key={index} className='flex items-center justify-between'>
+                <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                  <img
+                    className='h-20 w-20 rounded-full object-cover'
+                    src={user.userIconUrl}
+                    alt='Friend Profile Icon'
+                  />
+                  <p className='text-xl'>{user.username}</p>
+                </Link>
+                <button
+                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-zinc-300'
+                  onClick={() => handleRemoveFollowers(user.userID)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
         </div>
       </div>
       <div className='mb-16'>
