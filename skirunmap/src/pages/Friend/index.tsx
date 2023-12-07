@@ -19,6 +19,7 @@ const Friends = () => {
   const { isSignIn, userDoc, isLoadedUserDoc } = useUserStore()
   const [followList, setFollowList] = useState<UserSimpleData[]>()
   const [followerList, setFollowerList] = useState<UserSimpleData[]>()
+  const [friendList, setFriendList] = useState<UserSimpleData[]>()
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
@@ -60,6 +61,11 @@ const Friends = () => {
     setFollowerList(followersData)
   }
 
+  const retrieveFriends = async (list: string[]) => {
+    const friendsData = await retrieveUserSimpleData(list)
+    setFriendList(friendsData)
+  }
+
   useEffect(() => {
     if (isLoadedUserDoc) {
       const userFollowList = userDoc.userFollows
@@ -75,14 +81,15 @@ const Friends = () => {
   }, [userDoc])
 
   useEffect(() => {
-    console.log('followerList:', followerList)
-  }, [followerList])
-
-  useEffect(() => {
     if (isLoadedUserDoc) {
       const userFriendList = userDoc.userFriends
+      retrieveFriends(userFriendList)
     }
   }, [userDoc])
+
+  useEffect(() => {
+    console.log('friendList:', friendList)
+  }, [friendList])
 
   useEffect(() => {
     if (isLoadedUserDoc) {
@@ -96,24 +103,32 @@ const Friends = () => {
     }
   }, [userDoc])
 
-  const handleUnfollowFollows = async (followID: string) => {
-    console.log('Unfollow')
+  const handleUnfollowFollows = async (id: string) => {
     const myUserRef = doc(db, 'users', userDoc.userID)
-    const otherUserRef = doc(db, 'users', followID)
-    await updateDoc(myUserRef, { userFollows: arrayRemove(followID) })
+    const otherUserRef = doc(db, 'users', id)
+    await updateDoc(myUserRef, { userFollows: arrayRemove(id) })
     await updateDoc(otherUserRef, { userFollowers: arrayRemove(userDoc.userID) })
-    const updateFollowList = followList?.filter((user) => user.userID !== followID)
+    const updateFollowList = followList?.filter((user) => user.userID !== id)
     setFollowList(updateFollowList)
   }
 
-  const handleRemoveFollowers = async (followID: string) => {
-    console.log('RemoveFollowers')
+  const handleRemoveFollowers = async (id: string) => {
     const myUserRef = doc(db, 'users', userDoc.userID)
-    const otherUserRef = doc(db, 'users', followID)
-    await updateDoc(myUserRef, { userFollowers: arrayRemove(followID) })
+    const otherUserRef = doc(db, 'users', id)
+    await updateDoc(myUserRef, { userFollowers: arrayRemove(id) })
     await updateDoc(otherUserRef, { userFollows: arrayRemove(userDoc.userID) })
-    const updateFollowerList = followerList?.filter((user) => user.userID !== followID)
+    const updateFollowerList = followerList?.filter((user) => user.userID !== id)
     setFollowerList(updateFollowerList)
+  }
+
+  const handleBreakUpFriends = async (id: string) => {
+    console.log('Break up with friend')
+    const myUserRef = doc(db, 'users', userDoc.userID)
+    const otherUserRef = doc(db, 'users', id)
+    await updateDoc(myUserRef, { userFriends: arrayRemove(id) })
+    await updateDoc(otherUserRef, { userFriends: arrayRemove(userDoc.userID) })
+    const updateFriendList = friendList?.filter((user) => user.userID !== id)
+    setFriendList(updateFriendList)
   }
 
   return (
@@ -178,12 +193,26 @@ const Friends = () => {
       <div className='mb-16'>
         <p className='mb-4 text-2xl font-bold'>My Friend</p>
         <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
-          <div className='flex items-center'>
-            <img className='h-20 w-20' src={ProfileIcon} alt='Friend Profile Icon' />
-            <button className='h-10 w-20 bg-zinc-100'>YES</button>
-            <button className='h-10 w-20 bg-zinc-100'>NO</button>
-          </div>
+        <div className='flex flex-col gap-4'>
+          {friendList &&
+            friendList.map((user, index) => (
+              <div key={index} className='flex items-center justify-between'>
+                <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                  <img
+                    className='h-20 w-20 rounded-full object-cover'
+                    src={user.userIconUrl}
+                    alt='Friend Profile Icon'
+                  />
+                  <p className='text-xl'>{user.username}</p>
+                </Link>
+                <button
+                  className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-zinc-300'
+                  onClick={() => handleBreakUpFriends(user.userID)}
+                >
+                  Break up
+                </button>
+              </div>
+            ))}
         </div>
       </div>
       <div className='mb-16'>
