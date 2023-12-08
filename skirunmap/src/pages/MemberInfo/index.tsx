@@ -150,17 +150,17 @@ const MemberInfo = () => {
 
   return (
     <div className='h-screen-64px flex flex-col items-center justify-center bg-zinc-200'>
-      <div className='flex w-4/5 gap-8'>
-        <div className='relative h-fit w-1/6'>
+      <div className='flex w-4/5 gap-12'>
+        <div className='relative h-fit w-28'>
           <label
             htmlFor='userIcon'
-            className='h-fit w-fit cursor-pointer'
+            className='h-28 w-28 cursor-pointer'
             onMouseLeave={() => setIsHoverOnIcon(false)}
           >
             <img
               src={userIconUrl}
               alt='User icon'
-              className={`rounded-full shadow-[10px_15px_30px_-10px_#4da5fd] ${
+              className={`h-28 w-28 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd] duration-100 ${
                 isHoverOnIcon && 'opacity-30'
               }`}
               onMouseEnter={() => setIsHoverOnIcon(true)}
@@ -172,7 +172,7 @@ const MemberInfo = () => {
                 viewBox='0 0 24 24'
                 strokeWidth='1.5'
                 stroke='black'
-                className='absolute inset-1/2 z-10 h-6 w-6 -translate-x-1/2 -translate-y-1/2'
+                className='absolute inset-1/2 z-10 h-8 w-8 -translate-x-1/2 -translate-y-1/2'
               >
                 <path
                   strokeLinecap='round'

@@ -98,7 +98,7 @@ const Header: React.FC = () => {
             {isSignIn && !userDoc.username && <p className='pr-2'>Hi, please create a username</p>}
             {isSignIn ? (
               <img
-                className='mr-2 h-6 w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+                className='mr-2 h-6 w-6 rounded-full object-cover shadow-[4px_4px_20px_-4px_#4da5fd]'
                 src={userDoc.userIconUrl}
                 alt='User icon'
               />

@@ -646,7 +646,7 @@ const RouteView = () => {
                 <Link to={`/member/${routeDocData.userID}`} className='h-fit w-fit'>
                   {/* need to use dynamic user icon */}
                   <img
-                    className='h-10 w-10 rounded-full'
+                    className='h-10 w-10 rounded-full object-cover'
                     src={authorLatestIconUrl}
                     alt='Friend Profile Icon'
                   />
