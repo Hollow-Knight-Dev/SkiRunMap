@@ -9,11 +9,12 @@ import Header from './components/Header'
 import Friend from './pages/Friend'
 import Home from './pages/Home'
 import Member from './pages/Member'
-import MemberInfo from './pages/MemberInfo'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
 import SignIn from './pages/Signin'
 import { User, useUserStore } from './store/useUser'
+import ProtectedMemberInfoRoute from './utils/ProtectedMemberInfoRoute'
+import ProtectedRoute from './utils/ProtectedRoute'
 
 const App: React.FC = () => {
   const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc } = useUserStore()
@@ -48,11 +49,32 @@ const App: React.FC = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/route/:id' element={<RouteView />} />
-        <Route path='/edit-route' element={<RouteEdit />} />
         <Route path='/signin' element={<SignIn />} />
-        <Route path='/member/:memberID' element={<Member />} />
-        <Route path='/member-info' element={<MemberInfo />} />
-        <Route path='/friend' element={<Friend />} />
+        <Route
+          path='/edit-route'
+          element={
+            <ProtectedRoute>
+              <RouteEdit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/member/:memberID'
+          element={
+            <ProtectedRoute>
+              <Member />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/friend'
+          element={
+            <ProtectedRoute>
+              <Friend />
+            </ProtectedRoute>
+          }
+        />
+        <Route path='/member-info' element={<ProtectedMemberInfoRoute />} />
       </Routes>
       <Footer />
     </BrowserRouter>

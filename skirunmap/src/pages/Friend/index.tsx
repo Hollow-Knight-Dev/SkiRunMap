@@ -9,9 +9,7 @@ import {
   where
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
 import { useUserStore } from '../../store/useUser'
 import SearchIcon from './search-icon.png'
@@ -23,31 +21,12 @@ interface UserSimpleData {
 }
 
 const Friends = () => {
-  const navigate = useNavigate()
-  const { isSignIn, userDoc, isLoadedUserDoc } = useUserStore()
+  const { userDoc, isLoadedUserDoc } = useUserStore()
   const [followList, setFollowList] = useState<UserSimpleData[]>()
   const [followerList, setFollowerList] = useState<UserSimpleData[]>()
   const [friendList, setFriendList] = useState<UserSimpleData[]>()
   const [friendReqList, setFriendReqList] = useState<UserSimpleData[]>()
   const [sentFriendReqList, setSentFriendReqList] = useState<UserSimpleData[]>()
-
-  useEffect(() => {
-    if (isLoadedUserDoc && !isSignIn) {
-      toast.warn('Please sign in to view your friends', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        onClose: () => {
-          navigate('/signin')
-        }
-      })
-    }
-  }, [userDoc])
 
   const retrieveUserSimpleData = async (list: string[]) => {
     if (list.length > 0) {

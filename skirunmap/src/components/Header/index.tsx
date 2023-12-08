@@ -1,5 +1,5 @@
 import { getAuth, signOut } from 'firebase/auth'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
@@ -9,7 +9,7 @@ import Notification from './notification-icon.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const { isSignIn, userDoc } = useUserStore()
+  const { isSignIn, userDoc, setIsSignIn } = useUserStore()
   const auth = getAuth()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -23,7 +23,9 @@ const Header: React.FC = () => {
   }
 
   const handleSignOut = async () => {
+    navigate('/')
     await signOut(auth)
+    setIsSignIn(false)
     toast.success('Sign out successed!', {
       position: 'top-right',
       autoClose: 1000,
@@ -34,8 +36,9 @@ const Header: React.FC = () => {
       progress: undefined,
       theme: 'light'
     })
-    navigate('/')
   }
+
+  useEffect(() => {}, [userDoc])
 
   return (
     <div className='flex justify-between bg-white pl-8 pr-8'>
@@ -91,11 +94,10 @@ const Header: React.FC = () => {
         >
           <Link
             className={`flex h-full items-center focus:outline-none ${!isSignIn && 'pl-20'}`}
-            to={`/member/${userDoc.userID}`}
+            to={isSignIn ? `/member/${userDoc.userID}` : '/signin'}
             onMouseEnter={() => handleItemHover('Member')}
           >
             {isSignIn && userDoc.username && <p className='pr-2'>Hi, {userDoc.username}</p>}
-            {isSignIn && !userDoc.username && <p className='pr-2'>Hi, please create a username</p>}
             {isSignIn ? (
               <img
                 className='mr-2 h-6 w-6 rounded-full object-cover shadow-[4px_4px_20px_-4px_#4da5fd]'
@@ -110,7 +112,7 @@ const Header: React.FC = () => {
               />
             )}
           </Link>
-          {hoveredItem === 'Member' && (
+          {hoveredItem === 'Member' && isSignIn && (
             <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
               <Link
                 to={`/member/${userDoc.userID}`}

@@ -103,6 +103,7 @@ const SignIn: React.FC = () => {
         // console.log(userDoc.data()?.userFinishedInfo)
 
         if (userDoc.data()?.userFinishedInfo) {
+          navigate(`/member/${userID}`)
           toast.success(`Welcome back, ${userID}`, {
             position: 'top-right',
             autoClose: 1000,
@@ -111,12 +112,10 @@ const SignIn: React.FC = () => {
             pauseOnHover: false,
             draggable: false,
             progress: undefined,
-            theme: 'light',
-            onClose: () => {
-              navigate(`/member/${userID}`)
-            }
+            theme: 'light'
           })
         } else {
+          navigate('/member-info')
           toast.warn(`You haven't finish your profile`, {
             position: 'top-right',
             autoClose: 1000,
@@ -125,10 +124,7 @@ const SignIn: React.FC = () => {
             pauseOnHover: false,
             draggable: false,
             progress: undefined,
-            theme: 'light',
-            onClose: () => {
-              navigate('/member-info')
-            }
+            theme: 'light'
           })
         }
       })

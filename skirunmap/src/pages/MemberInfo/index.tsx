@@ -1,4 +1,4 @@
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -9,7 +9,9 @@ import { User, useUserStore } from '../../store/useUser'
 
 const MemberInfo = () => {
   const navigate = useNavigate()
+  const [isUpdated, setIsUpdated] = useState<boolean>(false)
   const {
+    setUserDoc,
     userID,
     userIconUrl,
     setUserIconUrl,
@@ -39,22 +41,15 @@ const MemberInfo = () => {
       setUserCountry(userDoc.userCountry)
       setUserGender(userDoc.userGender)
       setUserDescription(userDoc.userDescription)
-    } else if (isLoadedUserDoc && !isSignIn) {
-      toast.warn('Please sign in to edit your info', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        onClose: () => {
-          navigate('/signin')
-        }
-      })
     }
   }, [userDoc])
+
+  useEffect(() => {
+    if (isUpdated) {
+      // console.log('After updating member info userDoc:', userDoc)
+      navigate(`/member/${userID}`)
+    }
+  }, [userDoc, isUpdated])
 
   const [isHoverOnIcon, setIsHoverOnIcon] = useState<boolean>(false)
 
@@ -89,7 +84,7 @@ const MemberInfo = () => {
   }
 
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.trim()
+    const input = e.target.value
     setUsername(input)
   }
 
@@ -119,33 +114,46 @@ const MemberInfo = () => {
   }
 
   const handleMemberInfoSubmit = async () => {
-    const userRef = doc(db, 'users', userID)
-    const data: Partial<User> = {
-      username: username,
-      userIconUrl: userIconUrl,
-      userSkiAge: userSkiAge,
-      userSnowboardAge: userSnowboardAge,
-      userCountry: userCountry,
-      userGender: userGender,
-      userDescription: userDescription,
-      userFinishedInfo: true
-    }
-    console.log(data)
-    await updateDoc(userRef, data)
-
-    toast.success('Updated personal info!', {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-      onClose: () => {
-        navigate(`/member/${userID}`)
+    if (username.trim() !== '') {
+      const userRef = doc(db, 'users', userID)
+      const data: Partial<User> = {
+        username: username,
+        userIconUrl: userIconUrl,
+        userSkiAge: userSkiAge,
+        userSnowboardAge: userSnowboardAge,
+        userCountry: userCountry,
+        userGender: userGender,
+        userDescription: userDescription,
+        userFinishedInfo: true
       }
-    })
+      await updateDoc(userRef, data)
+      const userDoc = await getDoc(doc(db, 'users', userID))
+      const userDocData = userDoc.data() as User
+      setUserDoc(userDocData)
+      setIsUpdated(true)
+
+      toast.success('Updated personal info!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    } else {
+      toast.warn('Username cannot be empty', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
   }
 
   return (
