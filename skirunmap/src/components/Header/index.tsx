@@ -1,16 +1,16 @@
+import { getAuth, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useIsSignIn, useUserID } from '../../store/useUser'
+import { useUserStore } from '../../store/useUser'
+import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
 import Notification from './notification-icon.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const userID = useUserID((state) => state.userID)
-  const setUserID = useUserID((state) => state.setUserID)
-  const isSignIn = useIsSignIn((state) => state.isSignIn)
-  const setIsSignIn = useIsSignIn((state) => state.setIsSignIn)
+  const { isSignIn, userDoc, setIsSignIn } = useUserStore()
+  const auth = getAuth()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
@@ -22,7 +22,23 @@ const Header: React.FC = () => {
     setHoveredItem(null)
   }
 
-  useEffect(() => {}, [userID])
+  const handleSignOut = async () => {
+    navigate('/')
+    await signOut(auth)
+    setIsSignIn(false)
+    toast.success('Sign out successed!', {
+      position: 'top-right',
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light'
+    })
+  }
+
+  useEffect(() => {}, [userDoc])
 
   return (
     <div className='flex justify-between bg-white pl-8 pr-8'>
@@ -36,81 +52,109 @@ const Header: React.FC = () => {
         <div className='relative ml-8 flex h-full items-center gap-8 text-lg font-bold'>
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
-              name='Explore'
-              url='/'
-              isHovered={hoveredItem === 'Explore'}
-              onMouseEnter={() => handleItemHover('Explore')}
-            />
-            {hoveredItem === 'Explore' && (
-              <SubNavItem items={[{ name: 'Niseko Ski Resort', url: '/' }]} />
-            )}
-          </div>
-
-          <div className='h-full' onMouseLeave={handleItemLeave}>
-            <NavItem
               name='Route'
-              url='/route'
+              url='/'
               isHovered={hoveredItem === 'Route'}
               onMouseEnter={() => handleItemHover('Route')}
             />
             {hoveredItem === 'Route' && (
               <SubNavItem
                 items={[
-                  { name: 'View Route', url: '/route' },
-                  { name: 'Create Route', url: '/edit-route' }
+                  { name: 'Create New Route', url: '/edit-route' },
+                  { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
+                  { name: 'My Route', url: `/member/${userDoc.userID}` },
+                  { name: 'Followed User Routes', url: '/' },
+                  { name: 'Friend Routes', url: '/' }
                 ]}
               />
             )}
           </div>
-
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
-              name='Member'
-              url='/member'
-              isHovered={hoveredItem === 'Member'}
-              onMouseEnter={() => handleItemHover('Member')}
+              name='Explore'
+              url='/'
+              isHovered={hoveredItem === 'Explore'}
+              onMouseEnter={() => handleItemHover('Explore')}
             />
-            {hoveredItem === 'Member' && (
+            {hoveredItem === 'Explore' && (
               <SubNavItem
                 items={[
-                  { name: 'My Page', url: '/member' },
-                  { name: 'My Friend', url: '/friend' }
+                  { name: 'Niseko Ski Resort', url: '/' },
+                  { name: 'Popular Users', url: '/' }
                 ]}
               />
             )}
           </div>
         </div>
       </div>
-      <div className='flex items-center'>
-        {isSignIn && <p className='pr-2'>Hi, username</p>}
-        <img className='mr-2 h-auto w-6' src={Notification} alt='Notification icon' />
+      <div className='relative flex items-center'>
+        <div
+          onMouseLeave={handleItemLeave}
+          className='h-full text-lg duration-200 hover:translate-y-[-2px]'
+        >
+          <Link
+            className={`flex h-full items-center focus:outline-none ${!isSignIn && 'pl-20'}`}
+            to={isSignIn ? `/member/${userDoc.userID}` : '/signin'}
+            onMouseEnter={() => handleItemHover('Member')}
+          >
+            {isSignIn && userDoc.username && <p className='pr-2'>Hi, {userDoc.username}</p>}
+            {isSignIn ? (
+              <img
+                className='mr-2 h-6 w-6 rounded-full object-cover shadow-[4px_4px_20px_-4px_#4da5fd]'
+                src={userDoc.userIconUrl}
+                alt='User icon'
+              />
+            ) : (
+              <img
+                className='mr-2 h-6 w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+                src={DefaultUserIcon}
+                alt='User icon'
+              />
+            )}
+          </Link>
+          {hoveredItem === 'Member' && isSignIn && (
+            <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+              <Link
+                to={`/member/${userDoc.userID}`}
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                My Page
+              </Link>
+              <Link
+                to='/friend'
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                My Friend
+              </Link>
+              <Link
+                to='/member-info'
+                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                Edit Info
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <img
+          className='mr-2 h-auto w-6 cursor-pointer duration-200 hover:translate-y-[-2px]'
+          src={Notification}
+          alt='Notification icon'
+        />
+
         {isSignIn ? (
           <button
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-            onClick={() => {
-              setIsSignIn(false)
-              setUserID('')
-              toast.success('Log out successed!', {
-                position: 'top-right',
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: 'light'
-              })
-              navigate('/')
-            }}
+            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold duration-200 hover:translate-y-[-2px]'
+            onClick={() => handleSignOut()}
           >
-            Log out
+            Sign out
           </button>
         ) : (
           <Link
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold duration-200 hover:translate-y-[-2px]'
             to='/signin'
           >
-            Log in
+            Sign in
           </Link>
         )}
       </div>
@@ -145,7 +189,7 @@ interface SubNavItemProps {
 
 const SubNavItem: React.FC<SubNavItemProps> = ({ items }) => {
   return (
-    <div className='absolute top-14 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+    <div className='absolute top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
       {items.map(({ name, url }, index) => (
         <Link
           key={index}

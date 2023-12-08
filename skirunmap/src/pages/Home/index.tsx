@@ -95,7 +95,7 @@ const Home = () => {
               className='h-48 w-48 cursor-pointer rounded-2xl bg-zinc-300 p-4'
             >
               <p>Title: {map.routeTitle}</p>
-              <p>User: {map.userID}</p>
+              <p>User: {map.username}</p>
               <p>Tag: {map.tags}</p>
               <p>Snow Buddy: {map.snowBuddies}</p>
               <div className='flex gap-1'>

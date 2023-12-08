@@ -17,8 +17,10 @@ export interface Spot {
 
 export interface Comment {
   userID: string
+  username: string
+  userIconUrl: string
   comment: string
-  commentTime: FieldValue
+  commentTimestamp: FieldValue
 }
 
 export interface Route {
@@ -38,7 +40,6 @@ export interface Route {
   dislikeUsers: string[]
   likeCount: number
   viewCount: number
-  comments: Comment[]
 }
 interface RouteID {
   routeID: string
