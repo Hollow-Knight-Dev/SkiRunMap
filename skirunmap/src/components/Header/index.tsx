@@ -126,12 +126,6 @@ const Header: React.FC = () => {
               >
                 My Friend
               </Link>
-              <Link
-                to='/member-info'
-                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
-              >
-                Edit Info
-              </Link>
             </div>
           )}
         </div>

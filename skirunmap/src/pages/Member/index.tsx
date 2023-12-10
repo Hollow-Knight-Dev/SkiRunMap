@@ -245,7 +245,7 @@ const Member = () => {
             <div className='flex flex-col'>
               <div className='mb-4 flex items-center justify-between gap-10'>
                 <p className='text-3xl font-bold'>{memberDoc?.username}</p>
-                {!isMyself && (
+                {!isMyself ? (
                   <div className='flex gap-2'>
                     {isFollowing ? (
                       <button
@@ -286,6 +286,13 @@ const Member = () => {
                       </button>
                     )}
                   </div>
+                ) : (
+                  <Link
+                    className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                    to='/member-info'
+                  >
+                    Edit info
+                  </Link>
                 )}
               </div>
               <div className='mb-2 flex gap-1'>
