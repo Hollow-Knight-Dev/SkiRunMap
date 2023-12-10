@@ -70,3 +70,10 @@ p {
   height: 300px;
   object-fit: contain;
 }
+
+/* Home Page */
+.home-bg-image {
+  background-image: url('../public/images/snow-mountain.png');
+  background-size: cover;
+  background-position: center;
+}

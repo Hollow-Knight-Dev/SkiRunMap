@@ -2,8 +2,7 @@ import { DocumentData, collection, onSnapshot, orderBy, query, where } from 'fir
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
-import SearchIcon from './search-icon.png'
-import SnowMountain from './snow-mountain.png'
+import SearchBar from '../../components/SearchBar'
 
 const Home = () => {
   const [allRoutes, setAllRoutes] = useState<DocumentData[]>([])
@@ -38,20 +37,11 @@ const Home = () => {
   }, [])
 
   return (
-    <div className='flex flex-col items-center'>
-      <div className='relative'>
-        <div className='absolute left-1/3 top-24 flex flex-col items-center'>
-          <p className='text-3xl font-bold'>Find routes</p>
-          <div className='relative w-80'>
-            <img className='absolute left-4 top-2 w-7' src={SearchIcon} alt='Search Icon' />
-            <input
-              className='w-full rounded-3xl border border-zinc-300 p-2 pl-16'
-              placeholder='Ski resort, ski run, or tag name'
-            />
-          </div>
-        </div>
-        <div className='h-100'>
-          <img src={SnowMountain} alt='Snow Mountain' />
+    <div className='flex w-full flex-col items-center'>
+      <div className='home-bg-image flex h-[600px] w-full justify-center'>
+        <div className='mt-36 flex h-max w-max flex-col items-center'>
+          <p className='mb-2 w-max text-3xl font-bold'>Find routes</p>
+          <SearchBar />
         </div>
       </div>
       <div className='flex w-full flex-col items-center p-8'>
