@@ -1,24 +1,23 @@
 import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
+import { RouteKeywords } from '../../store/useSearch'
 import SearchIcon from './search-icon.png'
 
-interface RouteKeywords {
-  routeID: string
-  keywords: string[]
-}
-
 const SearchBar = () => {
+  const navigate = useNavigate()
   const [searchInput, setSearchInput] = useState<string>('')
   const [suggestKeywords, setSuggestKeywords] = useState<string[]>([])
+  const [actualKeywords, setActualKeywords] = useState<string[]>([])
   const [selectedKeyword, setSelectedKeyword] = useState<string>('')
   const [isFocus, setIsFocus] = useState<boolean>(false)
 
-  useEffect(() => {
-    console.log(selectedKeyword)
-  }, [selectedKeyword])
+  // useEffect(() => {
+  //   console.log(selectedKeyword)
+  // }, [selectedKeyword])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,19 +42,25 @@ const SearchBar = () => {
     if (input.trim() !== '') {
       const querySnapshot = await getDocs(collection(db, 'keywords'))
       const results: string[] = []
+      const actualResults: string[] = []
 
       querySnapshot.forEach((doc) => {
         const docData = doc.data() as RouteKeywords
         const keywords = docData.keywords
         keywords.forEach((kw) => {
           if (kw.toLowerCase().includes(input.trim().toLowerCase())) {
-            results.push(kw.toLowerCase())
+            if (!results.includes(kw.toLowerCase())) {
+              results.push(kw.toLowerCase())
+              actualResults.push(kw)
+            }
           }
         })
         setSuggestKeywords(results)
+        setActualKeywords(actualResults)
       })
     } else {
       setSuggestKeywords([])
+      setActualKeywords([])
     }
   }
 
@@ -103,7 +108,10 @@ const SearchBar = () => {
   }
 
   const handleSearch = (searchKeyword: string) => {
-    console.log('Search:', searchKeyword)
+    const url = `/search/${encodeURIComponent(searchKeyword)}`
+    navigate(url, { state: { suggestedKeywords: actualKeywords } })
+    setSearchInput('')
+    setSuggestKeywords([])
   }
 
   const handleSuggestionClick = (searchKeyword: string) => {
