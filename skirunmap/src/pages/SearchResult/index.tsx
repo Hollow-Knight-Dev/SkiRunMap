@@ -42,7 +42,7 @@ const SearchResult = () => {
 
   useEffect(() => {
     const filterOptions: Record<string, QueryOrderByConstraint | null> = {
-      Newest: orderBy('createTime', 'desc'),
+      'Newest': orderBy('createTime', 'desc'),
       'Most likes': orderBy('likeCount', 'desc'),
       'Most views': orderBy('viewCount', 'desc')
     }
