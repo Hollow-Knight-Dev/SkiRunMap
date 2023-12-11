@@ -136,9 +136,9 @@ const SearchBar = () => {
   }
 
   return (
-    <div className='relative w-96 duration-300 hover:translate-y-[-2px]' id='search-bar'>
+    <div className='relative w-[600px] duration-300 hover:translate-y-[-2px]' id='search-bar'>
       <input
-        className='w-full rounded-3xl border border-zinc-300 p-2 pl-12 text-xl leading-4 shadow-[10px_10px_10px_-12px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+        className='h-12 w-full rounded-3xl p-2 pl-12 text-xl italic leading-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
         placeholder='Enter resort, ski run, or tag name'
         value={searchInput}
         onChange={(e) => handleSearchInput(e)}
@@ -147,7 +147,7 @@ const SearchBar = () => {
         onClick={() => handleInputClick()}
       />
       <img
-        className='absolute left-5 top-[13px] h-4 w-4 cursor-pointer'
+        className='absolute left-5 top-4 h-4 w-4 cursor-pointer'
         src={SearchIcon}
         alt='Search Icon'
         onClick={() => handleIconClickSearch(searchInput)}
@@ -167,7 +167,7 @@ const SearchBar = () => {
               onMouseEnter={() => handleMouseEnter(keyword)}
             >
               <img className='h-3 w-3' src={SearchIcon} alt='Search Icon' />
-              <p className='text-lg'>{keyword}</p>
+              <p className='text-lg italic'>{keyword}</p>
             </div>
           ))}
         </div>

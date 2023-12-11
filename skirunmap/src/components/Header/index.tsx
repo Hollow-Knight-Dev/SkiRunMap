@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
 import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
-import Notification from './notification-icon.png'
+import Notification from './notification.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -46,10 +46,10 @@ const Header: React.FC = () => {
         <Link to='/'>
           <img src={Logo} alt='Logo' />
         </Link>
-        <Link className='ml-2 cursor-pointer text-2xl font-bold italic' to='/'>
+        <Link className='ml-2 w-[135px] cursor-pointer text-2xl font-bold italic' to='/'>
           Ski Run Map
         </Link>
-        <div className='relative ml-8 flex h-full items-center gap-8 text-lg font-bold'>
+        <div className='ital relative ml-12 flex h-full items-center gap-8 text-lg'>
           <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
               name='Route'
@@ -88,41 +88,40 @@ const Header: React.FC = () => {
         </div>
       </div>
       <div className='relative flex items-center'>
-        <div
-          onMouseLeave={handleItemLeave}
-          className='h-full text-lg duration-200 hover:translate-y-[-2px]'
-        >
+        <div onMouseLeave={handleItemLeave} className='h-full'>
           <Link
-            className={`flex h-full items-center focus:outline-none ${!isSignIn && 'pl-20'}`}
+            className={`flex h-full items-center font-bold transition-transform duration-200 hover:translate-y-[-2px] hover:italic focus:outline-none ${
+              !isSignIn && 'pl-20'
+            }`}
             to={isSignIn ? `/member/${userDoc.userID}` : '/signin'}
             onMouseEnter={() => handleItemHover('Member')}
           >
-            {isSignIn && userDoc.username && <p className='pr-2'>Hi, {userDoc.username}</p>}
+            {isSignIn && userDoc.username && <p className='pr-3 text-lg'>Hi, {userDoc.username}</p>}
             {isSignIn ? (
               <img
-                className='mr-2 h-6 w-6 rounded-full object-cover shadow-[4px_4px_20px_-4px_#4da5fd]'
+                className='h-8 w-8 rounded-full object-cover shadow-[2px_2px_10px_-2px_#4da5fd]'
                 src={userDoc.userIconUrl}
                 alt='User icon'
               />
             ) : (
               <img
-                className='mr-2 h-6 w-6 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+                className='h-8 w-8 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
                 src={DefaultUserIcon}
                 alt='User icon'
               />
             )}
           </Link>
           {hoveredItem === 'Member' && isSignIn && (
-            <div className='absolute right-0 top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+            <div className='absolute top-[60px] flex w-48 flex-col rounded-lg bg-white p-2 text-base leading-8 shadow-[1px_1px_5px_-1px_#7e7e7e]'>
               <Link
                 to={`/member/${userDoc.userID}`}
-                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+                className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
               >
                 My Page
               </Link>
               <Link
                 to='/friend'
-                className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+                className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
               >
                 My Friend
               </Link>
@@ -131,21 +130,21 @@ const Header: React.FC = () => {
         </div>
 
         <img
-          className='mr-2 h-auto w-6 cursor-pointer duration-200 hover:translate-y-[-2px]'
+          className='ml-4 mr-4 h-auto w-7 cursor-pointer duration-200 hover:translate-y-[-2px]'
           src={Notification}
           alt='Notification icon'
         />
 
         {isSignIn ? (
           <button
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold duration-200 hover:translate-y-[-2px]'
+            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold transition-transform duration-200 hover:translate-y-[-2px]'
             onClick={() => handleSignOut()}
           >
             Sign out
           </button>
         ) : (
           <Link
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold duration-200 hover:translate-y-[-2px]'
+            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold transition-transform duration-200 hover:translate-y-[-2px]'
             to='/signin'
           >
             Sign in
@@ -166,8 +165,8 @@ interface NavItemProps {
 const NavItem: React.FC<NavItemProps> = ({ name, isHovered, url, onMouseEnter }) => {
   return (
     <Link
-      className={`flex h-full transform items-center focus:outline-none ${
-        isHovered ? 'translate-y-[-2px]' : 'translate-y-0'
+      className={`flex h-full transform items-center text-xl font-bold focus:outline-none ${
+        isHovered ? 'translate-y-[-2px] italic' : 'translate-y-0'
       } transition-transform duration-200`}
       to={url}
       onMouseEnter={onMouseEnter}
@@ -183,12 +182,12 @@ interface SubNavItemProps {
 
 const SubNavItem: React.FC<SubNavItemProps> = ({ items }) => {
   return (
-    <div className='absolute top-12 flex flex-col rounded-md bg-white p-2 font-normal shadow-lg'>
+    <div className='absolute top-[60px] flex w-48 flex-col rounded-lg bg-white p-2 text-base leading-8 shadow-[1px_1px_5px_-1px_#7e7e7e]'>
       {items.map(({ name, url }, index) => (
         <Link
           key={index}
           to={url}
-          className='bg-grey-700 w-max rounded-md pl-2 pr-2 hover:bg-zinc-100'
+          className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
         >
           {name}
         </Link>

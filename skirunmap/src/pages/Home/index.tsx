@@ -32,7 +32,7 @@ const Home = () => {
   useEffect(() => {
     console.log(filter)
     const filterOptions: Record<string, QueryOrderByConstraint | null> = {
-      'Newest': orderBy('createTime', 'desc'),
+      Newest: orderBy('createTime', 'desc'),
       'Most likes': orderBy('likeCount', 'desc'),
       'Most views': orderBy('viewCount', 'desc')
     }
@@ -67,8 +67,10 @@ const Home = () => {
   return (
     <div className='flex w-full flex-col items-center'>
       <div className='home-bg-image flex h-[600px] w-full justify-center'>
-        <div className='mt-36 flex h-max w-max flex-col items-center'>
-          <p className='mb-2 w-max text-3xl font-bold'>Find routes</p>
+        <div className='mt-24 flex h-max w-max flex-col items-center'>
+          <p className='mb-4 w-max text-4xl font-bold italic drop-shadow-[2px_1px_0px_rgba(255,255,255,0.8)]'>
+            Explore your dream run
+          </p>
           <SearchBar />
         </div>
       </div>
