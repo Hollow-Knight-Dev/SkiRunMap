@@ -11,6 +11,7 @@ import Home from './pages/Home'
 import Member from './pages/Member'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
+import SearchResult from './pages/SearchResult'
 import SignIn from './pages/Signin'
 import { User, useUserStore } from './store/useUser'
 import ProtectedMemberInfoRoute from './utils/ProtectedMemberInfoRoute'
@@ -49,6 +50,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/route/:id' element={<RouteView />} />
+        <Route path='/search/:keyword' element={<SearchResult />} />
         <Route path='/signin' element={<SignIn />} />
         <Route
           path='/edit-route'
