@@ -1,4 +1,12 @@
-import { DocumentData, collection, getDocs, orderBy, query, where } from 'firebase/firestore'
+import {
+  DocumentData,
+  QueryOrderByConstraint,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  where
+} from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
@@ -10,7 +18,7 @@ const Home = () => {
   const [filter, setFilter] = useState<string>('All')
 
   const handleFilterIconClick = () => {
-    setHasFilter(true)
+    setHasFilter((prev) => !prev)
   }
 
   const handleFilterSectionMouseLeave = () => {
@@ -23,37 +31,25 @@ const Home = () => {
 
   useEffect(() => {
     console.log(filter)
+    const filterOptions: Record<string, QueryOrderByConstraint | null> = {
+      All: null,
+      Newest: orderBy('createTime', 'desc'),
+      'Most likes': orderBy('likeCount', 'desc'),
+      'Most views': orderBy('viewCount', 'desc')
+    }
 
     const getRoutes = async () => {
-      let q
+      let q = query(
+        collection(db, 'routes'),
+        where('isSubmitted', '==', true),
+        where('isPublic', '==', true)
+      )
 
-      if (filter === 'All') {
-        q = query(
-          collection(db, 'routes'),
-          where('isSubmitted', '==', true),
-          where('isPublic', '==', true)
-        )
-      } else if (filter === 'New') {
-        q = query(
-          collection(db, 'routes'),
-          where('isSubmitted', '==', true),
-          where('isPublic', '==', true),
-          orderBy('createTime', 'desc')
-        )
-      } else if (filter === 'Most like') {
-        q = query(
-          collection(db, 'routes'),
-          where('isSubmitted', '==', true),
-          where('isPublic', '==', true),
-          orderBy('likeCount', 'desc')
-        )
-      } else if (filter === 'Most view') {
-        q = query(
-          collection(db, 'routes'),
-          where('isSubmitted', '==', true),
-          where('isPublic', '==', true),
-          orderBy('viewCount', 'desc')
-        )
+      if (filter) {
+        const order = filterOptions[filter]
+        if (order) {
+          q = query(q, order)
+        }
       }
 
       if (q) {
@@ -69,26 +65,6 @@ const Home = () => {
     getRoutes()
   }, [filter])
 
-  // useEffect(() => {
-  //   const q = query(
-  //     collection(db, 'routes'),
-  //     where('isSubmitted', '==', true),
-  //     where('isPublic', '==', true),
-  //     orderBy('createTime', 'desc')
-  //   )
-  //   // const unsubscribe =
-  //   onSnapshot(q, (querySnapshot) => {
-  //     const routes: DocumentData[] = []
-  //     // console.log('Snapshot received!')
-  //     querySnapshot.forEach((doc) => {
-  //       routes.push(doc.data())
-  //     })
-  //     setAllRoutes(routes)
-  //   })
-
-  //   // return () => unsubscribe()
-  // }, [])
-
   return (
     <div className='flex w-full flex-col items-center'>
       <div className='home-bg-image flex h-[600px] w-full justify-center'>
@@ -99,7 +75,7 @@ const Home = () => {
       </div>
       <div className='flex w-full flex-col items-center p-8'>
         <div className='mb-2 flex w-full justify-between'>
-          <p className='text-3xl font-bold'>{filter} routes</p>
+          <p className='text-3xl font-bold'>{filter} Routes</p>
           <div
             className='relative flex items-center gap-2'
             onClick={handleFilterIconClick}
@@ -132,27 +108,27 @@ const Home = () => {
                 </button>
                 <button
                   className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'New' && 'font-bold'
+                    filter === 'Newest' && 'font-bold'
                   }`}
-                  onClick={() => handleFilterClick('New')}
+                  onClick={() => handleFilterClick('Newest')}
                 >
-                  New
+                  Newest
                 </button>
                 <button
                   className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'Most like' && 'font-bold'
+                    filter === 'Most likes' && 'font-bold'
                   }`}
-                  onClick={() => handleFilterClick('Most like')}
+                  onClick={() => handleFilterClick('Most likes')}
                 >
-                  Most like
+                  Most Likes
                 </button>
                 <button
                   className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'Most view' && 'font-bold'
+                    filter === 'Most views' && 'font-bold'
                   }`}
-                  onClick={() => handleFilterClick('Most view')}
+                  onClick={() => handleFilterClick('Most views')}
                 >
-                  Most view
+                  Most Views
                 </button>
               </div>
             )}
