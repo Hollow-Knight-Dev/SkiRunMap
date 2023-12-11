@@ -472,6 +472,13 @@ const EditRoute: React.FC = () => {
         }
       }
 
+      const keywords = [routeTitle, ...tags, ...spots.map((spot: Spot) => spot.spotTitle)]
+      const kewordData = {
+        routeID: routeID,
+        keywords: keywords
+      }
+      await setDoc(doc(db, 'keywords', routeID), kewordData)
+
       toast.success('Submitted route!', {
         position: 'top-right',
         autoClose: 1000,
