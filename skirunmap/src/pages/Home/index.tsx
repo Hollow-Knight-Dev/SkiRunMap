@@ -1,4 +1,4 @@
-import { DocumentData, collection, onSnapshot, orderBy, query, where } from 'firebase/firestore'
+import { DocumentData, collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
@@ -7,34 +7,87 @@ import SearchBar from '../../components/SearchBar'
 const Home = () => {
   const [allRoutes, setAllRoutes] = useState<DocumentData[]>([])
   const [hasFilter, setHasFilter] = useState(false)
+  const [filter, setFilter] = useState<string>('All')
 
-  const handleFilterClick = () => {
+  const handleFilterIconClick = () => {
     setHasFilter(true)
   }
 
-  const handleFilterMouseLeave = () => {
+  const handleFilterSectionMouseLeave = () => {
     setHasFilter(false)
   }
 
-  useEffect(() => {
-    const q = query(
-      collection(db, 'routes'),
-      where('isSubmitted', '==', true),
-      where('isPublic', '==', true),
-      orderBy('createTime', 'desc')
-    )
-    // const unsubscribe =
-    onSnapshot(q, (querySnapshot) => {
-      const routes: DocumentData[] = []
-      // console.log('Snapshot received!')
-      querySnapshot.forEach((doc) => {
-        routes.push(doc.data())
-      })
-      setAllRoutes(routes)
-    })
+  const handleFilterClick = (filter: string) => {
+    setFilter(filter)
+  }
 
-    // return () => unsubscribe()
-  }, [])
+  useEffect(() => {
+    console.log(filter)
+
+    const getRoutes = async () => {
+      let q
+
+      if (filter === 'All') {
+        q = query(
+          collection(db, 'routes'),
+          where('isSubmitted', '==', true),
+          where('isPublic', '==', true)
+        )
+      } else if (filter === 'New') {
+        q = query(
+          collection(db, 'routes'),
+          where('isSubmitted', '==', true),
+          where('isPublic', '==', true),
+          orderBy('createTime', 'desc')
+        )
+      } else if (filter === 'Most like') {
+        q = query(
+          collection(db, 'routes'),
+          where('isSubmitted', '==', true),
+          where('isPublic', '==', true),
+          orderBy('likeCount', 'desc')
+        )
+      } else if (filter === 'Most view') {
+        q = query(
+          collection(db, 'routes'),
+          where('isSubmitted', '==', true),
+          where('isPublic', '==', true),
+          orderBy('viewCount', 'desc')
+        )
+      }
+
+      if (q) {
+        const querySnapshot = await getDocs(q)
+        const routeDocData: DocumentData[] = []
+        querySnapshot.forEach((doc) => {
+          routeDocData.push(doc.data())
+        })
+        setAllRoutes(routeDocData)
+      }
+    }
+
+    getRoutes()
+  }, [filter])
+
+  // useEffect(() => {
+  //   const q = query(
+  //     collection(db, 'routes'),
+  //     where('isSubmitted', '==', true),
+  //     where('isPublic', '==', true),
+  //     orderBy('createTime', 'desc')
+  //   )
+  //   // const unsubscribe =
+  //   onSnapshot(q, (querySnapshot) => {
+  //     const routes: DocumentData[] = []
+  //     // console.log('Snapshot received!')
+  //     querySnapshot.forEach((doc) => {
+  //       routes.push(doc.data())
+  //     })
+  //     setAllRoutes(routes)
+  //   })
+
+  //   // return () => unsubscribe()
+  // }, [])
 
   return (
     <div className='flex w-full flex-col items-center'>
@@ -46,11 +99,11 @@ const Home = () => {
       </div>
       <div className='flex w-full flex-col items-center p-8'>
         <div className='mb-2 flex w-full justify-between'>
-          <p className='text-3xl font-bold'>Hottest routes</p>
+          <p className='text-3xl font-bold'>{filter} routes</p>
           <div
             className='relative flex items-center gap-2'
-            onClick={handleFilterClick}
-            onMouseLeave={handleFilterMouseLeave}
+            onClick={handleFilterIconClick}
+            onMouseLeave={handleFilterSectionMouseLeave}
           >
             <p className='text-xl font-bold'>filter</p>
             <svg
@@ -68,10 +121,39 @@ const Home = () => {
               />
             </svg>
             {hasFilter && (
-              <div className='absolute right-0 top-8 flex w-20 flex-col items-center rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>
-                <button className='w-full cursor-pointer hover:bg-zinc-100'>All</button>
-                <button className='w-full cursor-pointer hover:bg-zinc-100'>Hottest</button>
-                <button className='w-full cursor-pointer hover:bg-zinc-100'>Newest</button>
+              <div className='absolute right-0 top-8 flex w-24 flex-col items-center rounded-md bg-white pb-2 pt-2 shadow-lg'>
+                <button
+                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
+                    filter === 'All' && 'font-bold'
+                  }`}
+                  onClick={() => handleFilterClick('All')}
+                >
+                  All
+                </button>
+                <button
+                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
+                    filter === 'New' && 'font-bold'
+                  }`}
+                  onClick={() => handleFilterClick('New')}
+                >
+                  New
+                </button>
+                <button
+                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
+                    filter === 'Most like' && 'font-bold'
+                  }`}
+                  onClick={() => handleFilterClick('Most like')}
+                >
+                  Most like
+                </button>
+                <button
+                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
+                    filter === 'Most view' && 'font-bold'
+                  }`}
+                  onClick={() => handleFilterClick('Most view')}
+                >
+                  Most view
+                </button>
               </div>
             )}
           </div>
@@ -88,6 +170,8 @@ const Home = () => {
               <p>User: {map.username}</p>
               <p>Tag: {map.tags}</p>
               <p>Snow Buddy: {map.snowBuddies}</p>
+              <p>LikeCount: {map.likeCount}</p>
+              <p>viewCount: {map.viewCount}</p>
               <div className='flex gap-1'>
                 {map.spots[0].imageUrls.map((url: string, index: number) => (
                   <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-6' />
