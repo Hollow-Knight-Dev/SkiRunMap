@@ -42,7 +42,7 @@ const SearchResult = () => {
 
   useEffect(() => {
     const filterOptions: Record<string, QueryOrderByConstraint | null> = {
-      'Newest': orderBy('createTime', 'desc'),
+      Newest: orderBy('createTime', 'desc'),
       'Most likes': orderBy('likeCount', 'desc'),
       'Most views': orderBy('viewCount', 'desc')
     }
@@ -130,11 +130,12 @@ const SearchResult = () => {
 
       <div className='p-8'>
         <div className='mb-4 flex w-full flex-col items-center'>
-          <div className='flex w-full flex-col justify-between'>
+          <div className='flex w-full flex-wrap justify-between'>
             <p className='text-3xl font-bold'>
               Search Result: {keyword} ({resultRoutes.length})
             </p>
             <div className='flex items-center gap-2' onClick={handleFilterClick}>
+              <p className='text-xl font-bold'>filter</p>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -149,10 +150,9 @@ const SearchResult = () => {
                   d='M4 6h16M6 12h12M8 18h8'
                 />
               </svg>
-              <p className='text-xl font-bold'>filter</p>
             </div>
             {hasFilter && (
-              <div className='flex items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>
+              <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>
                 <button
                   className={`w-full rounded-xl ${filter.includes('Newest') && 'bg-blue-200'}`}
                   onClick={() => handleAddFilter('Newest')}

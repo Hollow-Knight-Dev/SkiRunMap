@@ -21,18 +21,17 @@ const Home = () => {
     setHasFilter((prev) => !prev)
   }
 
-  const handleFilterSectionMouseLeave = () => {
-    setHasFilter(false)
-  }
-
-  const handleFilterClick = (filter: string) => {
-    setFilter(filter)
+  const handleFilterClick = (newFilter: string) => {
+    if (filter === newFilter) {
+      setFilter('')
+    } else {
+      setFilter(newFilter)
+    }
   }
 
   useEffect(() => {
     console.log(filter)
     const filterOptions: Record<string, QueryOrderByConstraint | null> = {
-      All: null,
       Newest: orderBy('createTime', 'desc'),
       'Most likes': orderBy('likeCount', 'desc'),
       'Most views': orderBy('viewCount', 'desc')
@@ -74,13 +73,9 @@ const Home = () => {
         </div>
       </div>
       <div className='flex w-full flex-col items-center p-8'>
-        <div className='mb-2 flex w-full justify-between'>
+        <div className='mb-4 flex w-full flex-wrap justify-between'>
           <p className='text-3xl font-bold'>{filter} Routes</p>
-          <div
-            className='relative flex items-center gap-2'
-            onClick={handleFilterIconClick}
-            onMouseLeave={handleFilterSectionMouseLeave}
-          >
+          <div className='flex items-center gap-2' onClick={handleFilterIconClick}>
             <p className='text-xl font-bold'>filter</p>
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -96,43 +91,29 @@ const Home = () => {
                 d='M4 6h16M6 12h12M8 18h8'
               />
             </svg>
-            {hasFilter && (
-              <div className='absolute right-0 top-8 flex w-24 flex-col items-center rounded-md bg-white pb-2 pt-2 shadow-lg'>
-                <button
-                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'All' && 'font-bold'
-                  }`}
-                  onClick={() => handleFilterClick('All')}
-                >
-                  All
-                </button>
-                <button
-                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'Newest' && 'font-bold'
-                  }`}
-                  onClick={() => handleFilterClick('Newest')}
-                >
-                  Newest
-                </button>
-                <button
-                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'Most likes' && 'font-bold'
-                  }`}
-                  onClick={() => handleFilterClick('Most likes')}
-                >
-                  Most Likes
-                </button>
-                <button
-                  className={`w-full cursor-pointer hover:bg-zinc-100 ${
-                    filter === 'Most views' && 'font-bold'
-                  }`}
-                  onClick={() => handleFilterClick('Most views')}
-                >
-                  Most Views
-                </button>
-              </div>
-            )}
           </div>
+          {hasFilter && (
+            <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>
+              <button
+                className={`w-full rounded-xl ${filter === 'Newest' && 'bg-blue-200'}`}
+                onClick={() => handleFilterClick('Newest')}
+              >
+                Newest
+              </button>
+              <button
+                className={`w-full rounded-xl ${filter === 'Most likes' && 'bg-blue-200'}`}
+                onClick={() => handleFilterClick('Most likes')}
+              >
+                Most Likes
+              </button>
+              <button
+                className={`w-full rounded-xl ${filter === 'Most views' && 'bg-blue-200'}`}
+                onClick={() => handleFilterClick('Most views')}
+              >
+                Most Views
+              </button>
+            </div>
+          )}
         </div>
         <div className='mb-6 w-full border border-zinc-300' />
         <div className='flex w-fit flex-wrap gap-4'>
