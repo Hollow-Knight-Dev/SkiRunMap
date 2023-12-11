@@ -279,13 +279,16 @@ const RouteView = () => {
       if (isLike) {
         if (routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
+          await updateDoc(routeRef, { likeCount: increment(-1) })
         }
       } else {
         if (routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
+          await updateDoc(routeRef, { likeCount: increment(1) })
         }
         if (!routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayUnion(userDoc.userID) })
+          await updateDoc(routeRef, { likeCount: increment(1) })
         }
       }
     } else {
@@ -310,13 +313,16 @@ const RouteView = () => {
       if (isDislike) {
         if (routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
+          await updateDoc(routeRef, { likeCount: increment(1) })
         }
       } else {
         if (routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
+          await updateDoc(routeRef, { likeCount: increment(-1) })
         }
         if (!routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayUnion(userDoc.userID) })
+          await updateDoc(routeRef, { likeCount: increment(-1) })
         }
       }
     } else {
