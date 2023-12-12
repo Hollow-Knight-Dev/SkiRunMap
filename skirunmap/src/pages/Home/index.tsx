@@ -10,7 +10,8 @@ import {
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
-import SearchBar from '../../components/SearchBar'
+import Filter from '../../components/Filter'
+import HeroHeader from '../../components/HeroHeader'
 
 const Home = () => {
   const [allRoutes, setAllRoutes] = useState<DocumentData[]>([])
@@ -66,33 +67,13 @@ const Home = () => {
 
   return (
     <div className='flex w-full flex-col items-center'>
-      <div className='home-bg-image flex h-[600px] w-full justify-center'>
-        <div className='mt-24 flex h-max w-max flex-col items-center'>
-          <p className='mb-4 w-max text-4xl font-bold italic drop-shadow-[2px_1px_0px_rgba(255,255,255,0.8)]'>
-            Explore your dream run
-          </p>
-          <SearchBar />
-        </div>
-      </div>
+      <HeroHeader />
       <div className='flex w-full flex-col items-center p-8'>
         <div className='mb-4 flex w-full flex-wrap justify-between'>
           <p className='text-3xl font-bold'>{filter} Routes</p>
           <div className='flex items-center gap-2' onClick={handleFilterIconClick}>
             <p className='text-xl font-bold'>filter</p>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-              className='h-full w-6 cursor-pointer text-gray-600'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                d='M4 6h16M6 12h12M8 18h8'
-              />
-            </svg>
+            <Filter />
           </div>
           {hasFilter && (
             <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>

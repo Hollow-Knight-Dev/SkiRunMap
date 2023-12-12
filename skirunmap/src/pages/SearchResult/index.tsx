@@ -10,7 +10,8 @@ import {
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
-import SearchBar from '../../components/SearchBar'
+import Filter from '../../components/Filter'
+import HeroHeader from '../../components/HeroHeader'
 import { RouteKeywords } from '../../store/useSearch'
 
 const SearchResult = () => {
@@ -42,7 +43,7 @@ const SearchResult = () => {
 
   useEffect(() => {
     const filterOptions: Record<string, QueryOrderByConstraint | null> = {
-      'Newest': orderBy('createTime', 'desc'),
+      Newest: orderBy('createTime', 'desc'),
       'Most likes': orderBy('likeCount', 'desc'),
       'Most views': orderBy('viewCount', 'desc')
     }
@@ -121,13 +122,7 @@ const SearchResult = () => {
 
   return (
     <div>
-      <div className='home-bg-image flex h-[600px] w-full justify-center'>
-        <div className='mt-36 flex h-max w-max flex-col items-center'>
-          <p className='mb-2 w-max text-3xl font-bold'>Find routes</p>
-          <SearchBar />
-        </div>
-      </div>
-
+      <HeroHeader />
       <div className='p-8'>
         <div className='mb-4 flex w-full flex-col items-center'>
           <div className='flex w-full flex-wrap justify-between'>
@@ -136,20 +131,7 @@ const SearchResult = () => {
             </p>
             <div className='flex items-center gap-2' onClick={handleFilterClick}>
               <p className='text-xl font-bold'>filter</p>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                className='h-full w-6 cursor-pointer text-gray-600'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  d='M4 6h16M6 12h12M8 18h8'
-                />
-              </svg>
+              <Filter />
             </div>
             {hasFilter && (
               <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>

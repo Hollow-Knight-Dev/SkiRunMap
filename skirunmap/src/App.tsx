@@ -8,6 +8,7 @@ import Footer from './components/Footer'
 import Header from './components/Header'
 import Friend from './pages/Friend'
 import Home from './pages/Home'
+import ImageCredit from './pages/ImageCredit'
 import Member from './pages/Member'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
@@ -52,6 +53,7 @@ const App: React.FC = () => {
         <Route path='/route/:id' element={<RouteView />} />
         <Route path='/search/:keyword' element={<SearchResult />} />
         <Route path='/signin' element={<SignIn />} />
+        <Route path='/credit' element={<ImageCredit />} />
         <Route
           path='/edit-route'
           element={

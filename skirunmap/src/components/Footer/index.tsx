@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className='flex flex-wrap h-48 bg-zinc-100 justify-evenly pt-8'>
-      <div className='flex flex-col'>
+    <div className='flex h-48 flex-wrap justify-evenly bg-zinc-100 pt-12'>
+      {/* <div className='flex flex-col'>
         <Link className='font-bold text-lg mb-2' to='/'>
           Explore
         </Link>
@@ -35,10 +35,11 @@ const Footer = () => {
             My Friend
           </Link>
         </div>
-      </div>
-      <p className='w-full h-fit text-center'>
-        2023 SKIRUNMAP All Rights Reserved
-      </p>
+      </div> */}
+      <Link className='text-lg font-bold' to='/credit'>
+        Image Credit
+      </Link>
+      <p className='h-fit w-full text-center'>2023 SKIRUNMAP All Rights Reserved</p>
     </div>
   )
 }

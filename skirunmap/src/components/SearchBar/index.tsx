@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
 import { RouteKeywords } from '../../store/useSearch'
-import SearchIcon from './search-icon.png'
+import SearchIcon from '/images/search-icon.png'
 
 const SearchBar = () => {
   const navigate = useNavigate()
@@ -55,7 +55,11 @@ const SearchBar = () => {
             }
           }
         })
-        setSuggestKeywords(results)
+        if (results.length > 11) {
+          setSuggestKeywords(results.sort().slice(0, 11))
+        } else {
+          setSuggestKeywords(results.sort())
+        }
         setActualKeywords(actualResults)
       })
     } else {
@@ -136,7 +140,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className='relative w-[600px] duration-300 hover:translate-y-[-2px]' id='search-bar'>
+    <div className='relative w-[600px]' id='search-bar'>
       <input
         className='h-12 w-full rounded-3xl p-2 pl-12 text-xl italic leading-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
         placeholder='Enter resort, ski run, or tag name'

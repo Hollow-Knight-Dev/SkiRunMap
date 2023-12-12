@@ -73,7 +73,7 @@ p {
 
 /* Home Page */
 .home-bg-image {
-  background-image: url('../public/images/snow-mountain.png');
+  background-image: url('/images/snow-mountain.png');
   background-size: cover;
   background-position: center;
 }
