@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
-import Filter from '../../components/Filter'
+import FilterSVG from '../../components/FilterSVG'
 import HeroHeader from '../../components/HeroHeader'
 
 const Home = () => {
@@ -68,15 +68,15 @@ const Home = () => {
   return (
     <div className='flex w-full flex-col items-center'>
       <HeroHeader />
-      <div className='flex w-full flex-col items-center p-8'>
+      <div className='flex w-4/5 flex-col items-center p-8'>
         <div className='mb-4 flex w-full flex-wrap justify-between'>
           <p className='text-3xl font-bold'>{filter} Routes</p>
-          <div className='flex items-center gap-2' onClick={handleFilterIconClick}>
+          <div className='mb-4 flex items-center gap-2' onClick={handleFilterIconClick}>
             <p className='text-xl font-bold'>filter</p>
-            <Filter />
+            <FilterSVG />
           </div>
           {hasFilter && (
-            <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>
+            <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-[0px_0px_10px_-4px_#b3b3b3]'>
               <button
                 className={`w-full rounded-xl ${filter === 'Newest' && 'bg-blue-200'}`}
                 onClick={() => handleFilterClick('Newest')}

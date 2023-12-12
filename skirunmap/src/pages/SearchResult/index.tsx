@@ -8,16 +8,14 @@ import {
   where
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
-import Filter from '../../components/Filter'
+import FilterSVG from '../../components/FilterSVG'
 import HeroHeader from '../../components/HeroHeader'
 import { RouteKeywords } from '../../store/useSearch'
 
 const SearchResult = () => {
   const { keyword } = useParams()
-  const location = useLocation()
-  const suggestedKeywords = location.state?.suggestedKeywords || null
   const [resultRoutes, setResultRoutes] = useState<DocumentData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -83,13 +81,7 @@ const SearchResult = () => {
     const handleSearch = async () => {
       setIsLoading(true)
       try {
-        if (suggestedKeywords !== null) {
-          if (suggestedKeywords.length > 0) {
-            getRoutes(suggestedKeywords, filter)
-          } else {
-            setResultRoutes([])
-          }
-        } else if (suggestedKeywords === null && keyword) {
+        if (keyword) {
           const querySnapshot = await getDocs(collection(db, 'keywords'))
           const results: string[] = []
 
@@ -118,23 +110,23 @@ const SearchResult = () => {
       }
     }
     handleSearch()
-  }, [suggestedKeywords, filter])
+  }, [keyword, filter])
 
   return (
-    <div>
+    <div className='flex w-full flex-col items-center'>
       <HeroHeader />
-      <div className='p-8'>
+      <div className='flex w-4/5 flex-col items-center p-8'>
         <div className='mb-4 flex w-full flex-col items-center'>
           <div className='flex w-full flex-wrap justify-between'>
             <p className='text-3xl font-bold'>
               Search Result: {keyword} ({resultRoutes.length})
             </p>
-            <div className='flex items-center gap-2' onClick={handleFilterClick}>
+            <div className='mb-4 flex items-center gap-2' onClick={handleFilterClick}>
               <p className='text-xl font-bold'>filter</p>
-              <Filter />
+              <FilterSVG />
             </div>
             {hasFilter && (
-              <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-lg'>
+              <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-[0px_0px_10px_-4px_#b3b3b3]'>
                 <button
                   className={`w-full rounded-xl ${filter.includes('Newest') && 'bg-blue-200'}`}
                   onClick={() => handleAddFilter('Newest')}

@@ -11,7 +11,6 @@ const SearchBar = () => {
   const navigate = useNavigate()
   const [searchInput, setSearchInput] = useState<string>('')
   const [suggestKeywords, setSuggestKeywords] = useState<string[]>([])
-  const [actualKeywords, setActualKeywords] = useState<string[]>([])
   const [selectedKeyword, setSelectedKeyword] = useState<string>('')
   const [isFocus, setIsFocus] = useState<boolean>(false)
 
@@ -60,11 +59,9 @@ const SearchBar = () => {
         } else {
           setSuggestKeywords(results.sort())
         }
-        setActualKeywords(actualResults)
       })
     } else {
       setSuggestKeywords([])
-      setActualKeywords([])
     }
   }
 
@@ -113,7 +110,7 @@ const SearchBar = () => {
 
   const handleSearch = (searchKeyword: string) => {
     const url = `/search/${encodeURIComponent(searchKeyword)}`
-    navigate(url, { state: { suggestedKeywords: actualKeywords } })
+    navigate(url)
     setSearchInput('')
     setSuggestKeywords([])
   }
