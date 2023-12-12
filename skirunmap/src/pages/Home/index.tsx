@@ -169,8 +169,8 @@ const Home = () => {
                     </div>
                   </div>
 
-                  <div className='flex flex-col gap-4'>
-                    <p className='font-bold'>Route Title: {route.routeTitle}</p>
+                  <div className='flex flex-col gap-6 p-2'>
+                    <p className='text-2xl font-bold'>{route.routeTitle}</p>
                     <p>Likes: {route.likeCount}</p>
                     <div className='flex flex-wrap gap-2'>
                       <p>Tag: </p>
