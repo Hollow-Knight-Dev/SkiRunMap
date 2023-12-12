@@ -41,135 +41,142 @@ export interface Route {
   likeCount: number
   viewCount: number
 }
-interface RouteID {
+
+interface RouteStore {
   routeID: string
   setRouteID: (routeID: string) => void
-}
-
-export const useRouteID = create<RouteID>()((set) => ({
-  routeID: '',
-  setRouteID: (newRouteID) => set(() => ({ routeID: newRouteID }))
-}))
-
-interface RouteTitle {
   routeTitle: string
   setRouteTitle: (newTitle: string) => void
-}
-
-export const useRouteTitle = create<RouteTitle>()((set) => ({
-  routeTitle: '',
-  setRouteTitle: (newTitle) => set(() => ({ routeTitle: newTitle }))
-}))
-
-interface RouteDescription {
+  routeCoordinate: Coordinate
+  setRouteCoordinate: (coordinate: Coordinate) => void
   routeDescription: string
   setRouteDescription: (newDescription: string) => void
-}
-
-export const useRouteDescription = create<RouteDescription>()((set) => ({
-  routeDescription: '',
-  setRouteDescription: (newDescription) => set(() => ({ routeDescription: newDescription }))
-}))
-
-interface SpotTitle {
-  spotTitle: string
-  setSpotTitle: (newTitle: string) => void
-}
-
-export const useSpotTitle = create<SpotTitle>()((set) => ({
-  spotTitle: '',
-  setSpotTitle: (newTitle) => set(() => ({ spotTitle: newTitle }))
-}))
-
-interface SpotDescription {
-  spotDescription: string
-  setSpotDescription: (newDescription: string) => void
-}
-
-export const useSpotDescription = create<SpotDescription>()((set) => ({
-  spotDescription: '',
-  setSpotDescription: (newDescription) => set(() => ({ spotDescription: newDescription }))
-}))
-
-interface Tags {
   tags: string[]
   setTags: (newTags: string[]) => void
-}
-
-export const useTags = create<Tags>()((set) => ({
-  tags: [],
-  setTags: (newTags) => set(() => ({ tags: newTags }))
-}))
-
-interface TagInput {
   tagInput: string
   setTagInput: (newTagInput: string) => void
-}
-
-export const useTagInput = create<TagInput>()((set) => ({
-  tagInput: '',
-  setTagInput: (newTagInput) => set(() => ({ tagInput: newTagInput }))
-}))
-
-interface Buddies {
   buddies: string[]
   setBuddies: (newBuddies: string[]) => void
-}
-
-export const useBuddies = create<Buddies>()((set) => ({
-  buddies: [],
-  setBuddies: (newBuddies) => set(() => ({ buddies: newBuddies }))
-}))
-
-interface BuddyInput {
   buddyInput: string
   setBuddyInput: (newBuddyInput: string) => void
-}
-
-export const useBuddyInput = create<BuddyInput>()((set) => ({
-  buddyInput: '',
-  setBuddyInput: (newBuddyInput) => set(() => ({ buddyInput: newBuddyInput }))
-}))
-
-interface AccessRight {
   accessRight: boolean
   setAccessRight: (newRight: boolean) => void
-}
-
-export const useAccessRight = create<AccessRight>()((set) => ({
-  accessRight: true,
-  setAccessRight: (newRight) => set(() => ({ accessRight: newRight }))
-}))
-
-interface GpxUrl {
   gpxUrl: string
   setGpxUrl: (url: string) => void
 }
 
-export const useGpxUrl = create<GpxUrl>()((set) => ({
+export const useRouteStore = create<RouteStore>()((set) => ({
+  routeID: '',
+  setRouteID: (newRouteID) => set(() => ({ routeID: newRouteID })),
+  routeTitle: '',
+  setRouteTitle: (newTitle) => set(() => ({ routeTitle: newTitle })),
+  routeCoordinate: { lat: undefined, lng: undefined },
+  setRouteCoordinate: (coordinate) => set({ routeCoordinate: coordinate }),
+  routeDescription: '',
+  setRouteDescription: (newDescription) => set(() => ({ routeDescription: newDescription })),
+  tags: [],
+  setTags: (newTags) => set(() => ({ tags: newTags })),
+  tagInput: '',
+  setTagInput: (newTagInput) => set(() => ({ tagInput: newTagInput })),
+  buddies: [],
+  setBuddies: (newBuddies) => set(() => ({ buddies: newBuddies })),
+  buddyInput: '',
+  setBuddyInput: (newBuddyInput) => set(() => ({ buddyInput: newBuddyInput })),
+  accessRight: true,
+  setAccessRight: (newRight) => set(() => ({ accessRight: newRight })),
   gpxUrl: '',
   setGpxUrl: (url) => set(() => ({ gpxUrl: url }))
 }))
 
-interface ImageUrls {
-  imageUrls: string[]
-  setImageUrls: (url: string[]) => void
-}
+// interface RouteID {
+//   routeID: string
+//   setRouteID: (routeID: string) => void
+// }
 
-export const useImageUrls = create<ImageUrls>()((set) => ({
-  imageUrls: [],
-  setImageUrls: (newUrls) => set(() => ({ imageUrls: newUrls }))
-}))
+// export const useRouteID = create<RouteID>()((set) => ({
+//   routeID: '',
+//   setRouteID: (newRouteID) => set(() => ({ routeID: newRouteID }))
+// }))
 
-interface VideoUrls {
-  videoUrls: string[]
-  setVideoUrls: (url: string[]) => void
-}
+// interface RouteTitle {
+//   routeTitle: string
+//   setRouteTitle: (newTitle: string) => void
+// }
 
-export const useVideoUrls = create<VideoUrls>()((set) => ({
-  videoUrls: [],
-  setVideoUrls: (url) => set(() => ({ videoUrls: url }))
-}))
+// export const useRouteTitle = create<RouteTitle>()((set) => ({
+//   routeTitle: '',
+//   setRouteTitle: (newTitle) => set(() => ({ routeTitle: newTitle }))
+// }))
+
+// interface RouteDescription {
+//   routeDescription: string
+//   setRouteDescription: (newDescription: string) => void
+// }
+
+// export const useRouteDescription = create<RouteDescription>()((set) => ({
+//   routeDescription: '',
+//   setRouteDescription: (newDescription) => set(() => ({ routeDescription: newDescription }))
+// }))
+
+// interface Tags {
+//   tags: string[]
+//   setTags: (newTags: string[]) => void
+// }
+
+// export const useTags = create<Tags>()((set) => ({
+//   tags: [],
+//   setTags: (newTags) => set(() => ({ tags: newTags }))
+// }))
+
+// interface TagInput {
+//   tagInput: string
+//   setTagInput: (newTagInput: string) => void
+// }
+
+// export const useTagInput = create<TagInput>()((set) => ({
+//   tagInput: '',
+//   setTagInput: (newTagInput) => set(() => ({ tagInput: newTagInput }))
+// }))
+
+// interface Buddies {
+//   buddies: string[]
+//   setBuddies: (newBuddies: string[]) => void
+// }
+
+// export const useBuddies = create<Buddies>()((set) => ({
+//   buddies: [],
+//   setBuddies: (newBuddies) => set(() => ({ buddies: newBuddies }))
+// }))
+
+// interface BuddyInput {
+//   buddyInput: string
+//   setBuddyInput: (newBuddyInput: string) => void
+// }
+
+// export const useBuddyInput = create<BuddyInput>()((set) => ({
+//   buddyInput: '',
+//   setBuddyInput: (newBuddyInput) => set(() => ({ buddyInput: newBuddyInput }))
+// }))
+
+// interface AccessRight {
+//   accessRight: boolean
+//   setAccessRight: (newRight: boolean) => void
+// }
+
+// export const useAccessRight = create<AccessRight>()((set) => ({
+//   accessRight: true,
+//   setAccessRight: (newRight) => set(() => ({ accessRight: newRight }))
+// }))
+
+// interface GpxUrl {
+//   gpxUrl: string
+//   setGpxUrl: (url: string) => void
+// }
+
+// export const useGpxUrl = create<GpxUrl>()((set) => ({
+//   gpxUrl: '',
+//   setGpxUrl: (url) => set(() => ({ gpxUrl: url }))
+// }))
 
 interface SpotStore {
   spots: Spot[]
@@ -194,12 +201,12 @@ export const useSpotStore = create<SpotStore>()((set) => ({
     }))
 }))
 
-interface CoordinateStore {
-  routeCoordinate: Coordinate
-  setRouteCoordinate: (coordinate: Coordinate) => void
-}
+// interface CoordinateStore {
+//   routeCoordinate: Coordinate
+//   setRouteCoordinate: (coordinate: Coordinate) => void
+// }
 
-export const useCoordinateStore = create<CoordinateStore>((set) => ({
-  routeCoordinate: { lat: undefined, lng: undefined },
-  setRouteCoordinate: (coordinate) => set({ routeCoordinate: coordinate })
-}))
+// export const useCoordinateStore = create<CoordinateStore>((set) => ({
+//   routeCoordinate: { lat: undefined, lng: undefined },
+//   setRouteCoordinate: (coordinate) => set({ routeCoordinate: coordinate })
+// }))

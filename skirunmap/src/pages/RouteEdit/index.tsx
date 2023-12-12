@@ -16,60 +16,37 @@ import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
 import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
-import {
-  Route,
-  Spot,
-  useAccessRight,
-  useBuddies,
-  useBuddyInput,
-  useCoordinateStore,
-  useGpxUrl,
-  // useImageUrls,
-  useRouteDescription,
-  useRouteID,
-  useRouteTitle,
-  // useSpotDescription,
-  useSpotStore,
-  // useSpotTitle,
-  useTagInput,
-  useTags
-} from '../../store/useRoute'
+import { Route, Spot, useRouteStore, useSpotStore } from '../../store/useRoute'
 import { useUserStore } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
   const { userID, userDoc, isSignIn, isLoadedUserDoc } = useUserStore()
-  const routeID = useRouteID((state) => state.routeID)
-  const setRouteID = useRouteID((state) => state.setRouteID)
-  const routeTitle = useRouteTitle((state) => state.routeTitle)
-  const setRouteTitle = useRouteTitle((state) => state.setRouteTitle)
-  const routeDescription = useRouteDescription((state) => state.routeDescription)
-  const setRouteDescription = useRouteDescription((state) => state.setRouteDescription)
-  // const spotTitle = useSpotTitle((state) => state.spotTitle)
-  // const setSpotTitle = useSpotTitle((state) => state.setSpotTitle)
-  // const spotDescription = useSpotDescription((state) => state.spotDescription)
-  // const setSpotDescription = useSpotDescription((state) => state.setSpotDescription)
-  const tags = useTags((state) => state.tags)
-  const setTags = useTags((state) => state.setTags)
-  const tagInput = useTagInput((state) => state.tagInput)
-  const setTagInput = useTagInput((state) => state.setTagInput)
-  const buddies = useBuddies((state) => state.buddies)
-  const setBuddies = useBuddies((state) => state.setBuddies)
-  const buddyInput = useBuddyInput((state) => state.buddyInput)
-  const setBuddyInput = useBuddyInput((state) => state.setBuddyInput)
-  const accessRight = useAccessRight((state) => state.accessRight)
-  const setAccessRight = useAccessRight((state) => state.setAccessRight)
-  const gpxUrl = useGpxUrl((state) => state.gpxUrl)
-  const setGpxUrl = useGpxUrl((state) => state.setGpxUrl)
-  // const imageUrls = useImageUrls((state) => state.imageUrls)
-  // const setImageUrls = useImageUrls((state) => state.setImageUrls)
-  // const videoUrls = useVideoUrls((state) => state.videoUrls)
-  // const setVideoUrls = useVideoUrls((state) => state.setVideoUrls)
+  const {
+    routeID,
+    setRouteID,
+    routeTitle,
+    setRouteTitle,
+    routeCoordinate,
+    routeDescription,
+    setRouteDescription,
+    tags,
+    setTags,
+    tagInput,
+    setTagInput,
+    buddies,
+    setBuddies,
+    buddyInput,
+    setBuddyInput,
+    accessRight,
+    setAccessRight,
+    gpxUrl,
+    setGpxUrl
+  } = useRouteStore()
   const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
   let latestSpotsRef = useRef(spots)
   const { map, markers, addMarker, updateMarker, infoWindow, setInfoWindow, removeMarker } =
     useMapStore()
-  const { routeCoordinate } = useCoordinateStore()
   const [gpxFileName, setGpxFileName] = useState<string>('')
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
