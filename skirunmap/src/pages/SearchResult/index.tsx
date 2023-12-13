@@ -140,21 +140,27 @@ const SearchResult = () => {
               <FilterSVG />
             </div>
             {hasFilter && (
-              <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-[0px_0px_10px_-4px_#b3b3b3]'>
+              <div className='flex w-full items-center  justify-evenly rounded-xl bg-white pb-2 pt-2 font-semibold shadow-[0px_1px_8px_-4px_#7e7e7e]'>
                 <button
-                  className={`w-full rounded-xl ${filter.includes('Newest') && 'bg-blue-200'}`}
+                  className={`w-fit rounded-xl pl-16 pr-16 ${
+                    filter.includes('Newest') && 'bg-blue-200'
+                  }`}
                   onClick={() => handleAddFilter('Newest')}
                 >
                   Newest
                 </button>
                 <button
-                  className={`w-full rounded-xl ${filter.includes('Most likes') && 'bg-blue-200'}`}
+                  className={`w-fit rounded-xl pl-16 pr-16 ${
+                    filter.includes('Most likes') && 'bg-blue-200'
+                  }`}
                   onClick={() => handleAddFilter('Most likes')}
                 >
                   Most likes
                 </button>
                 <button
-                  className={`w-full rounded-xl ${filter.includes('Most views') && 'bg-blue-200'}`}
+                  className={`w-fit rounded-xl pl-16 pr-16 ${
+                    filter.includes('Most views') && 'bg-blue-200'
+                  }`}
                   onClick={() => handleAddFilter('Most views')}
                 >
                   Most views
@@ -165,7 +171,7 @@ const SearchResult = () => {
         </div>
         <div className='mb-6 w-full border border-zinc-300' />
 
-        <div className='flex w-fit flex-wrap gap-4'>
+        <div className='h-screen-256px flex w-full flex-col flex-wrap gap-4'>
           {isLoading ? (
             <p>Loading...</p>
           ) : resultRoutes.length > 0 ? (
@@ -174,7 +180,7 @@ const SearchResult = () => {
               return (
                 <div
                   key={index}
-                  className='relative h-60 w-full cursor-pointer rounded-2xl bg-zinc-100 p-4'
+                  className='relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                 >
                   <Link
                     key={`${route.routeID}_${index}`}

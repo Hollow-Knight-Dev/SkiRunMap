@@ -98,22 +98,26 @@ const Home = () => {
             <FilterSVG />
           </div>
           {hasFilter && (
-            <div className='flex w-full items-center gap-4 rounded-md bg-white pb-2 pt-2 font-semibold shadow-[0px_0px_10px_-4px_#b3b3b3]'>
+            <div className='flex w-full items-center justify-evenly rounded-xl bg-white pb-2 pt-2 font-semibold shadow-[0px_1px_8px_-4px_#7e7e7e]'>
               <button
-                className={`w-full rounded-xl ${filter === 'Newest' && 'bg-blue-200'}`}
+                className={`w-fit rounded-xl pl-16 pr-16 ${filter === 'Newest' && 'bg-blue-200'}`}
                 onClick={() => handleFilterClick('Newest')}
               >
                 Newest
               </button>
               <button
-                className={`w-full rounded-xl ${filter === 'Most likes' && 'bg-blue-200'}`}
-                onClick={() => handleFilterClick('Most likes')}
+                className={`w-fit rounded-xl pl-16 pr-16 ${
+                  filter === 'Most likes' && 'bg-blue-200'
+                }`}
+                onClick={() => handleFilterClick('Most Likes')}
               >
                 Most Likes
               </button>
               <button
-                className={`w-full rounded-xl ${filter === 'Most views' && 'bg-blue-200'}`}
-                onClick={() => handleFilterClick('Most views')}
+                className={`w-fit rounded-xl pl-16 pr-16 ${
+                  filter === 'Most views' && 'bg-blue-200'
+                }`}
+                onClick={() => handleFilterClick('Most Views')}
               >
                 Most Views
               </button>
@@ -127,7 +131,7 @@ const Home = () => {
             return (
               <div
                 key={index}
-                className='relative h-60 w-full cursor-pointer rounded-2xl bg-zinc-100 p-4'
+                className='relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
               >
                 <Link
                   key={`${route.routeID}_${index}`}
