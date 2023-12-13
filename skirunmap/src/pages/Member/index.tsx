@@ -27,6 +27,7 @@ interface RouteDocsInList {
 }
 
 const Member = () => {
+  console.log("I'm in!")
   const { memberID } = useParams<{ memberID: string }>()
   const { userDoc, isLoadedUserDoc, isSignIn } = useUserStore()
   const [memberDoc, setMemberDoc] = useState<User>()

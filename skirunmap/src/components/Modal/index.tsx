@@ -20,24 +20,31 @@ const Modal: React.FC<ModalProps> = ({
   onCancel
 }) => {
   return (
-    <div className='h-screen-64px flex w-full items-center justify-center'>
-      <div className='mb-16 flex h-64 w-64 flex-col'>
-        <div className='flex h-64 w-64 flex-col items-center rounded-lg p-8 font-bold shadow-[0px_0px_10px_-2px_#53a3f3]'>
-          <p className='break-word mb-1 text-center text-2xl'>{title}</p>
-          <p className='break-word mb-1 text-center text-lg'>{message}</p>
-          <div className='mt-auto flex w-full justify-between text-lg'>
-            <button className='w-20 rounded-full bg-blue-100 p-1' onClick={onConfirm}>
-              {confirmButton}
+    <div className='h-screen-64px absolute z-20 flex w-full items-center justify-center'>
+      <div className='mb-16 flex h-80 w-80 flex-col items-center rounded-lg bg-white p-8 font-bold shadow-[0px_0px_10px_-3px_#000000]'>
+        <p className='break-word mb-2 text-center text-2xl'>{title}</p>
+        <p className='break-word mb-4 text-center text-lg font-normal'>{message}</p>
+        <div className='mt-auto flex w-full flex-col items-center gap-2 text-lg'>
+          <button
+            className='w-full rounded-full bg-blue-100 p-1 hover:bg-blue-200'
+            onClick={onConfirm}
+          >
+            {confirmButton}
+          </button>
+          {middleTitle && (
+            <button
+              className='w-full rounded-full bg-blue-100 p-1 hover:bg-blue-200'
+              onClick={onMiddleOption}
+            >
+              {middleTitle}
             </button>
-            {middleTitle && (
-              <button className='w-20 rounded-full bg-blue-100 p-1' onClick={onMiddleOption}>
-                {middleTitle}
-              </button>
-            )}
-            <button className='w-20 rounded-full bg-blue-100 p-1' onClick={onCancel}>
-              {cancelButton}
-            </button>
-          </div>
+          )}
+          <button
+            className='w-full rounded-full bg-blue-100 p-1 hover:bg-blue-200'
+            onClick={onCancel}
+          >
+            {cancelButton}
+          </button>
         </div>
       </div>
     </div>

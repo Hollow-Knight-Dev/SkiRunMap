@@ -95,7 +95,7 @@ const SignIn: React.FC = () => {
     signInWithEmailAndPassword(auth, userEmail, userPassword)
       .then(async (userCredential) => {
         const userID = userCredential.user.uid
-        // console.log(userID)
+        console.log('signin page:', userID)
         // setUserID(userID)
         // setIsSignIn(true)
 

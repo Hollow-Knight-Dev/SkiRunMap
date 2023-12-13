@@ -48,36 +48,17 @@ const App: React.FC = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<RootLayout />}>
-        <Route path='/' element={<Home />} />
-        <Route path='/route/:id' element={<RouteView />} />
-        <Route path='/search/:keyword' element={<SearchResult />} />
-        <Route path='/signin' element={<SignIn />} />
-        <Route path='/credit' element={<ImageCredit />} />
-        <Route
-          path='/edit-route'
-          element={
-            <ProtectedRoute>
-              <RouteEdit />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/member/:memberID'
-          element={
-            <ProtectedRoute>
-              <Member />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/friend'
-          element={
-            <ProtectedRoute>
-              <Friend />
-            </ProtectedRoute>
-          }
-        />
-        <Route path='/member-info' element={<ProtectedMemberInfoRoute />} />
+        <Route index element={<Home />} />
+        <Route path='route/:id' element={<RouteView />} />
+        <Route path='search/:keyword' element={<SearchResult />} />
+        <Route path='signin' element={<SignIn />} />
+        <Route path='credit' element={<ImageCredit />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path='edit-route' element={<RouteEdit />} />
+          <Route path='member/:memberID' element={<Member />} />
+          <Route path='friend' element={<Friend />} />
+        </Route>
+        <Route path='member-info' element={<ProtectedMemberInfoRoute />} />
       </Route>
     )
   )

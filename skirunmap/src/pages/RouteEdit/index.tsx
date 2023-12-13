@@ -7,20 +7,26 @@ import {
   setDoc,
   updateDoc
 } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useBlocker, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
+import Modal from '../../components/Modal'
 import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
 import { Route, Spot, useRouteStore, useSpotStore } from '../../store/useRoute'
 import { useUserStore } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      isSaveToLeave !== true && currentLocation.pathname !== nextLocation.pathname
+  )
 
   const { userID, userDoc, isSignIn, isLoadedUserDoc } = useUserStore()
   const {
@@ -29,6 +35,7 @@ const EditRoute: React.FC = () => {
     routeTitle,
     setRouteTitle,
     routeCoordinate,
+    setRouteCoordinate,
     routeDescription,
     setRouteDescription,
     tags,
@@ -43,6 +50,7 @@ const EditRoute: React.FC = () => {
     setAccessRight,
     gpxUrl,
     setGpxUrl,
+    isSaveToLeave,
     setIsSaveToLeave
   } = useRouteStore()
   const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
@@ -53,6 +61,17 @@ const EditRoute: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
   const [spotVisibility, setSpotVisibility] = useState<boolean>(false)
+
+  useEffect(() => {
+    handleInitialisingForm()
+  }, [])
+
+  useEffect(() => {
+    console.log('isSaveToLeave:', isSaveToLeave)
+    if (blocker.state === 'blocked' && isSaveToLeave) {
+      blocker.reset()
+    }
+  }, [isSaveToLeave, blocker])
 
   useEffect(() => {
     if (isLoadedUserDoc && !isSignIn) {
@@ -481,8 +500,55 @@ const EditRoute: React.FC = () => {
     }
   }
 
+  const handleClearAllInputs = async () => {
+    const deleteRef = ref(storage, `routes/${routeID}/${routeID}.gpx`)
+    await deleteObject(deleteRef)
+      .then(() => {
+        console.log(`Delete route document ${routeID}.gpx in Storage successfully`)
+      })
+      .catch((error): void => {
+        console.error('Fail to delete route document in Storage', error)
+      })
+
+    handleInitialisingForm()
+  }
+
+  const handleInitialisingForm = () => {
+    setRouteID('')
+    setRouteTitle('')
+    setRouteCoordinate({ lat: undefined, lng: undefined })
+    setRouteDescription('')
+    setTags([])
+    setTagInput('')
+    setBuddies([])
+    setBuddyInput('')
+    setAccessRight(true)
+    setGpxUrl('')
+  }
+
   return (
-    <div className='flex w-full'>
+    <div className='relative flex w-full'>
+      {blocker.state === 'blocked' ? (
+        <div>
+          <Modal
+            title='Start Over?'
+            message='If you go away now, you will lose this draft.'
+            confirmTitle='Start over'
+            onConfirm={() => {
+              handleClearAllInputs()
+              blocker.proceed()
+            }}
+            middleTitle='Save draft'
+            onMiddleOption={() => {
+              blocker.reset()
+              handleSaveDraft()
+            }}
+            cancelTitle='Keep editing'
+            onCancel={() => blocker.reset()}
+          />
+          <div className='h-screen-64px absolute z-10 w-screen bg-zinc-600 opacity-60'></div>
+        </div>
+      ) : null}
       <div className='h-screen-64px flex w-full'>
         <div className='h-full w-2/3 bg-zinc-100'>
           {gpxUrl ? (
