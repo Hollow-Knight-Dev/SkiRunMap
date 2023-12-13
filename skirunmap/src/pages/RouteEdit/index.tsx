@@ -21,6 +21,7 @@ import { useUserStore } from '../../store/useUser'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
+
   const { userID, userDoc, isSignIn, isLoadedUserDoc } = useUserStore()
   const {
     routeID,
@@ -41,7 +42,8 @@ const EditRoute: React.FC = () => {
     accessRight,
     setAccessRight,
     gpxUrl,
-    setGpxUrl
+    setGpxUrl,
+    setIsSaveToLeave
   } = useRouteStore()
   const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
   let latestSpotsRef = useRef(spots)
@@ -71,10 +73,15 @@ const EditRoute: React.FC = () => {
       if (!routeID) {
         const id = uuidv4()
         setRouteID(id)
-        alert(`Created route id:${id}!`)
       }
     }
   }, [userDoc])
+
+  useEffect(() => {
+    if (gpxUrl) {
+      setIsSaveToLeave(false)
+    }
+  }, [gpxUrl])
 
   useEffect(() => {
     latestSpotsRef.current = spots
@@ -413,11 +420,13 @@ const EditRoute: React.FC = () => {
         progress: undefined,
         theme: 'light'
       })
+      setIsSaveToLeave(true)
     }
   }
 
   const handleSubmit = async () => {
     if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
+      setIsSaveToLeave(true)
       const data: Route = {
         userID: userID,
         username: userDoc.username,
@@ -466,7 +475,7 @@ const EditRoute: React.FC = () => {
         progress: undefined,
         theme: 'light',
         onClose: () => {
-          navigate('/')
+          navigate(`/member/${userDoc.userID}`)
         }
       })
     }

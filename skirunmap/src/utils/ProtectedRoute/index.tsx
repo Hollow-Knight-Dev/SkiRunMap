@@ -10,6 +10,7 @@ interface RouteProps {
 
 const ProtectedRoute: React.FC<RouteProps> = ({ children }) => {
   const { userDoc, isLoadedUserDoc, isSignIn } = useUserStore()
+
   if (isLoadedUserDoc && !isSignIn) {
     toast.warn(`Please sign in first`, {
       position: 'top-right',
