@@ -19,9 +19,6 @@ import { db } from '../../auth/CloudStorage'
 import { Spot } from '../../store/useRoute'
 import { User, useUserStore } from '../../store/useUser'
 
-// import LeftArrow from './left_arrow.png'
-// import RightArrow from './right_arrow.png'
-
 interface RouteDocsInList {
   listName: string
   routeDoc: DocumentData[]
@@ -39,6 +36,7 @@ const Member = () => {
   const [isFriend, setIsFriend] = useState<boolean>(false)
   const [isMyself, setIsMyself] = useState<boolean>(false)
   const [selectedImages, setSelectedImages] = useState<{ [routeID: string]: number }>({})
+  const [viewCount, setViewCount] = useState<number>(0)
 
   useEffect(() => {
     if (isLoadedUserDoc && userDoc.userID === memberID) {
@@ -250,6 +248,14 @@ const Member = () => {
     setSelectedImages(initialSelectedImages)
   }, [userCreatedRoutes])
 
+  useEffect(() => {
+    let count = 0
+    userCreatedRoutes.forEach((route) => {
+      count += route.viewCount
+    })
+    setViewCount(count)
+  }, [userCreatedRoutes])
+
   const handleDotClick = (routeID: string, index: number) => {
     setSelectedImages((prev) => ({ ...prev, [routeID]: index }))
   }
@@ -329,10 +335,10 @@ const Member = () => {
                   <p className='text-xl font-bold'>Routes:</p>
                   <p className='text-lg'>{memberDoc?.userRouteIDs.length}</p>
                 </div>
-                {/* <div className='flex gap-2'>
+                <div className='flex gap-2'>
                   <p className='text-xl font-bold'>Views:</p>
-                  <p className='text-lg'>10</p>
-                </div> */}
+                  <p className='text-lg'>{viewCount}</p>
+                </div>
                 <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Friends:</p>
                   <p className='text-lg'>{memberDoc?.userFriends.length}</p>
