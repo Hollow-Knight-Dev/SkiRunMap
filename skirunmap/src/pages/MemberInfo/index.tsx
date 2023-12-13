@@ -157,8 +157,8 @@ const MemberInfo = () => {
   }
 
   return (
-    <div className='h-screen-64px flex flex-col items-center justify-center bg-zinc-200'>
-      <div className='flex w-4/5 gap-12'>
+    <div className='h-screen-64px flex flex-col items-center justify-center bg-blue-100'>
+      <div className='flex w-3/5 gap-12'>
         <div className='relative h-fit w-28'>
           <label
             htmlFor='userIcon'
@@ -200,7 +200,7 @@ const MemberInfo = () => {
         </div>
         <div className='mb-8 flex w-5/6 flex-col items-center gap-8'>
           <div className='flex w-full flex-col gap-2'>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
+            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
               <label className='w-48'>Username</label>
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
@@ -209,7 +209,7 @@ const MemberInfo = () => {
                 onChange={(e) => handleUsername(e)}
               />
             </div>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
+            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
               <label className='w-48'>Ski age</label>
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
@@ -220,7 +220,7 @@ const MemberInfo = () => {
             </div>
           </div>
 
-          <div className='flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
+          <div className='nice-shadow flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
             <label className='w-48'>Snowboard age</label>
             <input
               className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
@@ -231,7 +231,7 @@ const MemberInfo = () => {
           </div>
 
           <div className='flex w-full flex-col gap-2'>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
+            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
               <label className='w-48'>Country</label>
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
@@ -240,7 +240,7 @@ const MemberInfo = () => {
                 onChange={(e) => handleCountry(e)}
               />
             </div>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
+            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
               <label className='w-48'>Gender</label>
               <input
                 className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
@@ -251,7 +251,7 @@ const MemberInfo = () => {
             </div>
           </div>
 
-          <div className='flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
+          <div className='nice-shadow flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
             <label className='w-48'>About me</label>
             <input
               className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
@@ -285,7 +285,7 @@ const MemberInfo = () => {
       </div>
       <div className='flex gap-8'>
         <button
-          className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
+          className='button-shadow h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
           onClick={() => handleMemberInfoSubmit()}
         >
           Save profile
