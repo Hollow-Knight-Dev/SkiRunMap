@@ -1,11 +1,15 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements
+} from 'react-router-dom'
 import './App.css'
+import RootLayout from './RootLayout'
 import { db } from './auth/CloudStorage'
-import Footer from './components/Footer'
-import Header from './components/Header'
 import Friend from './pages/Friend'
 import Home from './pages/Home'
 import ImageCredit from './pages/ImageCredit'
@@ -41,14 +45,9 @@ const App: React.FC = () => {
     return () => unsubscribe()
   }, [isSignIn, setUserID])
 
-  return (
-    <BrowserRouter>
-      <div className='fixed top-0 z-10 w-full'>
-        <Header />
-      </div>
-      <div className='h-16' />
-
-      <Routes>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path='/' element={<RootLayout />}>
         <Route path='/' element={<Home />} />
         <Route path='/route/:id' element={<RouteView />} />
         <Route path='/search/:keyword' element={<SearchResult />} />
@@ -79,10 +78,11 @@ const App: React.FC = () => {
           }
         />
         <Route path='/member-info' element={<ProtectedMemberInfoRoute />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+      </Route>
+    )
   )
+
+  return <RouterProvider router={router} />
 }
 
 export default App

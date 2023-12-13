@@ -16,7 +16,7 @@ const SignIn: React.FC = () => {
 
   useEffect(() => {
     if (userID) {
-      console.log(userID)
+      // console.log('sign in userID:', userID)
     }
   }, [userID])
 

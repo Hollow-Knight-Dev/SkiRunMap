@@ -132,11 +132,13 @@ const Member = () => {
   const getUserCreatedRoutes = async () => {
     if (memberDoc) {
       const routeIDs = memberDoc.userRouteIDs
-      const routesQuery = query(collection(db, 'routes'), where('routeID', 'in', routeIDs))
-      const routeDocsSnapshot = await getDocs(routesQuery)
-      const userRoutesData = routeDocsSnapshot.docs.map((doc) => doc.data())
-      setUserCreatedRoutes(userRoutesData)
-      // console.log(userRoutesData)
+      if (routeIDs.length > 0) {
+        const routesQuery = query(collection(db, 'routes'), where('routeID', 'in', routeIDs))
+        const routeDocsSnapshot = await getDocs(routesQuery)
+        const userRoutesData = routeDocsSnapshot.docs.map((doc) => doc.data())
+        setUserCreatedRoutes(userRoutesData)
+        // console.log(userRoutesData)
+      }
     }
   }
 
