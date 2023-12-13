@@ -259,26 +259,26 @@ const Member = () => {
       <div className='mb-8 w-full'>
         <div className='flex w-4/5'>
           <img
-            className='ml-10 mr-10 h-28 w-28 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
+            className='ml-16 mr-16 h-32 w-32 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
             src={memberDoc?.userIconUrl}
             alt='Profile Icon'
           />
           <div className='flex w-full justify-between'>
             <div className='flex w-full flex-col'>
-              <div className='mb-4 flex w-full items-center justify-between gap-10'>
+              <div className='mb-6 flex w-full items-center justify-between gap-10'>
                 <p className='text-3xl font-bold'>{memberDoc?.username}</p>
                 {!isMyself ? (
                   <div className='flex gap-2'>
                     {isFollowing ? (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                        className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleUnfollow()}
                       >
                         Following
                       </button>
                     ) : (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                        className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleFollow()}
                       >
                         Follow
@@ -287,21 +287,21 @@ const Member = () => {
 
                     {isFriend ? (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                        className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleFriendBreakUp()}
                       >
                         Friend
                       </button>
                     ) : isInviting ? (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                        className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleWithdrawInvitation()}
                       >
                         Inviting
                       </button>
                     ) : (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                        className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
                         onClick={() => handleFriendInvite()}
                       >
                         Invite
@@ -310,59 +310,60 @@ const Member = () => {
                   </div>
                 ) : (
                   <Link
-                    className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                    className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
                     to='/member-info'
                   >
                     Edit info
                   </Link>
                 )}
               </div>
-              <div className='mb-2 flex gap-1'>
+              <div className='mb-2 flex items-center gap-2'>
                 <p className='text-xl font-bold'>Joined Time:</p>
                 <p className='text-lg'>
                   {memberDoc?.userJoinedTime &&
                     formatTimestamp(memberDoc?.userJoinedTime as Timestamp)}
                 </p>
               </div>
-              <div className='flex gap-3'>
-                <div className='flex gap-1'>
+              <div className='flex flex-wrap gap-4'>
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Routes:</p>
                   <p className='text-lg'>{memberDoc?.userRouteIDs.length}</p>
                 </div>
-                <div className='flex gap-1'>
+                {/* <div className='flex gap-2'>
                   <p className='text-xl font-bold'>Views:</p>
                   <p className='text-lg'>10</p>
-                </div>
-                <div className='flex gap-1'>
+                </div> */}
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Friends:</p>
                   <p className='text-lg'>{memberDoc?.userFriends.length}</p>
                 </div>
-                <div className='flex gap-1'>
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Followers:</p>
                   <p className='text-lg'>{memberDoc?.userFollowers.length}</p>
                 </div>
               </div>
-              <div className='flex gap-3'>
-                <div className='flex gap-1'>
+
+              <div className='mb-2 mt-6 flex items-center gap-2'>
+                <p className='text-xl font-bold'>About me:</p>
+                <p className='text-lg'>{memberDoc?.userDescription}</p>
+              </div>
+              <div className='flex flex-wrap gap-4'>
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Gender:</p>
                   <p className='text-lg'>{memberDoc?.userGender}</p>
                 </div>
-                <div className='flex gap-1'>
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Country:</p>
                   <p className='text-lg'>{memberDoc?.userCountry}</p>
                 </div>
-                <div className='flex gap-1'>
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Ski Age:</p>
                   <p className='text-lg'>{memberDoc?.userSkiAge}</p>
                 </div>
-                <div className='flex gap-1'>
+                <div className='flex items-center gap-2'>
                   <p className='text-xl font-bold'>Snowboard Age:</p>
                   <p className='text-lg'>{memberDoc?.userSnowboardAge}</p>
                 </div>
-              </div>
-              <div className='flex gap-1'>
-                <p className='text-xl font-bold'>About me:</p>
-                <p className='text-lg'>{memberDoc?.userDescription}</p>
               </div>
             </div>
           </div>
@@ -379,7 +380,7 @@ const Member = () => {
                 return (
                   <div
                     key={index}
-                    className='relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                    className='nice-shadow relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4'
                   >
                     <Link
                       key={`${route.routeID}_${index}`}
@@ -487,7 +488,7 @@ const Member = () => {
                       return (
                         <div
                           key={index}
-                          className='relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                          className='nice-shadow relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4'
                         >
                           <Link
                             key={`${route.routeID}_${index}`}
