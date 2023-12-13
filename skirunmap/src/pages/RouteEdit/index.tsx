@@ -19,6 +19,7 @@ import Modal from '../../components/Modal'
 import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
 import { Route, Spot, useRouteStore, useSpotStore } from '../../store/useRoute'
 import { useUserStore } from '../../store/useUser'
+import CrossPoles from './cross-poles.png'
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
@@ -63,7 +64,9 @@ const EditRoute: React.FC = () => {
   const [spotVisibility, setSpotVisibility] = useState<boolean>(false)
 
   useEffect(() => {
-    handleInitialisingForm()
+    // Need to think a way to clear all redundent data
+    // handleInitialisingForm()
+    console.log('routeID:', routeID)
   }, [])
 
   useEffect(() => {
@@ -515,15 +518,15 @@ const EditRoute: React.FC = () => {
 
   const handleInitialisingForm = () => {
     setRouteID('')
-    setRouteTitle('')
+    setGpxUrl('')
     setRouteCoordinate({ lat: undefined, lng: undefined })
+    setRouteTitle('')
     setRouteDescription('')
     setTags([])
     setTagInput('')
     setBuddies([])
     setBuddyInput('')
     setAccessRight(true)
-    setGpxUrl('')
   }
 
   return (
@@ -606,12 +609,11 @@ const EditRoute: React.FC = () => {
         </div>
         <form className='flex h-full w-1/3 flex-col justify-between overflow-x-hidden overflow-y-scroll bg-blue-100 p-4'>
           <div className='flex flex-col gap-2 p-2'>
-            <p>{routeID}</p>
             {gpxUrl && (
-              <div className='flex items-center gap-2'>
+              <div className='mb-4 flex items-center gap-2'>
                 <label
                   htmlFor='gpxFile'
-                  className='w-fit cursor-pointer rounded-2xl bg-zinc-100 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
+                  className='button-shadow w-fit cursor-pointer rounded-2xl bg-blue-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
                 >
                   Alter GPX file
                 </label>
@@ -627,17 +629,17 @@ const EditRoute: React.FC = () => {
             )}
 
             <div
-              className='flex w-full cursor-pointer flex-wrap items-center justify-between bg-white'
+              className='flex h-12 w-full cursor-pointer flex-wrap items-center justify-between'
               onClick={() => toggleRouteVisibility()}
             >
-              <p className='text-xl font-bold'>Route</p>
+              <p className='text-3xl font-bold'>Route</p>
               {routeVisibility ? (
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth='1.5'
-                  stroke='currentColor'
+                  stroke='rgb(59,130,246)'
                   className='h-6 w-6'
                 >
                   <path
@@ -652,131 +654,150 @@ const EditRoute: React.FC = () => {
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth='1.5'
-                  stroke='currentColor'
+                  stroke='rgb(59,130,246)'
                   className='h-6 w-6'
                 >
                   <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-7 7-7-7'></path>
                 </svg>
               )}
-              <div className='w-full border border-zinc-300' />
+              <div className='w-full border border-blue-400' />
             </div>
 
-            <div className={`mb-4 flex flex-col gap-2 ${!routeVisibility && 'hidden'}`}>
-              <label className='w-40 text-lg font-bold'>Route Title:</label>
-              <input
-                type='text'
-                value={routeTitle}
-                onChange={(event) => {
-                  handleRouteTitle(event)
-                }}
-                className='h-10 p-2'
-              />
-
-              <div className='flex items-center'>
-                <p className='w-40 text-lg font-bold'>Route Coordinate:</p>
-              </div>
-
-              <div className='flex items-center justify-between'>
-                <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
+            <div className={`mb-4 flex flex-col gap-4 ${!routeVisibility && 'hidden'}`}>
+              <div className='flex flex-col'>
+                <label className='w-40 text-lg font-bold'>Route Title:</label>
                 <input
-                  type='number'
-                  value={routeCoordinate.lat ?? ''}
-                  className='h-10 p-2'
-                  readOnly
-                />
-              </div>
-              <div className='flex items-center justify-between'>
-                <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
-                <input
-                  type='number'
-                  value={routeCoordinate.lng ?? ''}
-                  className='h-10 p-2'
-                  readOnly
+                  type='text'
+                  value={routeTitle}
+                  onChange={(event) => {
+                    handleRouteTitle(event)
+                  }}
+                  className='nice-shadow h-10 p-2'
                 />
               </div>
 
-              <label className='text-lg font-bold'>Route Description:</label>
-              <textarea
-                className='h-fit w-full resize-none p-2'
-                placeholder='Add route description'
-                value={routeDescription}
-                onChange={(event) => handleRouteDescription(event)}
-              />
-              <label className='w-40 text-lg font-bold'>Date:</label>
-              <input type='text' className='h-10 p-2' />
-              <label className='text-lg font-bold'>Tag this route:</label>
-              <div className='flex gap-2'>
-                {tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
-                  >
-                    {tag}
-                    <button onClick={() => handleTagDelete(index)}>X</button>
-                  </span>
-                ))}
-              </div>
-              <textarea
-                className='h-fit w-full resize-none p-2'
-                placeholder='Press Enter to add tag ex. niseko, gondola, the-best-lift'
-                onChange={(event) => handleTagInput(event)}
-                onKeyDown={handleTagInputKeyDown}
-                value={tagInput}
-              />
-
-              <label className='text-lg font-bold'>Tag snow buddy:</label>
-              <div className='flex gap-2'>
-                {buddies.map((buddy, index) => (
-                  <span
-                    key={index}
-                    className='flex h-auto w-fit rounded-md bg-zinc-400 pl-2 pr-2 text-sm'
-                  >
-                    {buddy}
-                    <button onClick={() => handleBuddyDelete(index)}>X</button>
-                  </span>
-                ))}
-              </div>
-              <textarea
-                className='h-fit w-full resize-none p-2'
-                placeholder='Press Enter to tag snow buddy with this route'
-                onChange={(event) => handleBuddyInput(event)}
-                onKeyDown={handleBuddyInputKeyDown}
-                value={buddyInput}
-              />
-
-              <p className='w-40 text-lg font-bold'>Set Access Right:</p>
-              <div className='flex gap-4'>
-                <div
-                  className={`w-16 cursor-pointer rounded-md text-center ${
-                    accessRight === true ? 'bg-yellow-200' : 'bg-white'
-                  }`}
-                  onClick={() => handleAccessRight(true)}
-                >
-                  Public
+              <div className='flex flex-col'>
+                <div className='flex items-center'>
+                  <p className='w-40 text-lg font-bold'>Route Coordinate:</p>
                 </div>
-                <div
-                  className={`w-16 cursor-pointer rounded-md text-center ${
-                    accessRight === false ? 'bg-yellow-200' : 'bg-white'
-                  }`}
-                  onClick={() => handleAccessRight(false)}
-                >
-                  Private
+                <div className='flex flex-col gap-1'>
+                  <div className='ml-16 flex items-center'>
+                    <label className='w-28 text-lg'>Latitude:</label>
+                    <input
+                      type='number'
+                      value={routeCoordinate.lat ?? ''}
+                      className='h-10 p-2 text-zinc-400'
+                      readOnly
+                    />
+                  </div>
+                  <div className='ml-16 flex items-center'>
+                    <label className='w-28 text-lg'>Longitude:</label>
+                    <input
+                      type='number'
+                      value={routeCoordinate.lng ?? ''}
+                      className='h-10 p-2 text-zinc-400'
+                      readOnly
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex flex-col'>
+                <label className='text-lg font-bold'>Route Description:</label>
+                <textarea
+                  className='nice-shadow h-fit w-full resize-none p-2'
+                  placeholder='Add route description'
+                  value={routeDescription}
+                  onChange={(event) => handleRouteDescription(event)}
+                />
+              </div>
+
+              {/* <div className='flex flex-col'>
+                <label className='w-40 text-lg font-bold'>Date:</label>
+              <input type='text' className='h-10 p-2' />
+              </div> */}
+
+              <div className='flex flex-col'>
+                <label className='text-lg font-bold'>Tag this route:</label>
+                <div className='mb-2 flex gap-2'>
+                  {tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className='flex h-auto w-fit cursor-pointer items-center gap-1 rounded-md bg-blue-200 pl-2 pr-2 text-sm'
+                      onClick={() => handleTagDelete(index)}
+                    >
+                      {tag}
+                      <img src={CrossPoles} alt='Cross sign' className='h-4 w-auto' />
+                    </span>
+                  ))}
+                </div>
+                <textarea
+                  className='nice-shadow h-10 w-full resize-none p-2'
+                  placeholder='Press Enter to add tag ex. niseko, gondola, the-best-lift'
+                  onChange={(event) => handleTagInput(event)}
+                  onKeyDown={handleTagInputKeyDown}
+                  value={tagInput}
+                />
+              </div>
+
+              <div className='flex flex-col'>
+                <label className='text-lg font-bold'>Tag snow buddy:</label>
+                <div className='mb-2 flex gap-2'>
+                  {buddies.map((buddy, index) => (
+                    <span
+                      key={index}
+                      className='flex h-auto w-fit cursor-pointer items-center gap-1 rounded-md bg-blue-200 pl-2 pr-2 text-sm'
+                      onClick={() => handleBuddyDelete(index)}
+                    >
+                      {buddy}
+                      <img src={CrossPoles} alt='Cross sign' className='h-4 w-auto' />
+                    </span>
+                  ))}
+                </div>
+                <textarea
+                  className='nice-shadow h-10 w-full resize-none p-2'
+                  placeholder='Press Enter to tag snow buddy with this route'
+                  onChange={(event) => handleBuddyInput(event)}
+                  onKeyDown={handleBuddyInputKeyDown}
+                  value={buddyInput}
+                />
+              </div>
+
+              <div className='flex flex-col'>
+                <p className='w-40 text-lg font-bold'>Set Access Right:</p>
+                <div className='flex gap-4'>
+                  <div
+                    className={`button-shadow w-16 cursor-pointer rounded-md text-center ${
+                      accessRight === true ? 'bg-blue-300' : 'bg-white'
+                    }`}
+                    onClick={() => handleAccessRight(true)}
+                  >
+                    Public
+                  </div>
+                  <div
+                    className={`button-shadow w-16 cursor-pointer rounded-md text-center ${
+                      accessRight === false ? 'bg-blue-300' : 'bg-white'
+                    }`}
+                    onClick={() => handleAccessRight(false)}
+                  >
+                    Private
+                  </div>
                 </div>
               </div>
             </div>
 
             <div
-              className='flex w-full cursor-pointer flex-wrap items-center justify-between bg-white'
+              className='mb-2 flex h-12 w-full cursor-pointer flex-wrap items-center justify-between'
               onClick={() => toggleSpotsVisibility()}
             >
-              <p className='text-xl font-bold'>Spots</p>
+              <p className='text-3xl font-bold'>Spots</p>
               {spotVisibility ? (
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth='1.5'
-                  stroke='currentColor'
+                  stroke='rgb(59,130,246)'
                   className='h-6 w-6'
                 >
                   <path
@@ -791,142 +812,158 @@ const EditRoute: React.FC = () => {
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth='1.5'
-                  stroke='currentColor'
+                  stroke='rgb(59,130,246)'
                   className='h-6 w-6'
                 >
                   <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-7 7-7-7'></path>
                 </svg>
               )}
-              <div className='w-full border border-zinc-300' />
+              <div className='w-full border border-blue-400' />
             </div>
 
-            <div className={`mb-4 flex flex-col gap-2 ${!spotVisibility && 'hidden'}`}>
+            <div className={`mb-4 flex flex-col gap-4 ${!spotVisibility && 'hidden'}`}>
               {spots.map((spot, index) => (
-                <div key={index} className='flex flex-col gap-2'>
+                <div key={index} className='flex flex-col gap-4'>
                   <div className='flex items-center justify-between'>
                     <p className='w-full text-lg font-bold underline'>{`Spot ${index + 1}`}</p>
                     <p
-                      className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
+                      className='button-shadow cursor-pointer rounded-md bg-blue-200 pl-2 pr-2 text-sm hover:bg-red-200'
                       onClick={() => handleRemoveSpot(index)}
                     >
                       Delete
                     </p>
                   </div>
 
-                  <label className='w-40 text-lg font-bold'>Spot Title:</label>
-                  <input
-                    type='text'
-                    value={spot.spotTitle}
-                    onChange={(event) => {
-                      handleUpdateSpot(index, { ...spot, spotTitle: event.target.value })
-                    }}
-                    className='h-10 p-2'
-                  />
+                  <div className='flex flex-col'>
+                    <label className='w-40 text-lg font-bold'>Spot Title:</label>
+                    <input
+                      type='text'
+                      value={spot.spotTitle}
+                      onChange={(event) => {
+                        handleUpdateSpot(index, { ...spot, spotTitle: event.target.value })
+                      }}
+                      className='nice-shadow h-10 p-2'
+                    />
+                  </div>
 
-                  <div className='flex items-center'>
-                    <p className='w-40 text-lg font-bold'>Spot Coordinate:</p>
-                    {/* <p
+                  <div className='flex flex-col'>
+                    <div className='flex items-center'>
+                      <p className='w-40 text-lg font-bold'>Spot Coordinate:</p>
+                      {/* <p
                       className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
                       // onClick={() => handleAlterMarker(index)}
                     >
                       Alter marker
                     </p> */}
+                    </div>
+
+                    <div className='flex flex-col gap-1'>
+                      <div className='ml-16 flex items-center'>
+                        <label className='w-28 text-lg'>Latitude:</label>
+                        <input
+                          type='number'
+                          value={spot.spotCoordinate.lat}
+                          className='h-10 p-2 text-zinc-400'
+                          readOnly
+                        />
+                      </div>
+                      <div className='ml-16 flex items-center'>
+                        <label className='w-28 text-lg'>Longitude:</label>
+                        <input
+                          type='number'
+                          value={spot.spotCoordinate.lng}
+                          className='h-10 p-2 text-zinc-400'
+                          readOnly
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className='flex items-center justify-between'>
-                    <label className='ml-8 w-fit text-lg font-bold'>Latitude:</label>
-                    <input
-                      type='number'
-                      value={spot.spotCoordinate.lat}
-                      className='h-10 p-2'
-                      readOnly
+                  <div className='flex flex-col'>
+                    <label className='text-lg font-bold'>Spot Description:</label>
+                    <textarea
+                      className='nice-shadow h-fit w-full resize-none p-2'
+                      placeholder='Add spot description'
+                      value={spot.spotDescription}
+                      onChange={(event) =>
+                        handleUpdateSpot(index, { ...spot, spotDescription: event.target.value })
+                      }
                     />
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <label className='ml-8 w-fit text-lg font-bold'>Longitude:</label>
-                    <input
-                      type='number'
-                      value={spot.spotCoordinate.lng}
-                      className='h-10 p-2'
-                      readOnly
-                    />
-                  </div>
 
-                  <label className='text-lg font-bold'>Spot Description:</label>
-                  <textarea
-                    className='h-fit w-full resize-none p-2'
-                    placeholder='Add spot description'
-                    value={spot.spotDescription}
-                    onChange={(event) =>
-                      handleUpdateSpot(index, { ...spot, spotDescription: event.target.value })
-                    }
-                  />
-
-                  <div className='flex w-full flex-wrap items-start gap-2'>
-                    {spot.imageUrls.map((url, i) => (
-                      <img
-                        key={i}
-                        src={url}
-                        alt={`Image ${i}`}
-                        className='h-auto w-40 object-cover'
+                  <div className='flex flex-col'>
+                    <div className='flex w-full flex-wrap items-center gap-2'>
+                      <label
+                        htmlFor={`imageFile${index}`}
+                        className='button-shadow flex h-28 w-28 cursor-pointer items-center justify-center rounded-2xl bg-blue-200 pl-4 pr-4 text-lg font-bold'
+                      >
+                        + Images
+                      </label>
+                      <input
+                        className='hidden'
+                        type='file'
+                        id={`imageFile${index}`}
+                        accept='image/jpeg, image/png, image/svg+xml, image/gif'
+                        onChange={(event) => handleImages(event, index)}
                       />
-                    ))}
+                      {spot.imageUrls.map((url, i) => (
+                        <div className='flex h-28 w-28 items-center rounded-2xl border border-dashed border-zinc-400'>
+                          <img
+                            key={i}
+                            src={url}
+                            alt={`Image ${i}`}
+                            className='h-auto w-full object-cover p-2'
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <label
-                    htmlFor={`imageFile${index}`}
-                    className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-                  >
-                    Upload images
-                  </label>
-                  <input
-                    className='hidden'
-                    type='file'
-                    id={`imageFile${index}`}
-                    accept='image/jpeg, image/png, image/svg+xml, image/gif'
-                    onChange={(event) => handleImages(event, index)}
-                  />
 
-                  <div className='flex w-full flex-wrap gap-2'>
-                    {spot.videoUrls.map((url, i) => (
-                      <video key={i} controls width='150' height='100'>
-                        <source src={url} type='video/mp4' />
-                      </video>
-                    ))}
+                  <div className='flex flex-col'>
+                    <div className='flex w-full flex-wrap items-center gap-2'>
+                      <label
+                        htmlFor={`videoFile${index}`}
+                        className='button-shadow flex h-28 w-28 cursor-pointer items-center justify-center rounded-2xl bg-blue-200 pl-4 pr-4 text-lg font-bold'
+                      >
+                        + Videos
+                      </label>
+                      <input
+                        className='hidden'
+                        type='file'
+                        id={`videoFile${index}`}
+                        accept='video/mp4'
+                        onChange={(event) => handleVideos(event, index)}
+                      />
+                      {spot.videoUrls.map((url, i) => (
+                        <div className='flex h-28 w-28 items-center rounded-2xl border border-dashed border-zinc-400'>
+                          <video key={i} controls width='112' height='84'>
+                            <source src={url} type='video/mp4' />
+                          </video>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <label
-                    htmlFor={`videoFile${index}`}
-                    className='h-fit w-fit cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
-                  >
-                    Upload videos
-                  </label>
-                  <input
-                    className='hidden'
-                    type='file'
-                    id={`videoFile${index}`}
-                    accept='video/mp4'
-                    onChange={(event) => handleVideos(event, index)}
-                  />
                 </div>
               ))}
 
               <div
-                className='h-fit w-full cursor-pointer rounded-2xl bg-zinc-300 pl-4 pr-4 text-center text-lg font-bold'
+                className='nice-shadow mt-4 h-fit w-full cursor-pointer rounded-2xl bg-blue-500 pl-4 pr-4 text-center text-lg font-bold text-white'
                 onClick={() => handleAddSpot()}
               >
-                Add spot
+                + Add spot
               </div>
             </div>
           </div>
 
           <div className='mt-8 flex justify-between'>
             <div
-              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+              className='button-shadow h-fit w-fit cursor-pointer rounded-3xl bg-blue-300 p-4 text-xl font-bold text-white hover:text-black'
               onClick={() => handleSaveDraft()}
             >
               Save draft
             </div>
             <div
-              className='h-fit w-fit cursor-pointer rounded-3xl bg-zinc-300 p-4 text-lg font-bold'
+              className='button-shadow h-fit w-fit cursor-pointer rounded-3xl bg-blue-300 p-4 text-xl font-bold text-white hover:text-black'
               onClick={() => handleSubmit()}
             >
               Submit route

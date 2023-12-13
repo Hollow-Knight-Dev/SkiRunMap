@@ -26,21 +26,21 @@ const Modal: React.FC<ModalProps> = ({
         <p className='break-word mb-4 text-center text-lg font-normal'>{message}</p>
         <div className='mt-auto flex w-full flex-col items-center gap-2 text-lg'>
           <button
-            className='w-full rounded-full bg-blue-100 p-1 hover:bg-blue-200'
+            className='w-full rounded-full bg-blue-100 p-1 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:bg-blue-200 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
             onClick={onConfirm}
           >
             {confirmButton}
           </button>
           {middleTitle && (
             <button
-              className='w-full rounded-full bg-blue-100 p-1 hover:bg-blue-200'
+              className='w-full rounded-full bg-blue-100 p-1 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:bg-blue-200 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
               onClick={onMiddleOption}
             >
               {middleTitle}
             </button>
           )}
           <button
-            className='w-full rounded-full bg-blue-100 p-1 hover:bg-blue-200'
+            className='w-full rounded-full bg-blue-100 p-1 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:bg-blue-200 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
             onClick={onCancel}
           >
             {cancelButton}
