@@ -46,7 +46,19 @@ p {
 
 .info-window-text-row {
   display: flex;
+  align-items: center;
   gap: 14px;
+}
+
+.info-window-text-row-y-start {
+  display: flex;
+  gap: 14px;
+}
+
+.info-window-latlng {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .info-window-title {

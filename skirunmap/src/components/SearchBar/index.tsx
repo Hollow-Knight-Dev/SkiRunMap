@@ -137,9 +137,9 @@ const SearchBar = () => {
   }
 
   return (
-    <div className='relative w-[600px]' id='search-bar'>
+    <div className='relative h-full w-full' id='search-bar'>
       <input
-        className='h-12 w-full rounded-3xl p-2 pl-12 text-xl italic leading-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+        className='h-full w-full rounded-3xl p-2 pl-12 text-xl italic leading-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
         placeholder='Enter resort, ski run, or tag name'
         value={searchInput}
         onChange={(e) => handleSearchInput(e)}
@@ -148,14 +148,14 @@ const SearchBar = () => {
         onClick={() => handleInputClick()}
       />
       <img
-        className='absolute left-5 top-4 h-4 w-4 cursor-pointer'
+        className='absolute inset-x-6 inset-y-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer'
         src={SearchIcon}
         alt='Search Icon'
         onClick={() => handleIconClickSearch(searchInput)}
       />
       {isFocus && suggestKeywords.length > 0 && (
         <div
-          className='ml-5 mr-5 mt-[2px] flex flex-col rounded-xl bg-white/60 pb-2 pt-2'
+          className='ml-5 mr-5 mt-[2px] flex flex-col rounded-xl bg-white/90 pb-2 pt-2'
           onMouseLeave={() => setSelectedKeyword('')}
         >
           {suggestKeywords.map((keyword, index) => (

@@ -8,7 +8,9 @@ const HeroHeader = () => {
         <p className='mb-4 w-max text-4xl font-bold italic drop-shadow-[2px_1px_0px_rgba(255,255,255,0.8)]'>
           Explore your dream run
         </p>
-        <SearchBar />
+        <div className='h-12 w-[600px]'>
+          <SearchBar />
+        </div>
       </div>
     </div>
   )
