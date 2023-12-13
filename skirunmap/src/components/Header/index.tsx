@@ -5,7 +5,6 @@ import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
 import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
-import Notification from './notification.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -61,15 +60,15 @@ const Header: React.FC = () => {
               <SubNavItem
                 items={[
                   { name: 'Create New Route', url: '/edit-route' },
-                  { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
-                  { name: 'My Route', url: `/member/${userDoc.userID}` },
-                  { name: 'Followed User Routes', url: '/' },
-                  { name: 'Friend Routes', url: '/' }
+                  { name: 'My Route', url: `/member/${userDoc.userID}` }
+                  // { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
+                  // { name: 'Followed User Routes', url: '/' },
+                  // { name: 'Friend Routes', url: '/' }
                 ]}
               />
             )}
           </div>
-          <div className='h-full' onMouseLeave={handleItemLeave}>
+          {/* <div className='h-full' onMouseLeave={handleItemLeave}>
             <NavItem
               name='Explore'
               url='/'
@@ -84,7 +83,7 @@ const Header: React.FC = () => {
                 ]}
               />
             )}
-          </div>
+          </div> */}
         </div>
       </div>
       <div className='relative flex items-center'>
@@ -99,13 +98,13 @@ const Header: React.FC = () => {
             {isSignIn && userDoc.username && <p className='pr-3 text-lg'>Hi, {userDoc.username}</p>}
             {isSignIn ? (
               <img
-                className='h-8 w-8 rounded-full object-cover shadow-[2px_2px_10px_-2px_#4da5fd]'
+                className='mr-4 h-8 w-8 rounded-full object-cover shadow-[2px_2px_10px_-2px_#4da5fd]'
                 src={userDoc.userIconUrl}
                 alt='User icon'
               />
             ) : (
               <img
-                className='h-8 w-8 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
+                className='mr-4 h-8 w-8 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
                 src={DefaultUserIcon}
                 alt='User icon'
               />
@@ -129,11 +128,11 @@ const Header: React.FC = () => {
           )}
         </div>
 
-        <img
-          className='ml-4 mr-4 h-auto w-7 cursor-pointer duration-200 hover:translate-y-[-2px]'
+        {/* <img
+          className='mr-4 h-auto w-7 cursor-pointer duration-200 hover:translate-y-[-2px]'
           src={Notification}
           alt='Notification icon'
-        />
+        /> */}
 
         {isSignIn ? (
           <button
