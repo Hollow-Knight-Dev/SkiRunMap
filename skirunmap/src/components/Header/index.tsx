@@ -136,14 +136,14 @@ const Header: React.FC = () => {
 
         {isSignIn ? (
           <button
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold transition-transform duration-200 hover:translate-y-[-2px]'
+            className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
             onClick={() => handleSignOut()}
           >
             Sign out
           </button>
         ) : (
           <Link
-            className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold transition-transform duration-200 hover:translate-y-[-2px]'
+            className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
             to='/signin'
           >
             Sign in

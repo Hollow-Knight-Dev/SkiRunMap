@@ -16,6 +16,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
+import { Spot } from '../../store/useRoute'
 import { User, useUserStore } from '../../store/useUser'
 
 // import LeftArrow from './left_arrow.png'
@@ -37,6 +38,7 @@ const Member = () => {
   const [isInviting, setIsInviting] = useState<boolean>(false)
   const [isFriend, setIsFriend] = useState<boolean>(false)
   const [isMyself, setIsMyself] = useState<boolean>(false)
+  const [selectedImages, setSelectedImages] = useState<{ [routeID: string]: number }>({})
 
   useEffect(() => {
     if (isLoadedUserDoc && userDoc.userID === memberID) {
@@ -235,31 +237,48 @@ const Member = () => {
     }
   }
 
+  useEffect(() => {
+    const initialSelectedImages: { [routeID: string]: number } = {}
+    userCreatedRoutes.forEach((route) => {
+      initialSelectedImages[route.routeID] = 0
+    })
+    userStoredLists.forEach((object) => {
+      object.routeDoc.forEach((route) => {
+        initialSelectedImages[route.routeID] = 0
+      })
+    })
+    setSelectedImages(initialSelectedImages)
+  }, [userCreatedRoutes])
+
+  const handleDotClick = (routeID: string, index: number) => {
+    setSelectedImages((prev) => ({ ...prev, [routeID]: index }))
+  }
+
   return (
     <div className='p-8'>
       <div className='mb-8 w-full'>
-        <div className='flex'>
+        <div className='flex w-4/5'>
           <img
             className='ml-10 mr-10 h-28 w-28 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
             src={memberDoc?.userIconUrl}
             alt='Profile Icon'
           />
           <div className='flex w-full justify-between'>
-            <div className='flex flex-col'>
-              <div className='mb-4 flex items-center justify-between gap-10'>
+            <div className='flex w-full flex-col'>
+              <div className='mb-4 flex w-full items-center justify-between gap-10'>
                 <p className='text-3xl font-bold'>{memberDoc?.username}</p>
                 {!isMyself ? (
                   <div className='flex gap-2'>
                     {isFollowing ? (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                         onClick={() => handleUnfollow()}
                       >
                         Following
                       </button>
                     ) : (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                         onClick={() => handleFollow()}
                       >
                         Follow
@@ -268,21 +287,21 @@ const Member = () => {
 
                     {isFriend ? (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                         onClick={() => handleFriendBreakUp()}
                       >
                         Friend
                       </button>
                     ) : isInviting ? (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                         onClick={() => handleWithdrawInvitation()}
                       >
                         Inviting
                       </button>
                     ) : (
                       <button
-                        className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                        className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                         onClick={() => handleFriendInvite()}
                       >
                         Invite
@@ -291,7 +310,7 @@ const Member = () => {
                   </div>
                 ) : (
                   <Link
-                    className='h-fit w-fit rounded-2xl bg-zinc-300 pl-4 pr-4 text-lg font-bold'
+                    className='h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                     to='/member-info'
                   >
                     Edit info
@@ -349,78 +368,214 @@ const Member = () => {
           </div>
         </div>
       </div>
-      <div className='mb-8 w-full border border-zinc-300' />
       <div className='mb-16'>
-        <p className='mb-8 text-2xl font-bold'>My Routes</p>
+        <p className='mb-4 text-2xl font-bold'>My Routes</p>
+        <div className='mb-8 w-full border border-zinc-300' />
         <div className='flex items-center justify-center'>
-          {/* <img className='h-20 w-20' src={LeftArrow} alt='Left arrow' /> */}
-          <div className='grid w-fit grid-cols-4 gap-4'>
+          <div className='flex w-full flex-col flex-wrap gap-4'>
             {userCreatedRoutes &&
-              userCreatedRoutes.map((doc, index) => (
-                <div key={index} className='h-48 w-48 rounded-2xl bg-zinc-300'>
-                  <Link
+              userCreatedRoutes.map((route, index) => {
+                let imageIndex = 0
+                return (
+                  <div
                     key={index}
-                    to={`/route/${doc.routeID}`}
-                    className='h-full w-full cursor-pointer rounded-2xl'
+                    className='relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                   >
-                    <p>Title: {doc.routeTitle}</p>
-                    <p>User: {doc.username}</p>
-                    <p>Tag: {doc.tags}</p>
-                    <p>Snow Buddy: {doc.snowBuddies}</p>
-                    <div className='flex gap-1'>
-                      {doc.spots[0].imageUrls.map((url: string, index: number) => (
-                        <img key={index} src={url} alt={`Image ${index}`} className='h-auto w-6' />
-                      ))}
+                    <Link
+                      key={`${route.routeID}_${index}`}
+                      to={`/route/${route.routeID}`}
+                      className='absolute left-0 top-0 z-10 h-full w-full cursor-pointer rounded-2xl'
+                    />
+                    <div className='flex gap-8 text-xl'>
+                      <div className='relative h-52 w-52 rounded-xl bg-zinc-200'>
+                        <div className='flex h-full w-full'>
+                          {route.spots?.map((spot: Spot) =>
+                            spot.imageUrls.map((url: string) => (
+                              <img
+                                key={imageIndex++}
+                                src={url}
+                                alt={spot.spotTitle}
+                                className={`aspect-square rounded-xl object-cover ${
+                                  selectedImages[route.routeID] === imageIndex ? 'block' : 'hidden'
+                                }`}
+                              />
+                            ))
+                          )}
+                        </div>
+                        <div className='absolute bottom-2 z-20 flex h-4 w-full flex-wrap items-center justify-center gap-2'>
+                          {Array.from({
+                            length: route.spots?.reduce(
+                              (acc: number, spot: Spot) => acc + spot.imageUrls.length,
+                              0
+                            )
+                          }).map((_, spanIndex) => (
+                            <span
+                              key={spanIndex}
+                              className={`dot h-2 w-2 rounded-full  opacity-70 ${
+                                selectedImages[route.routeID] === spanIndex
+                                  ? 'bg-blue-500'
+                                  : 'bg-white'
+                              }`}
+                              onClick={() => handleDotClick(route.routeID, spanIndex)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className='flex flex-col gap-6 p-2'>
+                        <p className='text-2xl font-bold'>{route.routeTitle}</p>
+                        <p>Likes: {route.likeCount}</p>
+                        <div className='flex flex-wrap gap-2'>
+                          <p>Tag: </p>
+                          {route.tags.length > 0 ? (
+                            route.tags.map((tag: string, index: number) => (
+                              <Link
+                                key={`${route.routeID}_tag_${index}`}
+                                to={`/search/${tag}`}
+                                className='rounded-xl bg-blue-100 pl-2 pr-2'
+                              >
+                                # {tag}
+                              </Link>
+                            ))
+                          ) : (
+                            <p>None</p>
+                          )}
+                        </div>
+                        <div className='flex flex-wrap gap-2'>
+                          <p>Spots: </p>
+                          {route.spots.length > 0 ? (
+                            route.spots?.map((spot: Spot, index: number) => (
+                              <Link
+                                key={`${route.routeID}_spot_${index}`}
+                                to={`/search/${spot.spotTitle}`}
+                                className='rounded-xl bg-blue-100 pl-2 pr-2'
+                              >
+                                {spot.spotTitle}
+                              </Link>
+                            ))
+                          ) : (
+                            <p>None</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </Link>
-                </div>
-              ))}
+                  </div>
+                )
+              })}
           </div>
-          {/* <img className='h-20 w-20' src={RightArrow} alt='Right arrow' /> */}
         </div>
       </div>
-      <div className='mb-8 w-full border border-zinc-300' />
+
       <div className='mb-16'>
-        <p className='mb-8 text-2xl font-bold'>My Favorite Routes</p>
+        <p className='mb-4 text-2xl font-bold'>My Favorite Routes</p>
+        <div className='mb-8 w-full border border-zinc-300' />
         <div className='flex items-center justify-center'>
-          {/* <img className='h-20 w-20' src={LeftArrow} alt='Left arrow' /> */}
-          <div className='flex flex-col gap-10'>
+          <div className='flex w-3/4 flex-col gap-10'>
             {userStoredLists &&
               userStoredLists.map((map, index) => (
                 <div key={index}>
                   <p className='mb-2 text-2xl font-bold'>{map.listName}</p>
                   <div className='mb-6 w-full border border-zinc-300' />
-                  <div className='grid w-fit grid-cols-4 gap-4'>
-                    {map.routeDoc.map((doc, index) => (
-                      <div key={index} className='h-48 w-48 rounded-2xl bg-zinc-300'>
-                        <Link
+                  <div className='flex w-full flex-col flex-wrap gap-4'>
+                    {map.routeDoc.length === 0 && (
+                      <p className='mb-2 text-lg font-bold text-zinc-400'>
+                        Currently no route in this list
+                      </p>
+                    )}
+                    {map.routeDoc.map((route, index) => {
+                      let imageIndex = 0
+                      return (
+                        <div
                           key={index}
-                          to={`/route/${doc.routeID}`}
-                          className='h-full w-full cursor-pointer rounded-2xl'
+                          className='relative h-60 w-full cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
                         >
-                          <p>Title: {doc.routeTitle}</p>
-                          <p>User: {doc.username}</p>
-                          <p>Tag: {doc.tags}</p>
-                          <p>Snow Buddy: {doc.snowBuddies}</p>
-                          <div className='flex gap-1'>
-                            {doc.spots[0].imageUrls.map((url: string, index: number) => (
-                              <img
-                                key={index}
-                                src={url}
-                                alt={`Image ${index}`}
-                                className='h-auto w-6'
-                              />
-                            ))}
+                          <Link
+                            key={`${route.routeID}_${index}`}
+                            to={`/route/${route.routeID}`}
+                            className='absolute left-0 top-0 z-10 h-full w-full cursor-pointer rounded-2xl'
+                          />
+                          <div className='flex gap-8 text-xl'>
+                            <div className='relative h-52 w-52 rounded-xl bg-zinc-200'>
+                              <div className='flex h-full w-full'>
+                                {route.spots?.map((spot: Spot) =>
+                                  spot.imageUrls.map((url: string) => (
+                                    <img
+                                      key={imageIndex++}
+                                      src={url}
+                                      alt={spot.spotTitle}
+                                      className={`aspect-square rounded-xl object-cover ${
+                                        selectedImages[route.routeID] === imageIndex
+                                          ? 'block'
+                                          : 'hidden'
+                                      }`}
+                                    />
+                                  ))
+                                )}
+                              </div>
+                              <div className='absolute bottom-2 z-20 flex h-4 w-full flex-wrap items-center justify-center gap-2'>
+                                {Array.from({
+                                  length: route.spots?.reduce(
+                                    (acc: number, spot: Spot) => acc + spot.imageUrls.length,
+                                    0
+                                  )
+                                }).map((_, spanIndex) => (
+                                  <span
+                                    key={spanIndex}
+                                    className={`dot h-2 w-2 rounded-full  opacity-70 ${
+                                      selectedImages[route.routeID] === spanIndex
+                                        ? 'bg-blue-500'
+                                        : 'bg-white'
+                                    }`}
+                                    onClick={() => handleDotClick(route.routeID, spanIndex)}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className='flex flex-col gap-6 p-2'>
+                              <p className='text-2xl font-bold'>{route.routeTitle}</p>
+                              <p>Likes: {route.likeCount}</p>
+                              <div className='flex flex-wrap gap-2'>
+                                <p>Tag: </p>
+                                {route.tags.length > 0 ? (
+                                  route.tags.map((tag: string, index: number) => (
+                                    <Link
+                                      key={`${route.routeID}_tag_${index}`}
+                                      to={`/search/${tag}`}
+                                      className='rounded-xl bg-blue-100 pl-2 pr-2'
+                                    >
+                                      # {tag}
+                                    </Link>
+                                  ))
+                                ) : (
+                                  <p>None</p>
+                                )}
+                              </div>
+                              <div className='flex flex-wrap gap-2'>
+                                <p>Spots: </p>
+                                {route.spots.length > 0 ? (
+                                  route.spots?.map((spot: Spot, index: number) => (
+                                    <Link
+                                      key={`${route.routeID}_spot_${index}`}
+                                      to={`/search/${spot.spotTitle}`}
+                                      className='rounded-xl bg-blue-100 pl-2 pr-2'
+                                    >
+                                      {spot.spotTitle}
+                                    </Link>
+                                  ))
+                                ) : (
+                                  <p>None</p>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                        </Link>
-                      </div>
-                    ))}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               ))}
           </div>
-
-          {/* <img className='h-20 w-20' src={RightArrow} alt='Right arrow' /> */}
         </div>
       </div>
     </div>
