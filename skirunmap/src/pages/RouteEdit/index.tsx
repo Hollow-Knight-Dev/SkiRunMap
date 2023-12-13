@@ -529,6 +529,17 @@ const EditRoute: React.FC = () => {
     setAccessRight(true)
   }
 
+  const handleExampleGpxUpload = () => {
+    const fileLink =
+      'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
+    fetch(fileLink)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const file = new File([blob], 'Kutchan.gpx', { type: 'application/gpx+xml' })
+        uploadAndDownloadGpx(file, routeID.concat('.gpx'))
+      })
+  }
+
   return (
     <div className='relative flex w-full'>
       {blocker.state === 'blocked' ? (
@@ -559,7 +570,7 @@ const EditRoute: React.FC = () => {
           ) : (
             <div className='h-full w-full p-4'>
               <div
-                className={`flex h-full w-full items-center justify-center rounded-lg border-2 border-dashed ${
+                className={`flex h-full w-full flex-col items-center justify-center rounded-lg border-2 border-dashed ${
                   isDragOver ? 'border-zinc-400 bg-zinc-100' : 'border-zinc-600 bg-zinc-200'
                 }`}
                 onDragOver={(e) => handleDragOver(e)}
@@ -593,7 +604,7 @@ const EditRoute: React.FC = () => {
                     htmlFor='gpxFile'
                     className='cursor-pointer rounded-r-2xl pr-4 underline underline-offset-2'
                   >
-                    Browse file
+                    Click to browse file
                   </label>
                   <input
                     className='hidden'
@@ -603,6 +614,12 @@ const EditRoute: React.FC = () => {
                     accept='.gpx'
                   />
                 </div>
+                <p
+                  className='button-shadow mt-8 cursor-pointer rounded-xl bg-blue-100 pl-4 pr-4 underline underline-offset-2 hover:bg-blue-200'
+                  onClick={() => handleExampleGpxUpload()}
+                >
+                  Use example file
+                </p>
               </div>
             </div>
           )}
