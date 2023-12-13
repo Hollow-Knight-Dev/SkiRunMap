@@ -107,7 +107,7 @@ const Home = () => {
               </button>
               <button
                 className={`w-fit rounded-xl pl-16 pr-16 ${
-                  filter === 'Most likes' && 'bg-blue-200'
+                  filter === 'Most Likes' && 'bg-blue-200'
                 }`}
                 onClick={() => handleFilterClick('Most Likes')}
               >
@@ -115,7 +115,7 @@ const Home = () => {
               </button>
               <button
                 className={`w-fit rounded-xl pl-16 pr-16 ${
-                  filter === 'Most views' && 'bg-blue-200'
+                  filter === 'Most Views' && 'bg-blue-200'
                 }`}
                 onClick={() => handleFilterClick('Most Views')}
               >

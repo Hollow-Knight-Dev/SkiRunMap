@@ -552,7 +552,7 @@ const RouteView = () => {
                       <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
                     </div>
                     {isOpeningBookmark && (
-                      <div className='absolute right-14 top-6 mt-3 flex flex-col rounded-xl bg-white p-2 opacity-90'>
+                      <div className='absolute right-14 top-6 mt-3 flex w-40 flex-col rounded-xl bg-white p-2 opacity-90'>
                         {userExistedLists &&
                           userExistedLists.map((list, index) => (
                             <div
