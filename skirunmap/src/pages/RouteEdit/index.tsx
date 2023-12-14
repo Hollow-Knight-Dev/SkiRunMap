@@ -67,7 +67,7 @@ const EditRoute: React.FC = () => {
     // Need to think a way to clear all redundent data
     // handleInitialisingForm()
     console.log('routeID:', routeID)
-  }, [])
+  }, [routeID])
 
   useEffect(() => {
     console.log('isSaveToLeave:', isSaveToLeave)
@@ -211,9 +211,30 @@ const EditRoute: React.FC = () => {
 
     if (files) {
       const file: File = files[0]
-      if (file.name !== undefined && file.name.toLowerCase().endsWith('.gpx')) {
+      const maxSize = 500 * 1024 // 500KB
+
+      if (
+        file.name !== undefined &&
+        file.name.toLowerCase().endsWith('.gpx') &&
+        file.size <= maxSize
+      ) {
         setGpxFileName(file.name)
         uploadAndDownloadGpx(file, routeID.concat('.gpx'))
+      } else if (
+        file.name !== undefined &&
+        file.name.toLowerCase().endsWith('.gpx') &&
+        file.size > maxSize
+      ) {
+        toast.warn('GPX size no larger than 500KB', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       } else {
         alert('Invalid file type. Please upload a GPX file.')
       }
@@ -362,8 +383,21 @@ const EditRoute: React.FC = () => {
 
     if (files) {
       const file: File = files[0]
-      if (file.name) {
+      const maxSize = 500 * 1024 // 500KB
+
+      if (file.name && file.size <= maxSize) {
         uploadAndDownloadImages(file, file.name, spotIndex)
+      } else if (file.name && file.size > maxSize) {
+        toast.warn('Image size no larger than 500KB', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       } else {
         alert('Invalid file type. Please upload an image.')
       }
@@ -391,8 +425,21 @@ const EditRoute: React.FC = () => {
 
     if (files) {
       const file: File = files[0]
-      if (file.name) {
+      const maxSize = 1000 * 1024 // 1000KB
+
+      if (file.name && file.size <= maxSize) {
         uploadAndDownloadVideos(file, file.name, spotIndex)
+      } else if (file.name && file.size > maxSize) {
+        toast.warn('Video size no larger than 1000KB', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       } else {
         alert('Invalid file type. Please upload an MP4 video.')
       }
