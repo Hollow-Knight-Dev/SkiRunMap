@@ -30,65 +30,111 @@ const SignIn: React.FC = () => {
     setUserPassword(input)
   }
 
+  const handleEmailValidation = (email: string) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (regex.test(email)) {
+      return true
+    } else {
+      toast.warn(`Email format error`, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+      return false
+    }
+  }
+
   const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, userEmail, userPassword)
-      .then(async (userCredential) => {
-        const userID = userCredential.user.uid
-        setUserID(userID)
-        // console.log(userID)
+    if (handleEmailValidation(userEmail)) {
+      createUserWithEmailAndPassword(auth, userEmail, userPassword)
+        .then(async (userCredential) => {
+          const userID = userCredential.user.uid
+          setUserID(userID)
+          // console.log(userID)
 
-        const data: User = {
-          userID: userID,
-          userEmail: userEmail,
-          userJoinedTime: serverTimestamp(),
-          username: '',
-          userIconUrl:
-            'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777',
-          userSkiAge: '',
-          userSnowboardAge: '',
-          userCountry: '',
-          userGender: '',
-          userDescription: '',
-          userFollows: [],
-          userFollowers: [],
-          userFriends: [],
-          userFriendReqs: [],
-          userSentFriendReqs: [],
-          userRouteIDs: [],
-          userDraftRouteIDs: [],
-          userFinishedInfo: false,
-          userRouteLists: []
-        }
-        await setDoc(doc(db, 'users', userID), data)
+          const data: User = {
+            userID: userID,
+            userEmail: userEmail,
+            userJoinedTime: serverTimestamp(),
+            username: '',
+            userIconUrl:
+              'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777',
+            userSkiAge: '',
+            userSnowboardAge: '',
+            userCountry: '',
+            userGender: '',
+            userDescription: '',
+            userFollows: [],
+            userFollowers: [],
+            userFriends: [],
+            userFriendReqs: [],
+            userSentFriendReqs: [],
+            userRouteIDs: [],
+            userDraftRouteIDs: [],
+            userFinishedInfo: false,
+            userRouteLists: []
+          }
+          await setDoc(doc(db, 'users', userID), data)
 
-        signInWithEmailAndPassword(auth, userEmail, userPassword)
-        // .then((userCredential) => {
-        //   // const userID = userCredential.user.uid
-        //   // console.log(userID)
-        //   // setUserID(userID)
-        //   // setIsSignIn(true)
-        // })
-        // .catch((error) => {
-        //   console.log(error.code, ': ', error.message)
-        // })
+          signInWithEmailAndPassword(auth, userEmail, userPassword)
+          // .then((userCredential) => {
+          //   // const userID = userCredential.user.uid
+          //   // console.log(userID)
+          //   // setUserID(userID)
+          //   // setIsSignIn(true)
+          // })
+          // .catch((error) => {
+          //   console.log(error.code, ': ', error.message)
+          // })
 
-        toast.success('Sign up successed!', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light',
-          onClose: () => {
-            navigate('/member-info')
+          toast.success('Sign up successed!', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: 'light',
+            onClose: () => {
+              navigate('/member-info')
+            }
+          })
+        })
+        .catch((error) => {
+          console.log('Firebase authentication sign up error')
+          console.error(error)
+
+          if (error.code === 'auth/email-already-in-use') {
+            toast.warn(`Email has been signed up`, {
+              position: 'top-right',
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: 'light'
+            })
+          } else if (error.code === 'auth/weak-password') {
+            toast.warn(`Weak password`, {
+              position: 'top-right',
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: 'light'
+            })
           }
         })
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    }
   }
 
   const handleSignIn = () => {
@@ -129,7 +175,17 @@ const SignIn: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.log(error.code, ': ', error.message)
+        console.error(error)
+        toast.warn(`Incorrect email or password`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       })
   }
 
@@ -167,7 +223,7 @@ const SignIn: React.FC = () => {
           <label className='w-24'>Password</label>
           <input
             className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
-            type='text'
+            type='password'
             value={userPassword}
             onChange={(e) => handlePassword(e)}
           />
