@@ -19,13 +19,16 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
 import Map from '../../components/Map'
+import SearchBar from '../../components/SearchBar'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import BookmarkIcon from './bookmark.png'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
 import ClickedLikeArrow from './clicked-like-arrow.png'
-import SearchIcon from './search-icon.png'
+import GoogleMapPin from './google-maps-pin.png'
+import LatitudeIcon from './latitude.png'
+import LongitudeIcon from './longitude.png'
 import ShareIcon from './share-icon.png'
 import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
 import UnclickedLikeArrow from './unclicked-like-arrow.png'
@@ -102,7 +105,7 @@ const RouteView = () => {
           // console.log(routeData)
           setRouteDocData(routeData as Route)
           const initialVisibility: VisibilityState = routeData.spots.reduce(
-            (acc: VisibilityState, _: Spot, index: number) => ({ ...acc, [index]: true }),
+            (acc: VisibilityState, _: Spot, index: number) => ({ ...acc, [index]: false }),
             {}
           )
           setSpotsVisibility(initialVisibility)
@@ -231,9 +234,12 @@ const RouteView = () => {
                 <p class='info-window-title'>Spot Description:</p>
                 <p class='info-window-text'>${spot.spotDescription}</p>
               </div>
-              <div class='info-window-text-row'>
+              <div class='info-window-text-row-y-start'>
                 <p class='info-window-title'>Spot Coordinate:</p>
-                <p class='info-window-text'>lat: ${spot.spotCoordinate.lat}<br>lng: ${spot.spotCoordinate.lng}</p>
+                <div class='info-window-latlng'>
+                <p class='info-window-text'>lat: ${spot.spotCoordinate.lat}</p>
+                <p class='info-window-text'>lng: ${spot.spotCoordinate.lng}</p>
+                </div>
               </div>
               <div class='info-window-media'>
               ${imageElements}
@@ -529,317 +535,365 @@ const RouteView = () => {
             {routeDocData.gpxUrl && <Map gpxUrl={routeDocData.gpxUrl} createMode={false} />}
           </div>
 
-          <div className='flex w-1/3 flex-col overflow-x-hidden overflow-y-scroll bg-zinc-200 p-2'>
-            <div className='relative mb-2 w-full'>
-              <input
-                className='w-full rounded-3xl border border-zinc-300 p-1 pl-10'
-                placeholder='Ski resort, ski run, or tag name'
-              />
-              <img className='absolute left-3 top-2 w-5' src={SearchIcon} alt='Search Icon' />
-            </div>
-
-            <div className='relative flex justify-end gap-2'>
-              <div className='z-10 pl-10' onMouseLeave={() => setIsOpeningBookmark(false)}>
-                <div
-                  className='mb-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
-                  onClick={() => handleClickBookmark()}
-                  title='Save to list'
-                >
-                  <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
-                </div>
-                {isOpeningBookmark && (
-                  <div className='absolute right-14 top-6 mt-3 flex flex-col rounded-xl bg-white p-2 opacity-90'>
-                    {userExistedLists &&
-                      userExistedLists.map((list, index) => (
-                        <div
-                          className='flex w-full cursor-pointer gap-2 rounded-xl pl-2 pr-2 hover:bg-zinc-200'
-                          key={index}
-                        >
-                          <input
-                            className='cursor-pointer'
-                            type='checkbox'
-                            checked={selectedLists.includes(list.listName)}
-                            onChange={(e) =>
-                              handleListCheckboxChange(list.listName, e.target.checked)
-                            }
-                          />
-                          <p>{list.listName}</p>
-                        </div>
-                      ))}
-                    <p
-                      className='w-full cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
-                      onClick={() => handleClickCreateList()}
-                    >
-                      + create new list
-                    </p>
-                    {isCreatingList && (
-                      <>
-                        <input
-                          className='m-2 rounded-xl border border-zinc-400 pl-2 placeholder-black placeholder-opacity-80'
-                          placeholder='Enter list name'
-                          type='text'
-                          value={createListName}
-                          onChange={(e) => handleCreateListInput(e)}
-                        />
-                        <div className='flex w-full justify-between pl-2 pr-2'>
-                          <button
-                            className='rounded-xl bg-zinc-200 pl-2 pr-2'
-                            onClick={() => handleCreateList()}
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            className='rounded-xl bg-zinc-100 pl-2 pr-2'
-                            onClick={() => {
-                              setIsCreatingList(false)
-                              setCreateListName('')
-                            }}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+          <div className='flex w-1/3 flex-col overflow-x-hidden overflow-y-scroll bg-blue-100 p-2'>
+            <div className='relative h-fit w-full'>
+              <div className='top-18 absolute h-8 w-full'>
+                <SearchBar />
               </div>
 
-              <div
-                className='z-10 mr-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white bg-opacity-70 hover:bg-amber-100 hover:bg-opacity-100'
-                onClick={() => handleShareLink()}
-                title='Click to Copy Link'
-              >
-                <img className='h-auto w-3/5' src={ShareIcon} alt='Share Icon' />
-              </div>
-              <div className='absolute top-2 h-4 w-full rounded-full bg-zinc-300' />
-            </div>
-
-            <div className='flex flex-col gap-4 p-2'>
-              <div className='ml-3 flex items-center gap-6'>
-                <div className='flex flex-col items-center'>
-                  <div className='h-fit w-fit cursor-pointer' onClick={() => handleLikeClick()}>
-                    {isLike ? (
-                      <img className='h-auto w-4' src={ClickedLikeArrow} alt='Clicked like arrow' />
-                    ) : (
-                      <img
-                        className='h-auto w-4'
-                        src={UnclickedLikeArrow}
-                        alt='Unclicked like arrow'
-                      />
-                    )}
-                  </div>
-                  <p>{routeDocData.likeUsers.length - routeDocData.dislikeUsers.length}</p>
-                  <div className='h-fit w-fit cursor-pointer' onClick={() => handleDislikeClick()}>
-                    {isDislike ? (
-                      <img
-                        className='h-auto w-4'
-                        src={ClickedDislikeArrow}
-                        alt='Clicked dislike arrow'
-                      />
-                    ) : (
-                      <img
-                        className='h-auto w-4'
-                        src={UnclickedDislikeArrow}
-                        alt='Unclicked dislike arrow'
-                      />
-                    )}
-                  </div>
-                </div>
-                <p className='text-2xl font-bold'>{routeDocData.routeTitle}</p>
-              </div>
-
-              <div className='flex items-center'>
-                <Link to={`/member/${routeDocData.userID}`} className='h-fit w-fit'>
-                  {/* need to use dynamic user icon */}
-                  <img
-                    className='h-10 w-10 rounded-full object-cover'
-                    src={authorLatestIconUrl}
-                    alt='Friend Profile Icon'
-                  />
-                </Link>
-                <Link to={`/member/${routeDocData.userID}`} className='w-fit pl-4'>
-                  {routeDocData.username}
-                </Link>
-                <p className='w-fit pl-4'>
-                  {routeDocData.createTime && formatTimestamp(routeDocData.createTime as Timestamp)}
-                </p>
-              </div>
-
-              <div className='flex flex-wrap'>
-                <p className='w-full'>Route start coordinate:</p>
-                <p className='w-full'>Latitude: {routeDocData.routeCoordinate.lat}</p>
-                <p className='w-full'>Longtitude: {routeDocData.routeCoordinate.lng}</p>
-              </div>
-
-              <div className='flex gap-2'>
-                <p>Tags:</p>
-                {routeDocData.tags.map((tag, index) => (
-                  <p key={index}>#{tag}</p>
-                ))}
-              </div>
-
-              <div className='flex gap-2'>
-                <p>Snow buddies:</p>
-                {routeDocData.snowBuddies.map((buddy, index) => (
-                  <p key={index}>{buddy}</p>
-                ))}
-              </div>
-
-              <div className='flex gap-2'>
-                <p>View counts:</p>
-                <p>{routeDocData.viewCount}</p>
-              </div>
-
-              <div className='flex flex-col gap-4'>
-                {routeDocData.spots.map((spot, index) => (
-                  <div key={index} className='flex flex-col'>
+              <div className='absolute right-0 top-10 flex gap-2'>
+                <div className='relative flex justify-end gap-2'>
+                  <div className='z-10 pl-10' onMouseLeave={() => setIsOpeningBookmark(false)}>
                     <div
-                      className='mb-2 flex cursor-pointer flex-wrap justify-between'
-                      onClick={() => toggleVisibility(index)}
+                      className='mb-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full  bg-blue-200 bg-opacity-70 shadow-[2px_5px_5px_-6px_#7e7e7e] duration-300 hover:hover:bg-white hover:bg-opacity-100 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                      onClick={() => handleClickBookmark()}
+                      title='Save to list'
                     >
-                      <p className='w-fit pr-2 font-bold'>
-                        {index} | {spot.spotTitle}
-                      </p>
-                      {spotsVisibility[index] ? (
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth='1.5'
-                          stroke='currentColor'
-                          className='h-6 w-6'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M4.5 15.75l7.5-7.5 7.5 7.5'
-                          ></path>
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth='1.5'
-                          stroke='currentColor'
-                          className='h-6 w-6'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M19 9l-7 7-7-7'
-                          ></path>
-                        </svg>
-                      )}
-                      <div className='w-full border border-zinc-300' />
+                      <img className='h-auto w-3/5' src={BookmarkIcon} alt='Bookmark Icon' />
                     </div>
-                    {spotsVisibility[index] && (
-                      <div className='mb-2 flex flex-col gap-2 bg-zinc-100'>
-                        {spot.spotDescription && <p>Description: {spot.spotDescription}</p>}
-                        <p>Spot Latitude: {spot.spotCoordinate.lat}</p>
-                        <p>Spot Longitude: {spot.spotCoordinate.lng}</p>
-                        {spot.imageUrls && (
-                          <div className='flex gap-2 overflow-x-auto'>
-                            {spot.imageUrls.map((url, i) => (
-                              <img
-                                key={i}
-                                src={url}
-                                alt={`Image ${i}`}
-                                className='h-auto w-40 object-cover'
+                    {isOpeningBookmark && (
+                      <div className='absolute right-14 top-6 mt-3 flex w-40 flex-col rounded-xl bg-white p-2 opacity-90'>
+                        {userExistedLists &&
+                          userExistedLists.map((list, index) => (
+                            <div
+                              className='flex w-full cursor-pointer gap-2 rounded-xl pl-2 pr-2 hover:bg-zinc-200'
+                              key={index}
+                            >
+                              <input
+                                className='cursor-pointer'
+                                type='checkbox'
+                                checked={selectedLists.includes(list.listName)}
+                                onChange={(e) =>
+                                  handleListCheckboxChange(list.listName, e.target.checked)
+                                }
                               />
-                            ))}
-                          </div>
-                        )}
-                        {spot.videoUrls && (
-                          <div className='flex gap-2 overflow-x-auto'>
-                            {spot.videoUrls.map((url, i) => (
-                              <video key={i} controls width='160' height='auto'>
-                                <source src={url} type='video/mp4' />
-                              </video>
-                            ))}
-                          </div>
+                              <p>{list.listName}</p>
+                            </div>
+                          ))}
+                        <p
+                          className='w-full cursor-pointer rounded-xl pl-2 pr-2 hover:bg-zinc-200'
+                          onClick={() => handleClickCreateList()}
+                        >
+                          + create new list
+                        </p>
+                        {isCreatingList && (
+                          <>
+                            <input
+                              className='m-2 rounded-xl border border-zinc-400 pl-2 placeholder-black placeholder-opacity-80'
+                              placeholder='Enter list name'
+                              type='text'
+                              value={createListName}
+                              onChange={(e) => handleCreateListInput(e)}
+                            />
+                            <div className='flex w-full justify-between pl-2 pr-2'>
+                              <button
+                                className='rounded-xl bg-zinc-200 pl-2 pr-2'
+                                onClick={() => handleCreateList()}
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                className='rounded-xl bg-zinc-100 pl-2 pr-2'
+                                onClick={() => {
+                                  setIsCreatingList(false)
+                                  setCreateListName('')
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
                         )}
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
 
-              <div
-                className='flex w-full cursor-pointer flex-wrap justify-between border-zinc-300'
-                onClick={() => toggleCommentVisibility()}
-              >
-                <p className='text-lg font-bold'>Comment</p>
-                {commentVisibility ? (
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    strokeWidth='1.5'
-                    stroke='currentColor'
-                    className='h-6 w-6'
+                  <div
+                    className='z-10 mr-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-blue-200 bg-opacity-70 shadow-[2px_5px_5px_-6px_#7e7e7e] duration-300 hover:hover:bg-white hover:bg-opacity-100 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+                    onClick={() => handleShareLink()}
+                    title='Click to Copy Link'
                   >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M4.5 15.75l7.5-7.5 7.5 7.5'
-                    ></path>
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    strokeWidth='1.5'
-                    stroke='currentColor'
-                    className='h-6 w-6'
-                  >
-                    <path strokeLinecap='round' strokeLinejoin='round' d='M19 9l-7 7-7-7'></path>
-                  </svg>
-                )}
-                <div className='w-full border border-zinc-300' />
-              </div>
-              {commentVisibility && (
-                <div className='mb-4 flex flex-col items-start'>
-                  <textarea
-                    className='mb-4 h-32 w-full resize-none p-2'
-                    value={commentInput}
-                    placeholder='Comment this route'
-                    onChange={(e) => handleCommentInput(e)}
-                    onKeyDown={(e) => handleCommentEnterSubmit(e)}
-                  />
-                  <button
-                    className='mb-6 self-end rounded-xl bg-blue-200 pl-2 pr-2'
-                    onClick={() => handleCommentSubmit()}
-                  >
-                    Submit
-                  </button>
-                  {commentsDocData &&
-                    commentsDocData.map((comment, index) => (
-                      <div key={index} className='mb-4 h-fit w-full'>
-                        <div className='flex items-center justify-between'>
-                          <Link
-                            to={`/member/${comment.userID}`}
-                            className='flex items-center gap-2'
-                          >
-                            <img
-                              className='h-4 w-4 rounded-full'
-                              src={comment.userIconUrl}
-                              alt='User icon'
-                            />
-                            <p>{comment.username}</p>
-                          </Link>
-                          <p className='justify-self-end text-sm'>
-                            {comment.commentTimestamp &&
-                              formatTimestamp(comment.commentTimestamp as Timestamp)}
-                          </p>
-                        </div>
-
-                        <p>{comment.comment}</p>
-                      </div>
-                    ))}
+                    <img className='h-auto w-3/5' src={ShareIcon} alt='Share Icon' />
+                  </div>
                 </div>
-              )}
+              </div>
+
+              <div className='flex flex-col gap-4 p-2 pt-12'>
+                <div className='ml-3 flex items-center gap-6'>
+                  <div className='flex flex-col items-center'>
+                    <div className='h-fit w-fit cursor-pointer' onClick={() => handleLikeClick()}>
+                      {isLike ? (
+                        <img
+                          className='h-auto w-4'
+                          src={ClickedLikeArrow}
+                          alt='Clicked like arrow'
+                        />
+                      ) : (
+                        <img
+                          className='h-auto w-4'
+                          src={UnclickedLikeArrow}
+                          alt='Unclicked like arrow'
+                        />
+                      )}
+                    </div>
+                    <p>{routeDocData.likeUsers.length - routeDocData.dislikeUsers.length}</p>
+                    <div
+                      className='h-fit w-fit cursor-pointer'
+                      onClick={() => handleDislikeClick()}
+                    >
+                      {isDislike ? (
+                        <img
+                          className='h-auto w-4'
+                          src={ClickedDislikeArrow}
+                          alt='Clicked dislike arrow'
+                        />
+                      ) : (
+                        <img
+                          className='h-auto w-4'
+                          src={UnclickedDislikeArrow}
+                          alt='Unclicked dislike arrow'
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <p className='text-2xl font-bold'>{routeDocData.routeTitle}</p>
+                </div>
+
+                <div className='mb-4 flex items-center'>
+                  <Link to={`/member/${routeDocData.userID}`} className='h-fit w-fit'>
+                    {/* need to use dynamic user icon */}
+                    <img
+                      className='h-10 w-10 rounded-full object-cover'
+                      src={authorLatestIconUrl}
+                      alt='Friend Profile Icon'
+                    />
+                  </Link>
+                  <Link
+                    to={`/member/${routeDocData.userID}`}
+                    className='w-fit pl-4 text-lg font-bold'
+                  >
+                    {routeDocData.username}
+                  </Link>
+                  <p className='w-fit pl-4'>
+                    {routeDocData.createTime &&
+                      formatTimestamp(routeDocData.createTime as Timestamp)}
+                  </p>
+                </div>
+
+                <div className='flex gap-2'>
+                  <p className='w-1/2 text-lg font-bold'>Route start coordinate:</p>
+                  <div className='flex w-1/2 flex-col justify-start gap-2'>
+                    <div className='mt-1 flex items-center gap-2'>
+                      <img className='h-6 w-auto' src={LatitudeIcon} alt='Latitude icon' />
+                      <p className='w-full '>Latitude: {routeDocData.routeCoordinate.lat}</p>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                      <img className='h-6 w-auto' src={LongitudeIcon} alt='Longitude icon' />
+                      <p className='w-full'>Longtitude: {routeDocData.routeCoordinate.lng}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-2'>
+                  <p className='text-lg font-bold'>Tags:</p>
+                  {routeDocData.tags.map((tag, index) => (
+                    <Link
+                      key={index}
+                      to={`/search/${tag}`}
+                      className='rounded-xl bg-blue-300 pl-2 pr-2'
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className='flex items-center gap-2'>
+                  <p className='text-lg font-bold'>Snow buddies:</p>
+                  {routeDocData.snowBuddies.map((buddy, index) => (
+                    <p key={index}>{buddy}</p>
+                  ))}
+                </div>
+
+                <div className='flex items-center gap-2'>
+                  <p className='text-lg font-bold'>View counts:</p>
+                  <p>{routeDocData.viewCount}</p>
+                </div>
+
+                <div className='flex flex-col gap-2'>
+                  {routeDocData.spots.length > 0 && <p className='text-lg font-bold'>Spots:</p>}
+                  {routeDocData.spots.map((spot, index) => (
+                    <div key={index} className='flex flex-col'>
+                      <div
+                        className='mb-2 flex cursor-pointer flex-wrap justify-between'
+                        onClick={() => toggleVisibility(index)}
+                      >
+                        <div className='mb-1 flex items-center gap-2'>
+                          <img className='h-6 w-auto' src={GoogleMapPin} alt='Map pin' />
+                          <p className='w-fit pr-2 text-lg font-bold'>{spot.spotTitle}</p>
+                        </div>
+                        {spotsVisibility[index] ? (
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            strokeWidth='1.5'
+                            stroke='currentColor'
+                            className='h-6 w-6'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M4.5 15.75l7.5-7.5 7.5 7.5'
+                            ></path>
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            strokeWidth='1.5'
+                            stroke='currentColor'
+                            className='h-6 w-6'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M19 9l-7 7-7-7'
+                            ></path>
+                          </svg>
+                        )}
+                        <div className='w-full border border-zinc-300' />
+                      </div>
+                      {spotsVisibility[index] && (
+                        <div className='mb-2 flex flex-col gap-2 pl-2'>
+                          {spot.spotDescription && (
+                            <p className='font-bold'>{spot.spotDescription}</p>
+                          )}
+                          <div className='flex flex-col gap-1 text-base'>
+                            <div className='flex items-center gap-2'>
+                              <img className='h-4 w-auto' src={LatitudeIcon} alt='Latitude icon' />
+                              <p className='w-full text-sm'>Latitude: {spot.spotCoordinate.lat}</p>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <img
+                                className='h-4 w-auto'
+                                src={LongitudeIcon}
+                                alt='Longitude icon'
+                              />
+                              <p className='w-full text-sm'>
+                                Longtitude: {spot.spotCoordinate.lng}
+                              </p>
+                            </div>
+                          </div>
+                          {spot.imageUrls && (
+                            <div className='flex gap-2 overflow-x-auto'>
+                              {spot.imageUrls.map((url, i) => (
+                                <img
+                                  key={i}
+                                  src={url}
+                                  alt={`Image ${i}`}
+                                  className='h-auto w-1/2 object-cover'
+                                />
+                              ))}
+                            </div>
+                          )}
+                          {spot.videoUrls && (
+                            <div className='flex gap-2 overflow-x-auto'>
+                              {spot.videoUrls.map((url, i) => (
+                                <video key={i} controls width='50%' height='auto'>
+                                  <source src={url} type='video/mp4' />
+                                </video>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className='flex flex-col gap-2'>
+                  <div
+                    className='flex w-full cursor-pointer flex-wrap justify-between border-zinc-300'
+                    onClick={() => toggleCommentVisibility()}
+                  >
+                    <p className='text-lg font-bold'>Comment</p>
+                    {commentVisibility ? (
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        strokeWidth='1.5'
+                        stroke='currentColor'
+                        className='h-6 w-6'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M4.5 15.75l7.5-7.5 7.5 7.5'
+                        ></path>
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        strokeWidth='1.5'
+                        stroke='currentColor'
+                        className='h-6 w-6'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M19 9l-7 7-7-7'
+                        ></path>
+                      </svg>
+                    )}
+                    <div className='w-full border border-zinc-300' />
+                  </div>
+                  {commentVisibility && (
+                    <div className='mb-4 flex flex-col items-start'>
+                      <textarea
+                        className='mb-4 h-32 w-full resize-none rounded-lg p-2'
+                        value={commentInput}
+                        placeholder='Comment on this route'
+                        onChange={(e) => handleCommentInput(e)}
+                        onKeyDown={(e) => handleCommentEnterSubmit(e)}
+                      />
+                      <button
+                        className='mb-6 self-end rounded-xl bg-blue-300 pl-2 pr-2 font-bold'
+                        onClick={() => handleCommentSubmit()}
+                      >
+                        Submit
+                      </button>
+                      {commentsDocData &&
+                        commentsDocData.map((comment, index) => (
+                          <div key={index} className='mb-4 h-fit w-full'>
+                            <div className='flex items-center justify-between'>
+                              <Link
+                                to={`/member/${comment.userID}`}
+                                className='flex items-center gap-2'
+                              >
+                                <img
+                                  className='h-4 w-4 rounded-full'
+                                  src={comment.userIconUrl}
+                                  alt='User icon'
+                                />
+                                <p>{comment.username}</p>
+                              </Link>
+                              <p className='justify-self-end text-sm'>
+                                {comment.commentTimestamp &&
+                                  formatTimestamp(comment.commentTimestamp as Timestamp)}
+                              </p>
+                            </div>
+
+                            <p>{comment.comment}</p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </>

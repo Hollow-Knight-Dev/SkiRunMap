@@ -46,7 +46,19 @@ p {
 
 .info-window-text-row {
   display: flex;
+  align-items: center;
   gap: 14px;
+}
+
+.info-window-text-row-y-start {
+  display: flex;
+  gap: 14px;
+}
+
+.info-window-latlng {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .info-window-title {
@@ -73,7 +85,26 @@ p {
 
 /* Home Page */
 .home-bg-image {
-  background-image: url('../public/images/snow-mountain.png');
+  background-image: url('/images/snow-mountain.png');
   background-size: cover;
   background-position: center;
+}
+
+/* Shadow */
+.nice-shadow {
+  box-shadow: 3px 5px 7px -6px #7e7e7e;
+  transition: box-shadow 0.3s ease;
+}
+
+.nice-shadow:hover {
+  box-shadow: 10px 12px 10px -12px #7e7e7e;
+}
+
+.button-shadow {
+  box-shadow: 3px 5px 7px -6px #7e7e7e;
+  transition: box-shadow 0.3s ease;
+}
+
+.button-shadow:hover {
+  box-shadow: 5px 7px 7px -6px #7e7e7e;
 }

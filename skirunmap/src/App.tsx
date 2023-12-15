@@ -1,13 +1,18 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements
+} from 'react-router-dom'
 import './App.css'
+import RootLayout from './RootLayout'
 import { db } from './auth/CloudStorage'
-import Footer from './components/Footer'
-import Header from './components/Header'
 import Friend from './pages/Friend'
 import Home from './pages/Home'
+import ImageCredit from './pages/ImageCredit'
 import Member from './pages/Member'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
@@ -40,47 +45,25 @@ const App: React.FC = () => {
     return () => unsubscribe()
   }, [isSignIn, setUserID])
 
-  return (
-    <BrowserRouter>
-      <div className='fixed top-0 z-10 w-full'>
-        <Header />
-      </div>
-      <div className='h-16' />
-
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/route/:id' element={<RouteView />} />
-        <Route path='/search/:keyword' element={<SearchResult />} />
-        <Route path='/signin' element={<SignIn />} />
-        <Route
-          path='/edit-route'
-          element={
-            <ProtectedRoute>
-              <RouteEdit />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/member/:memberID'
-          element={
-            <ProtectedRoute>
-              <Member />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/friend'
-          element={
-            <ProtectedRoute>
-              <Friend />
-            </ProtectedRoute>
-          }
-        />
-        <Route path='/member-info' element={<ProtectedMemberInfoRoute />} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path='/' element={<RootLayout />}>
+        <Route index element={<Home />} />
+        <Route path='route/:id' element={<RouteView />} />
+        <Route path='search/:keyword' element={<SearchResult />} />
+        <Route path='signin' element={<SignIn />} />
+        <Route path='credit' element={<ImageCredit />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path='edit-route' element={<RouteEdit />} />
+          <Route path='member/:memberID' element={<Member />} />
+          <Route path='friend' element={<Friend />} />
+        </Route>
+        <Route path='member-info' element={<ProtectedMemberInfoRoute />} />
+      </Route>
+    )
   )
+
+  return <RouterProvider router={router} />
 }
 
 export default App

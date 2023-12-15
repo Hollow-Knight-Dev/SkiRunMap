@@ -1,15 +1,14 @@
-import { ReactNode } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useUserStore } from '../../store/useUser'
 
-interface RouteProps {
-  children: ReactNode
-}
-
-const ProtectedRoute: React.FC<RouteProps> = ({ children }) => {
+const ProtectedRoute: React.FC = () => {
   const { userDoc, isLoadedUserDoc, isSignIn } = useUserStore()
+
+  // console.log('ProtectedRoute isLoadedUserDoc:', isLoadedUserDoc)
+  // console.log('ProtectedRoute isSignIn:', isSignIn)
+
   if (isLoadedUserDoc && !isSignIn) {
     toast.warn(`Please sign in first`, {
       position: 'top-right',
@@ -35,7 +34,7 @@ const ProtectedRoute: React.FC<RouteProps> = ({ children }) => {
     })
     return <Navigate to='/member-info' />
   }
-  return <div>{children}</div>
+  return <Outlet />
 }
 
 export default ProtectedRoute
