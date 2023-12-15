@@ -20,6 +20,8 @@ const SignIn: React.FC = () => {
     }
   }, [userID])
 
+  // useEffect(() => {}, [navigate])
+
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
     setUserEmail(input)
@@ -137,56 +139,145 @@ const SignIn: React.FC = () => {
     }
   }
 
-  const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, userEmail, userPassword)
-      .then(async (userCredential) => {
-        const userID = userCredential.user.uid
-        console.log('signin page:', userID)
-        // setUserID(userID)
-        // setIsSignIn(true)
-
-        const userDoc = await getDoc(doc(db, 'users', userID))
-        // console.log(userDoc.data()?.userFinishedInfo)
-
-        if (userDoc.data()?.userFinishedInfo) {
-          navigate(`/member/${userID}`)
-          toast.success(`Welcome back, ${userID}`, {
-            position: 'top-right',
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: 'light'
-          })
-        } else {
-          navigate('/member-info')
-          toast.warn(`You haven't finish your profile`, {
-            position: 'top-right',
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: 'light'
-          })
-        }
+  const trytry = async (userDoc: any) => {
+    await userDoc
+    if (userDoc.data()?.userFinishedInfo) {
+      toast.success(`Welcome back, ${userDoc.data()?.username}`, {
+        position: 'top-left',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
       })
-      .catch((error) => {
-        console.error(error)
-        toast.warn(`Incorrect email or password`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+      return navigate(`/member/${userDoc.userID}`)
+    } else {
+      toast.warn(`You haven't finish your profile`, {
+        position: 'top-left',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
       })
+      return navigate('/member-info')
+    }
+  }
+
+  const navigateOutside = async (userID: string) => {
+    const userDoc = await getDoc(doc(db, 'users', userID))
+    // console.log(userDoc.data()?.userFinishedInfo)
+    console.log('herehere')
+
+    trytry(userDoc)
+  }
+
+  const handleSignIn = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword)
+      const userID = userCredential.user.uid
+      console.log('signin page:', userID)
+
+      navigateOutside(userID)
+      // setUserID(userID)
+      // setIsSignIn(true)
+
+      // const userDoc = await getDoc(doc(db, 'users', userID))
+      // // console.log(userDoc.data()?.userFinishedInfo)
+
+      // if (userDoc.data()?.userFinishedInfo) {
+      //   toast.success(`Welcome back, ${userDoc.data()?.username}`, {
+      //     position: 'top-right',
+      //     autoClose: 1000,
+      //     hideProgressBar: false,
+      //     closeOnClick: false,
+      //     pauseOnHover: false,
+      //     draggable: false,
+      //     progress: undefined,
+      //     theme: 'light'
+      //   })
+      //   trytry(userID)
+      //   // return navigate(`/member/${userID}`, { unstable_flushSync: true })
+      // } else {
+      //   toast.warn(`You haven't finish your profile`, {
+      //     position: 'top-right',
+      //     autoClose: 1000,
+      //     hideProgressBar: false,
+      //     closeOnClick: false,
+      //     pauseOnHover: false,
+      //     draggable: false,
+      //     progress: undefined,
+      //     theme: 'light'
+      //   })
+      //   return navigate('/member-info')
+      // }
+    } catch (error) {
+      console.error(error)
+      toast.warn(`Incorrect email or password`, {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
+
+    // signInWithEmailAndPassword(auth, userEmail, userPassword)
+    //   .then(async (userCredential) => {
+    //     const userID = userCredential.user.uid
+    //     console.log('signin page:', userID)
+    //     // setUserID(userID)
+    //     // setIsSignIn(true)
+
+    //     const userDoc = await getDoc(doc(db, 'users', userID))
+    //     // console.log(userDoc.data()?.userFinishedInfo)
+
+    //     if (userDoc.data()?.userFinishedInfo) {
+    //       toast.success(`Welcome back, ${userDoc.data()?.username}`, {
+    //         position: 'top-right',
+    //         autoClose: 1000,
+    //         hideProgressBar: false,
+    //         closeOnClick: false,
+    //         pauseOnHover: false,
+    //         draggable: false,
+    //         progress: undefined,
+    //         theme: 'light'
+    //       })
+    //       return navigate(`/member/${userID}`)
+    //     } else {
+    //       toast.warn(`You haven't finish your profile`, {
+    //         position: 'top-right',
+    //         autoClose: 1000,
+    //         hideProgressBar: false,
+    //         closeOnClick: false,
+    //         pauseOnHover: false,
+    //         draggable: false,
+    //         progress: undefined,
+    //         theme: 'light'
+    //       })
+    //       return navigate('/member-info')
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error)
+    //     toast.warn(`Incorrect email or password`, {
+    //       position: 'top-right',
+    //       autoClose: 1000,
+    //       hideProgressBar: false,
+    //       closeOnClick: false,
+    //       pauseOnHover: false,
+    //       draggable: false,
+    //       progress: undefined,
+    //       theme: 'light'
+    //     })
+    //   })
   }
 
   return (
@@ -244,6 +335,13 @@ const SignIn: React.FC = () => {
           Sign In
         </button>
       )}
+      <button
+        onClick={() => {
+          navigate(`/`, { unstable_flushSync: true })
+        }}
+      >
+        gogo
+      </button>
     </div>
   )
 }
