@@ -1,3 +1,4 @@
+import { Image } from '@nextui-org/react'
 import {
   DocumentData,
   QueryOrderByConstraint,
@@ -140,10 +141,11 @@ const Home = () => {
                 />
                 <div className='flex gap-8 text-xl'>
                   <div className='relative h-52 w-52 rounded-xl bg-zinc-200'>
-                    <div className='flex h-full w-full'>
+                    <div className='z-20 flex h-full w-full'>
                       {route.spots?.map((spot: Spot) =>
                         spot.imageUrls.map((url: string) => (
-                          <img
+                          <Image
+                            isZoomed
                             key={imageIndex++}
                             src={url}
                             alt={spot.spotTitle}
@@ -155,7 +157,7 @@ const Home = () => {
                         ))
                       )}
                     </div>
-                    <div className='absolute bottom-2 z-20 flex h-4 w-full flex-wrap items-center justify-center gap-2'>
+                    <div className='absolute bottom-2 z-30 flex h-4 w-full flex-wrap items-center justify-center gap-2'>
                       {Array.from({
                         length: route.spots?.reduce(
                           (acc: number, spot: Spot) => acc + spot.imageUrls.length,
@@ -164,7 +166,7 @@ const Home = () => {
                       }).map((_, spanIndex) => (
                         <span
                           key={spanIndex}
-                          className={`dot h-2 w-2 rounded-full  opacity-70 ${
+                          className={`dot h-2 w-2 rounded-full opacity-70 ${
                             selectedImages[route.routeID] === spanIndex ? 'bg-blue-500' : 'bg-white'
                           }`}
                           onClick={() => handleDotClick(route.routeID, spanIndex)}
