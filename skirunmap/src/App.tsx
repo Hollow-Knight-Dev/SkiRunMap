@@ -14,6 +14,7 @@ import Friend from './pages/Friend'
 import Home from './pages/Home'
 import ImageCredit from './pages/ImageCredit'
 import Member from './pages/Member'
+import NoMatch from './pages/NoMatch'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
 import SearchResult from './pages/SearchResult'
@@ -59,6 +60,7 @@ const App: React.FC = () => {
           <Route path='friend' element={<Friend />} />
         </Route>
         <Route path='member-info' element={<ProtectedMemberInfoRoute />} />
+        <Route path='*' element={<NoMatch />} />
       </Route>
     )
   )

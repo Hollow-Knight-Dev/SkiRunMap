@@ -141,7 +141,10 @@ const SignIn: React.FC = () => {
 
   const trytry = async (userDoc: any) => {
     await userDoc
+    console.log('trytry userDoc', userDoc.data())
     if (userDoc.data()?.userFinishedInfo) {
+      navigate(`/member/${userDoc.data().userID}`)
+      navigate(0)
       toast.success(`Welcome back, ${userDoc.data()?.username}`, {
         position: 'top-left',
         autoClose: 1000,
@@ -152,7 +155,7 @@ const SignIn: React.FC = () => {
         progress: undefined,
         theme: 'light'
       })
-      return navigate(`/member/${userDoc.userID}`)
+      // return navigateToMember(userDoc.data().userID)
     } else {
       toast.warn(`You haven't finish your profile`, {
         position: 'top-left',
@@ -164,14 +167,15 @@ const SignIn: React.FC = () => {
         progress: undefined,
         theme: 'light'
       })
-      return navigate('/member-info')
+      navigate('/member-info')
+      navigate(0)
     }
   }
 
   const navigateOutside = async (userID: string) => {
     const userDoc = await getDoc(doc(db, 'users', userID))
     // console.log(userDoc.data()?.userFinishedInfo)
-    console.log('herehere')
+    console.log('herehere is userID', userID)
 
     trytry(userDoc)
   }
@@ -337,7 +341,7 @@ const SignIn: React.FC = () => {
       )}
       <button
         onClick={() => {
-          navigate(`/`, { unstable_flushSync: true })
+          navigate(`/`)
         }}
       >
         gogo
