@@ -24,7 +24,8 @@ import ProtectedRoute from './utils/ProtectedRoute'
 import ProtectedSignInRoute from './utils/ProtectedSignInRoute'
 
 const App: React.FC = () => {
-  const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc } = useUserStore()
+  const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc, setIsLoadedPage } =
+    useUserStore()
   const auth = getAuth()
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -35,12 +36,14 @@ const App: React.FC = () => {
         const userDocData = userDoc.data() as User
         setUserDoc(userDocData)
         setIsLoadedUserDoc(true)
+        setIsLoadedPage(true)
         console.log('App.tsx userDoc has been updated: ', userDocData)
       } else {
         setIsSignIn(false)
         setUserID('')
         setIsLoadedUserDoc(false)
         setUserDoc({} as User)
+        setIsLoadedPage(true)
       }
     })
 

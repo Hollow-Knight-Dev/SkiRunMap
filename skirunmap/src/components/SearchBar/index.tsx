@@ -13,6 +13,7 @@ const SearchBar = () => {
   const [suggestKeywords, setSuggestKeywords] = useState<string[]>([])
   const [selectedKeyword, setSelectedKeyword] = useState<string>('')
   const [isFocus, setIsFocus] = useState<boolean>(false)
+  const suggestKeywordListLimit = 20
 
   // useEffect(() => {
   //   console.log(selectedKeyword)
@@ -54,8 +55,8 @@ const SearchBar = () => {
             }
           }
         })
-        if (results.length > 11) {
-          setSuggestKeywords(results.sort().slice(0, 11))
+        if (results.length > suggestKeywordListLimit) {
+          setSuggestKeywords(results.sort().slice(0, suggestKeywordListLimit))
         } else {
           setSuggestKeywords(results.sort())
         }
@@ -137,7 +138,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className='relative h-full w-full' id='search-bar'>
+    <div className='relative z-40 h-full w-full' id='search-bar'>
       <input
         className='h-full w-full rounded-3xl p-2 pl-12 text-xl italic leading-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
         placeholder='Enter resort, ski run, or tag name'
@@ -155,14 +156,14 @@ const SearchBar = () => {
       />
       {isFocus && suggestKeywords.length > 0 && (
         <div
-          className='ml-5 mr-5 mt-[2px] flex flex-col rounded-xl bg-white/90 pb-2 pt-2'
+          className='ml-5 mr-5 flex h-72 flex-col overflow-y-auto rounded-xl bg-white shadow-[0px_4px_8px_-4px_#7e7e7e]'
           onMouseLeave={() => setSelectedKeyword('')}
         >
           {suggestKeywords.map((keyword, index) => (
             <div
               key={index}
               className={`flex cursor-pointer items-center gap-3 pl-2 duration-100 ${
-                selectedKeyword === keyword && 'bg-white'
+                selectedKeyword === keyword && 'bg-blue-50'
               }`}
               onClick={() => handleSuggestionClick(keyword)}
               onMouseEnter={() => handleMouseEnter(keyword)}
