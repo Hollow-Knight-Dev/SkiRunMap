@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className='flex h-48 flex-wrap justify-evenly bg-zinc-100 pt-12'>
+    <div className='flex h-24 flex-wrap items-center justify-evenly bg-zinc-100 p-2  font-bold'>
       {/* <div className='flex flex-col'>
         <Link className='font-bold text-lg mb-2' to='/'>
           Explore
@@ -36,10 +36,13 @@ const Footer = () => {
           </Link>
         </div>
       </div> */}
-      <Link className='text-lg font-bold' to='/credit'>
-        Image Credit
-      </Link>
-      <p className='h-fit w-full text-center'>2023 SKIRUNMAP All Rights Reserved</p>
+      <div className='flex gap-4'>
+        <Link className='text-lg' to='/credit'>
+          Image Credit
+        </Link>
+      </div>
+      <div className='h-7 w-[2px] bg-zinc-300'></div>
+      <p className='h-fit w-80 text-center'>2023 SKIRUNMAP All Rights Reserved</p>
     </div>
   )
 }

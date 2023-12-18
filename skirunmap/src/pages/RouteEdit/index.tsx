@@ -1014,7 +1014,7 @@ const EditRoute: React.FC = () => {
                 className='nice-shadow mt-4 h-fit w-full cursor-pointer rounded-2xl bg-blue-500 pl-4 pr-4 text-center text-lg font-bold text-white'
                 onClick={() => handleAddSpot()}
               >
-                + Add spot
+                Add new spot
               </div>
             </div>
           </div>

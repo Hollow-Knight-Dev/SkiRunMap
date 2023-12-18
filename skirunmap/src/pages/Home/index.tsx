@@ -91,7 +91,7 @@ const Home = () => {
   return (
     <div className='flex w-full flex-col items-center'>
       <HeroHeader />
-      <div className='flex w-4/5 flex-col items-center p-8'>
+      <div className='mt-4 flex w-4/5 flex-col items-center p-8'>
         <div className='mb-4 flex w-full flex-wrap justify-between'>
           <p className='text-3xl font-bold'>{filter} Routes</p>
           <div className='mb-4 flex items-center gap-2' onClick={handleFilterIconClick}>
@@ -137,11 +137,11 @@ const Home = () => {
                 <Link
                   key={`${route.routeID}_${index}`}
                   to={`/route/${route.routeID}`}
-                  className='absolute left-0 top-0 z-10 h-full w-full cursor-pointer rounded-2xl'
+                  className='absolute left-0 top-0 h-full w-full cursor-pointer rounded-2xl'
                 />
                 <div className='flex gap-8 text-xl'>
                   <div className='relative h-52 w-52 rounded-xl bg-zinc-200'>
-                    <div className='z-20 flex h-full w-full'>
+                    <div className='flex h-full w-full'>
                       {route.spots?.map((spot: Spot) =>
                         spot.imageUrls.map((url: string) => (
                           <Image
@@ -157,7 +157,7 @@ const Home = () => {
                         ))
                       )}
                     </div>
-                    <div className='absolute bottom-2 z-30 flex h-4 w-full flex-wrap items-center justify-center gap-2'>
+                    <div className='absolute bottom-2 z-20 flex h-4 w-full flex-wrap items-center justify-center gap-2'>
                       {Array.from({
                         length: route.spots?.reduce(
                           (acc: number, spot: Spot) => acc + spot.imageUrls.length,
@@ -176,6 +176,7 @@ const Home = () => {
                   </div>
 
                   <div className='flex flex-col gap-6 p-2'>
+                    {/* <p className='text-2xl font-bold'>{route.routeID}</p> */}
                     <p className='text-2xl font-bold'>{route.routeTitle}</p>
                     <p>Likes: {route.likeCount}</p>
                     <div className='flex flex-wrap gap-2'>
@@ -185,7 +186,7 @@ const Home = () => {
                           <Link
                             key={`${route.routeID}_tag_${index}`}
                             to={`/search/${tag}`}
-                            className='rounded-xl bg-blue-100 pl-2 pr-2'
+                            className='z-10 rounded-xl bg-blue-100 pl-2 pr-2'
                           >
                             # {tag}
                           </Link>
@@ -201,7 +202,7 @@ const Home = () => {
                           <Link
                             key={`${route.routeID}_spot_${index}`}
                             to={`/search/${spot.spotTitle}`}
-                            className='rounded-xl bg-blue-100 pl-2 pr-2'
+                            className='z-10 rounded-xl bg-blue-100 pl-2 pr-2'
                           >
                             {spot.spotTitle}
                           </Link>
