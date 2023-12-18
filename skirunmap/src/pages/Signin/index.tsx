@@ -187,7 +187,7 @@ const SignIn: React.FC = () => {
   }
 
   return (
-    <div className='h-screen-256px flex w-full flex-col items-center justify-center'>
+    <div className='h-screen-64px flex w-full flex-col items-center justify-center'>
       <div className='mb-8 flex gap-20'>
         <p
           className={`h-20 w-20 cursor-pointer rounded-full pt-6 text-center text-xl font-bold ${
@@ -241,13 +241,6 @@ const SignIn: React.FC = () => {
           Sign In
         </button>
       )}
-      <button
-        onClick={() => {
-          navigate(`/`)
-        }}
-      >
-        gogo
-      </button>
     </div>
   )
 }

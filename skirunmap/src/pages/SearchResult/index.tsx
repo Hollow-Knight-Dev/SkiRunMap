@@ -171,7 +171,7 @@ const SearchResult = () => {
         </div>
         <div className='mb-6 w-full border border-zinc-300' />
 
-        <div className='h-screen-256px flex w-full flex-col flex-wrap gap-4'>
+        <div className='h-screen-64px flex w-full flex-col flex-wrap gap-4'>
           {isLoading ? (
             <p>Loading...</p>
           ) : resultRoutes.length > 0 ? (

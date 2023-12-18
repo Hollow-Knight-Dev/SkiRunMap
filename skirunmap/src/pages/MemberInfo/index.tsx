@@ -260,27 +260,6 @@ const MemberInfo = () => {
               onChange={(e) => handleDescription(e)}
             />
           </div>
-
-          {/* <div className='mb-8 flex w-full flex-col gap-2'>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Email</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='email'
-                // value={email}
-                // onChange={(e) => handleEmail(e)}
-              />
-            </div>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Password</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                // value={password}
-                // onChange={(e) => handlePassword(e)}
-              />
-            </div>
-          </div> */}
         </div>
       </div>
       <div className='flex gap-8'>
