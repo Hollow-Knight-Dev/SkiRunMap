@@ -139,86 +139,38 @@ const SignIn: React.FC = () => {
     }
   }
 
-  const trytry = async (userDoc: any) => {
-    await userDoc
-    console.log('trytry userDoc', userDoc.data())
-    if (userDoc.data()?.userFinishedInfo) {
-      navigate(`/member/${userDoc.data().userID}`)
-      navigate(0)
-      toast.success(`Welcome back, ${userDoc.data()?.username}`, {
-        position: 'top-left',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-      // return navigateToMember(userDoc.data().userID)
-    } else {
-      toast.warn(`You haven't finish your profile`, {
-        position: 'top-left',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-      navigate('/member-info')
-      navigate(0)
-    }
-  }
-
-  const navigateOutside = async (userID: string) => {
-    const userDoc = await getDoc(doc(db, 'users', userID))
-    // console.log(userDoc.data()?.userFinishedInfo)
-    console.log('herehere is userID', userID)
-
-    trytry(userDoc)
-  }
-
   const handleSignIn = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword)
       const userID = userCredential.user.uid
       console.log('signin page:', userID)
 
-      navigateOutside(userID)
-      // setUserID(userID)
-      // setIsSignIn(true)
-
-      // const userDoc = await getDoc(doc(db, 'users', userID))
+      const userDoc = await getDoc(doc(db, 'users', userID))
       // // console.log(userDoc.data()?.userFinishedInfo)
 
-      // if (userDoc.data()?.userFinishedInfo) {
-      //   toast.success(`Welcome back, ${userDoc.data()?.username}`, {
-      //     position: 'top-right',
-      //     autoClose: 1000,
-      //     hideProgressBar: false,
-      //     closeOnClick: false,
-      //     pauseOnHover: false,
-      //     draggable: false,
-      //     progress: undefined,
-      //     theme: 'light'
-      //   })
-      //   trytry(userID)
-      //   // return navigate(`/member/${userID}`, { unstable_flushSync: true })
-      // } else {
-      //   toast.warn(`You haven't finish your profile`, {
-      //     position: 'top-right',
-      //     autoClose: 1000,
-      //     hideProgressBar: false,
-      //     closeOnClick: false,
-      //     pauseOnHover: false,
-      //     draggable: false,
-      //     progress: undefined,
-      //     theme: 'light'
-      //   })
-      //   return navigate('/member-info')
-      // }
+      if (userDoc.data()?.userFinishedInfo) {
+        toast.success(`Welcome back, ${userDoc.data()?.username}`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+      } else {
+        toast.warn(`You haven't finish your profile`, {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
+      }
     } catch (error) {
       console.error(error)
       toast.warn(`Incorrect email or password`, {
@@ -232,56 +184,6 @@ const SignIn: React.FC = () => {
         theme: 'light'
       })
     }
-
-    // signInWithEmailAndPassword(auth, userEmail, userPassword)
-    //   .then(async (userCredential) => {
-    //     const userID = userCredential.user.uid
-    //     console.log('signin page:', userID)
-    //     // setUserID(userID)
-    //     // setIsSignIn(true)
-
-    //     const userDoc = await getDoc(doc(db, 'users', userID))
-    //     // console.log(userDoc.data()?.userFinishedInfo)
-
-    //     if (userDoc.data()?.userFinishedInfo) {
-    //       toast.success(`Welcome back, ${userDoc.data()?.username}`, {
-    //         position: 'top-right',
-    //         autoClose: 1000,
-    //         hideProgressBar: false,
-    //         closeOnClick: false,
-    //         pauseOnHover: false,
-    //         draggable: false,
-    //         progress: undefined,
-    //         theme: 'light'
-    //       })
-    //       return navigate(`/member/${userID}`)
-    //     } else {
-    //       toast.warn(`You haven't finish your profile`, {
-    //         position: 'top-right',
-    //         autoClose: 1000,
-    //         hideProgressBar: false,
-    //         closeOnClick: false,
-    //         pauseOnHover: false,
-    //         draggable: false,
-    //         progress: undefined,
-    //         theme: 'light'
-    //       })
-    //       return navigate('/member-info')
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //     toast.warn(`Incorrect email or password`, {
-    //       position: 'top-right',
-    //       autoClose: 1000,
-    //       hideProgressBar: false,
-    //       closeOnClick: false,
-    //       pauseOnHover: false,
-    //       draggable: false,
-    //       progress: undefined,
-    //       theme: 'light'
-    //     })
-    //   })
   }
 
   return (

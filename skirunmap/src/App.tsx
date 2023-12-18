@@ -18,10 +18,10 @@ import NoMatch from './pages/NoMatch'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
 import SearchResult from './pages/SearchResult'
-import SignIn from './pages/Signin'
 import { User, useUserStore } from './store/useUser'
 import ProtectedMemberInfoRoute from './utils/ProtectedMemberInfoRoute'
 import ProtectedRoute from './utils/ProtectedRoute'
+import ProtectedSignInRoute from './utils/ProtectedSignInRoute'
 
 const App: React.FC = () => {
   const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc } = useUserStore()
@@ -52,7 +52,7 @@ const App: React.FC = () => {
         <Route index element={<Home />} />
         <Route path='route/:id' element={<RouteView />} />
         <Route path='search/:keyword' element={<SearchResult />} />
-        <Route path='signin' element={<SignIn />} />
+        <Route path='signin' element={<ProtectedSignInRoute />} />
         <Route path='credit' element={<ImageCredit />} />
         <Route element={<ProtectedRoute />}>
           <Route path='edit-route' element={<RouteEdit />} />
