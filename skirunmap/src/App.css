@@ -7,6 +7,11 @@ p {
   font-family: 'Philosopher', sans-serif;
 }
 
+button:focus {
+  border: none;
+  outline: none;
+}
+
 @layer {
   .h-screen-256px {
     min-height: calc(100vh - 256px);
