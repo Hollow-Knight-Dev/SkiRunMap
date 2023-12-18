@@ -39,12 +39,18 @@ const App: React.FC = () => {
       } else {
         setIsSignIn(false)
         setUserID('')
-        setIsLoadedUserDoc(true)
+        setIsLoadedUserDoc(false)
+        setUserDoc({} as User)
       }
     })
 
     return () => unsubscribe()
   }, [isSignIn, setUserID])
+
+  // useEffect(() => {
+  //   console.log('App.tsx always userDoc:', userDoc)
+  //   console.log('App.tsx always userID: ', userID)
+  // }, [userDoc])
 
   const router = createBrowserRouter(
     createRoutesFromElements(

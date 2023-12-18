@@ -2,12 +2,12 @@ import { getAuth, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { User, useUserStore } from '../../store/useUser'
+import { useUserStore } from '../../store/useUser'
 import Logo from './logo.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const { isSignIn, userDoc, setIsSignIn, setIsLoadedUserDoc, setUserDoc } = useUserStore()
+  const { isSignIn, userDoc, setIsSignIn, setIsLoadedUserDoc } = useUserStore()
   const auth = getAuth()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -25,7 +25,6 @@ const Header: React.FC = () => {
     await signOut(auth)
     setIsSignIn(false)
     setIsLoadedUserDoc(false)
-    setUserDoc({} as User)
     handleItemLeave()
     toast.success('Sign out successed!', {
       position: 'top-right',
@@ -41,9 +40,9 @@ const Header: React.FC = () => {
 
   useEffect(() => {}, [userDoc])
 
-  useEffect(() => {
-    console.log('Header hoveredItem: ', hoveredItem)
-  }, [hoveredItem])
+  // useEffect(() => {
+  //   console.log('Header hoveredItem: ', hoveredItem)
+  // }, [hoveredItem])
 
   return (
     <div className='flex justify-between bg-white pl-5 pr-5 shadow-[3px_3px_7px_-6px_#7e7e7e]'>
