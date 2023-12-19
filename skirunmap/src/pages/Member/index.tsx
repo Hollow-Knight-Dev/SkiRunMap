@@ -47,7 +47,7 @@ const Member = () => {
   const [isFriend, setIsFriend] = useState<boolean>(false)
   const [isMyself, setIsMyself] = useState<boolean>(false)
   const [viewCount, setViewCount] = useState<number>(0)
-  const { setSelectedImages } = useRouteCardStore()
+  const { setSelectedImages, setLikeRouteCards, setDislikeRouteCards } = useRouteCardStore()
 
   useEffect(() => {
     if (isLoadedUserDoc && userDoc.userID === memberID) {
@@ -190,6 +190,43 @@ const Member = () => {
     getUserCreatedRoutes()
     getUserStoredLists()
   }, [memberID, memberDoc])
+
+  useEffect(() => {
+    const initialLikeRouteCard: { [routeID: string]: boolean } = {}
+    const initialDislikeRouteCard: { [routeID: string]: boolean } = {}
+
+    const handleLikeDislikeState = (list: DocumentData[]) => {
+      list.forEach((route) => {
+        if (route.likeUsers.includes(userDoc.userID)) {
+          initialLikeRouteCard[route.routeID] = true
+        } else {
+          initialLikeRouteCard[route.routeID] = false
+        }
+
+        if (route.dislikeUsers.includes(userDoc.userID)) {
+          initialDislikeRouteCard[route.routeID] = true
+        } else {
+          initialDislikeRouteCard[route.routeID] = false
+        }
+      })
+    }
+
+    if (userDoc?.userID) {
+      if (userCreatedRoutes.length > 0) {
+        handleLikeDislikeState(userCreatedRoutes)
+      }
+      if (userStoredLists.length > 0) {
+        userStoredLists.forEach((map) => {
+          if (map.routeDoc.length > 0) {
+            handleLikeDislikeState(map.routeDoc)
+          }
+        })
+      }
+
+      setLikeRouteCards(initialLikeRouteCard)
+      setDislikeRouteCards(initialDislikeRouteCard)
+    }
+  }, [userCreatedRoutes, userStoredLists, userDoc])
 
   const handleFollow = async () => {
     console.log('click Follow')
