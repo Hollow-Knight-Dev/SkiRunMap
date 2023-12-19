@@ -105,7 +105,7 @@ const Header: React.FC = () => {
             )}
             {isSignIn && (
               <img
-                className='h-10 w-10 rounded-full object-cover shadow-[2px_2px_10px_-2px_#4da5fd]'
+                className='h-10 w-10 rounded-full object-cover shadow-[2px_2px_8px_-4px_#000]'
                 src={userDoc?.userIconUrl}
                 alt='User icon'
               />

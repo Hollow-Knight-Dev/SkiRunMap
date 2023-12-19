@@ -115,7 +115,13 @@ button:focus {
 .bg-groomed-piste {
   background-image: url('/images/groomed-piste-1.jpg');
   background-size: cover;
-  background-position: 50% 90%;
+  background-position: center;
+}
+
+.bg-groomed-piste-2 {
+  background-image: url('/images/groomed-piste-3.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 .bg-ski-input {

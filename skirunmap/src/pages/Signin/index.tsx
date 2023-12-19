@@ -246,14 +246,14 @@ const SignIn: React.FC = () => {
       </div>
       {isSignUp ? (
         <button
-          className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white duration-200 hover:translate-y-1 hover:bg-black'
+          className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
           onClick={() => handleSignUp()}
         >
           Sign up
         </button>
       ) : (
         <button
-          className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white duration-200 hover:translate-y-1 hover:bg-black'
+          className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
           onClick={() => handleSignIn()}
         >
           Sign In
