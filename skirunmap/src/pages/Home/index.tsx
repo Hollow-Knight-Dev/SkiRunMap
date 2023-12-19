@@ -137,7 +137,7 @@ const Home = () => {
             </div>
           )}
         </div>
-        <div className='flex w-full justify-center'>
+        <div className='flex h-fit w-full justify-center'>
           <RouteCard data={allRoutes} />
         </div>
       </div>

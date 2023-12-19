@@ -28,6 +28,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
   const [likeCount, setLikeCount] = useState<number>(
     data.likeUsers.length - data.dislikeUsers.length
   )
+  const [swipeDirection, setSwipeDirection] = useState<string>('')
 
   // useEffect(() => {
   //   console.log('data:', data)
@@ -40,7 +41,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
   }, [likeCount])
 
   useEffect(() => {
-    onSnapshot(doc(db, 'routes', routeID), (doc) => {
+    const unsubscribe = onSnapshot(doc(db, 'routes', routeID), (doc) => {
       const routeData = doc.data()
       if (routeData) {
         setLikeCount(routeData.likeCount)
@@ -48,7 +49,9 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
         console.error('Fail to get route data from Firestore')
       }
     })
-  }, [])
+
+    return () => unsubscribe()
+  }, [routeID])
 
   const handleLikeClick = async () => {
     if (routeID && isSignIn) {
@@ -56,6 +59,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
       const docSnap = await getDoc(routeRef)
       const routeData = docSnap.data() as Route
       if (likeRouteCards[routeID]) {
+        setSwipeDirection('swipe-down')
         if (routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
           await updateDoc(routeRef, { likeCount: increment(-1) })
@@ -63,6 +67,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
           setLikeRouteCards(newState)
         }
       } else {
+        setSwipeDirection('swipe-up')
         if (routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
           await updateDoc(routeRef, { likeCount: increment(1) })
@@ -96,6 +101,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
       const docSnap = await getDoc(routeRef)
       const routeData = docSnap.data() as Route
       if (dislikeRouteCards[routeID]) {
+        setSwipeDirection('swipe-up')
         if (routeData?.dislikeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
           await updateDoc(routeRef, { likeCount: increment(1) })
@@ -103,6 +109,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
           setDislikeRouteCards(newState)
         }
       } else {
+        setSwipeDirection('swipe-down')
         if (routeData?.likeUsers.includes(userDoc.userID)) {
           await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
           await updateDoc(routeRef, { likeCount: increment(-1) })
@@ -140,7 +147,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
           <img className='h-[22px] w-4' src={UnclickedLikeArrow} alt='Unclicked like arrow' />
         )}
       </div>
-      <p>{likeCount}</p>
+      <p className={`${swipeDirection}`}>{likeCount}</p>
       {/* <p>{data.likeUsers.length - data.dislikeUsers.length}</p> */}
       <div className='h-fit w-fit cursor-pointer' onClick={() => handleDislikeClick()}>
         {dislikeRouteCards[routeID] ? (

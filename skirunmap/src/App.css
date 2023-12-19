@@ -188,3 +188,34 @@ button:focus {
 .ski-boot-bounce {
   animation: ski-boot-bounce 1s infinite;
 }
+
+/* LikeDislike */
+@keyframes swipeUp {
+  from {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes swipeDown {
+  from {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.swipe-up {
+  animation: swipeUp 1s ease;
+}
+
+.swipe-down {
+  animation: swipeDown 1s ease;
+}

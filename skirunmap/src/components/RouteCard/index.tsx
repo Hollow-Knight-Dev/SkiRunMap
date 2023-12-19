@@ -36,18 +36,19 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
 
   return (
     // <div className='h-screen-64px flex w-full flex-col flex-wrap gap-4'>
-    <div className='flex w-auto flex-wrap gap-4'>
+    // <div className='flex w-auto flex-wrap gap-4'>
+    <div className='columns-4 space-y-4'>
       {data.map((route, index) => {
         let imageIndex = 0
         return (
           <div
             key={index}
-            className='relative h-fit w-52 cursor-pointer rounded-2xl bg-zinc-50 shadow-[0px_4px_7px_-4px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+            className='relative h-fit w-52 cursor-pointer break-inside-avoid-column rounded-2xl bg-zinc-50 shadow-[0px_4px_7px_-4px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
           >
             <Link
               key={`${route.routeID}_${index}`}
               to={`/route/${route.routeID}`}
-              className='absolute left-0 top-0 h-full w-full cursor-pointer rounded-2xl'
+              className='absolute left-0 top-0 z-10 h-full w-full cursor-pointer rounded-2xl'
             />
             <div className='flex flex-wrap text-xl'>
               <div className='relative w-52 rounded-xl bg-zinc-200'>
@@ -90,7 +91,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
               <div className='flex flex-col gap-1 p-2 text-sm'>
                 <Skeleton isLoaded={isLoaded} className='rounded-xl'>
                   <div className='ml-1 flex items-center gap-3'>
-                    <div className='scale-90'>
+                    <div className='z-20 scale-90'>
                       <LikeDislike data={route} />
                     </div>
                     <p className='w-40 truncate text-xl font-bold'>{route.routeTitle}</p>
