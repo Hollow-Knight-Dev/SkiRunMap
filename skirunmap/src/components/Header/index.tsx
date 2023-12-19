@@ -143,7 +143,7 @@ const Header: React.FC = () => {
 
         {!isSignIn && (
           <Link
-            className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold hover:bg-blue-200'
+            className='h-fit w-fit rounded-2xl bg-zinc-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
             to='/signin'
           >
             Sign in
