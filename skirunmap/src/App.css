@@ -110,3 +110,28 @@ button:focus {
 .button-shadow:hover {
   box-shadow: 5px 7px 7px -6px #7e7e7e;
 }
+
+/* Ski and snowboard input */
+.bg-groomed-piste {
+  background-image: url('/images/groomed-piste-1.jpg');
+  background-size: cover;
+  background-position: 50% 90%;
+}
+
+.bg-ski-input {
+  background-image: url('/images/ski-remove-bg.png');
+  background-size: contain;
+  background-position: center;
+}
+
+.bg-ski-boot-left {
+  background-image: url('/images/ski-boot-left.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-ski-boot-right {
+  background-image: url('/images/ski-boot-right.png');
+  background-size: cover;
+  background-position: center;
+}

@@ -187,39 +187,57 @@ const SignIn: React.FC = () => {
   }
 
   return (
-    <div className='h-screen-64px flex w-full flex-col items-center justify-center'>
-      <div className='mb-8 flex gap-20'>
-        <p
-          className={`h-20 w-20 cursor-pointer rounded-full pt-6 text-center text-xl font-bold ${
-            isSignUp ? 'bg-blue-100 text-white hover:bg-blue-400' : 'bg-blue-600 text-white'
+    <div className='h-screen-64px bg-groomed-piste flex w-full flex-col items-center justify-center'>
+      <div className='mb-12 flex gap-16'>
+        <div
+          className={`relative cursor-pointer duration-300 ${
+            isSignUp && '-translate-y-16 rotate-[30deg]'
           }`}
           onClick={() => setIsSignUp(false)}
         >
-          Sign In
-        </p>
-        <p
-          className={`h-20 w-20 cursor-pointer rounded-full pt-6 text-center text-xl font-bold ${
-            isSignUp ? 'bg-blue-600 text-white' : 'bg-blue-100 text-white hover:bg-blue-400'
+          <div className='bg-ski-boot-left mb-8 h-52 w-52' />
+          <p
+            className={`absolute bottom-0 left-16 text-2xl font-bold italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)] ${
+              !isSignUp && 'animate-bounce'
+            }`}
+          >
+            Sign In
+          </p>
+        </div>
+        <div
+          className={`relative cursor-pointer duration-300 ${
+            !isSignUp && '-translate-y-16 -rotate-[30deg]'
           }`}
           onClick={() => setIsSignUp(true)}
         >
-          Sign Up
-        </p>
+          <div className='bg-ski-boot-left mb-8 h-52 w-52' />
+          <p
+            className={`absolute bottom-0 left-16 text-2xl font-bold italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)] ${
+              isSignUp && 'animate-bounce'
+            }`}
+          >
+            Sign Up
+          </p>
+        </div>
       </div>
-      <div className='mb-8 flex w-full flex-col items-center gap-4'>
-        <div className='flex h-fit w-4/5 items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-          <label className='w-24'>Email</label>
+      <div className='mb-16 flex h-full w-full flex-col items-center gap-8'>
+        <div className='bg-ski-input flex h-[60px] w-[900px] cursor-pointer items-center pl-40 font-bold duration-300 hover:-translate-y-1'>
+          <label className='w-36 text-2xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+            Email
+          </label>
           <input
-            className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
+            className='h-6 w-2/5 rounded-lg bg-white/95 pl-4 text-xl italic'
             type='email'
             value={userEmail}
             onChange={(e) => handleEmail(e)}
           />
         </div>
-        <div className='flex h-fit w-4/5 items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-          <label className='w-24'>Password</label>
+        <div className='bg-ski-input flex h-[60px] w-[900px] cursor-pointer items-center pl-40 font-bold duration-300 hover:-translate-y-1'>
+          <label className='w-36 text-2xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+            Password
+          </label>
           <input
-            className='h-6 w-2/5 rounded-full bg-blue-500 pl-4'
+            className='h-6 w-2/5 rounded-lg bg-white/95 pl-4 text-xl'
             type='password'
             value={userPassword}
             onChange={(e) => handlePassword(e)}
@@ -228,14 +246,14 @@ const SignIn: React.FC = () => {
       </div>
       {isSignUp ? (
         <button
-          className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
+          className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white duration-200 hover:translate-y-1 hover:bg-black'
           onClick={() => handleSignUp()}
         >
           Sign up
         </button>
       ) : (
         <button
-          className='h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
+          className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white duration-200 hover:translate-y-1 hover:bg-black'
           onClick={() => handleSignIn()}
         >
           Sign In

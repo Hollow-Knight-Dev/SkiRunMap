@@ -18,6 +18,7 @@ import NoMatch from './pages/NoMatch'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
 import SearchResult from './pages/SearchResult'
+import Test from './pages/Test'
 import { User, useUserStore } from './store/useUser'
 import ProtectedMemberInfoRoute from './utils/ProtectedMemberInfoRoute'
 import ProtectedRoute from './utils/ProtectedRoute'
@@ -70,6 +71,7 @@ const App: React.FC = () => {
         </Route>
         <Route path='member-info' element={<ProtectedMemberInfoRoute />} />
         <Route path='*' element={<NoMatch />} />
+        <Route path='/test' element={<Test />} />
       </Route>
     )
   )
