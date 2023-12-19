@@ -13,12 +13,14 @@ import FilterSVG from '../../components/FilterSVG'
 import HeroHeader from '../../components/HeroHeader'
 import RouteCard from '../../components/RouteCard'
 import { useRouteCardStore } from '../../store/useRouteCard'
+import { useUserStore } from '../../store/useUser'
 
 const Home = () => {
   const [allRoutes, setAllRoutes] = useState<DocumentData[]>([])
   const [hasFilter, setHasFilter] = useState(false)
   const [filter, setFilter] = useState<string>('All')
-  const { setSelectedImages } = useRouteCardStore()
+  const { setSelectedImages, setLikeRouteCards, setDislikeRouteCards } = useRouteCardStore()
+  const { userDoc } = useUserStore()
 
   const handleFilterIconClick = () => {
     setHasFilter((prev) => !prev)
@@ -74,6 +76,29 @@ const Home = () => {
     })
     setSelectedImages(initialSelectedImages)
   }, [allRoutes])
+
+  useEffect(() => {
+    const initialLikeRouteCard: { [routeID: string]: boolean } = {}
+    const initialDislikeRouteCard: { [routeID: string]: boolean } = {}
+
+    if (userDoc?.userID && allRoutes.length > 0) {
+      allRoutes.forEach((route) => {
+        if (route.likeUsers.includes(userDoc.userID)) {
+          initialLikeRouteCard[route.routeID] = true
+        } else {
+          initialLikeRouteCard[route.routeID] = false
+        }
+
+        if (route.dislikeUsers.includes(userDoc.userID)) {
+          initialDislikeRouteCard[route.routeID] = true
+        } else {
+          initialDislikeRouteCard[route.routeID] = false
+        }
+      })
+      setLikeRouteCards(initialLikeRouteCard)
+      setDislikeRouteCards(initialDislikeRouteCard)
+    }
+  }, [allRoutes, userDoc])
 
   return (
     <div className='flex w-full flex-col items-center'>

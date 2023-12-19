@@ -18,20 +18,18 @@ import { Link, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
+import LikeDislike from '../../components/LikeDislike'
 import Map from '../../components/Map'
 import SearchBar from '../../components/SearchBar'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
+import { useRouteCardStore } from '../../store/useRouteCard'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import BookmarkIcon from './bookmark.png'
-import ClickedDislikeArrow from './clicked-dislike-arrow.png'
-import ClickedLikeArrow from './clicked-like-arrow.png'
 import GoogleMapPin from './google-maps-pin.png'
 import LatitudeIcon from './latitude.png'
 import LongitudeIcon from './longitude.png'
 import ShareIcon from './share-icon.png'
-import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
-import UnclickedLikeArrow from './unclicked-like-arrow.png'
 
 interface VisibilityState {
   [spotIndex: number]: boolean
@@ -54,6 +52,7 @@ const RouteView = () => {
   const [commentInput, setCommentInput] = useState<string>('')
   const [commentsDocData, setCommentsDocData] = useState<Comment[]>()
   const [authorLatestIconUrl, setAuthorLatestIconUrl] = useState<string>('')
+  const { setSelectedImages, setLikeRouteCards, setDislikeRouteCards } = useRouteCardStore()
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -131,18 +130,40 @@ const RouteView = () => {
     }
   }, [userDoc])
 
+  // useEffect(() => {
+  //   if (userDoc && routeDocData) {
+  //     if (routeDocData?.likeUsers.includes(userDoc.userID)) {
+  //       setIsLike(true)
+  //     } else {
+  //       setIsLike(false)
+  //     }
+  //     if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
+  //       setIsDislike(true)
+  //     } else {
+  //       setIsDislike(false)
+  //     }
+  //   }
+  // }, [routeDocData, userDoc])
+
   useEffect(() => {
-    if (userDoc && routeDocData) {
-      if (routeDocData?.likeUsers.includes(userDoc.userID)) {
-        setIsLike(true)
+    const initialLikeRouteCard: { [routeID: string]: boolean } = {}
+    const initialDislikeRouteCard: { [routeID: string]: boolean } = {}
+
+    if (userDoc?.userID && routeDocData) {
+      if (routeDocData.likeUsers.includes(userDoc.userID)) {
+        initialLikeRouteCard[routeDocData.routeID] = true
       } else {
-        setIsLike(false)
+        initialLikeRouteCard[routeDocData.routeID] = false
       }
-      if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
-        setIsDislike(true)
+
+      if (routeDocData.dislikeUsers.includes(userDoc.userID)) {
+        initialDislikeRouteCard[routeDocData.routeID] = true
       } else {
-        setIsDislike(false)
+        initialDislikeRouteCard[routeDocData.routeID] = false
       }
+
+      setLikeRouteCards(initialLikeRouteCard)
+      setDislikeRouteCards(initialDislikeRouteCard)
     }
   }, [routeDocData, userDoc])
 
@@ -620,41 +641,8 @@ const RouteView = () => {
 
               <div className='flex flex-col gap-4 p-2 pt-12'>
                 <div className='ml-3 flex items-center gap-6'>
-                  <div className='flex flex-col items-center'>
-                    <div className='h-fit w-fit cursor-pointer' onClick={() => handleLikeClick()}>
-                      {isLike ? (
-                        <img
-                          className='h-auto w-4'
-                          src={ClickedLikeArrow}
-                          alt='Clicked like arrow'
-                        />
-                      ) : (
-                        <img
-                          className='h-auto w-4'
-                          src={UnclickedLikeArrow}
-                          alt='Unclicked like arrow'
-                        />
-                      )}
-                    </div>
-                    <p>{routeDocData.likeUsers.length - routeDocData.dislikeUsers.length}</p>
-                    <div
-                      className='h-fit w-fit cursor-pointer'
-                      onClick={() => handleDislikeClick()}
-                    >
-                      {isDislike ? (
-                        <img
-                          className='h-auto w-4'
-                          src={ClickedDislikeArrow}
-                          alt='Clicked dislike arrow'
-                        />
-                      ) : (
-                        <img
-                          className='h-auto w-4'
-                          src={UnclickedDislikeArrow}
-                          alt='Unclicked dislike arrow'
-                        />
-                      )}
-                    </div>
+                  <div>
+                    <LikeDislike data={routeDocData} />
                   </div>
                   <p className='text-2xl font-bold'>{routeDocData.routeTitle}</p>
                 </div>

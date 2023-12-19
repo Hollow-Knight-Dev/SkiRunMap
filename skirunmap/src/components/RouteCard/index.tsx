@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
+import LikeDislike from '../LikeDislike'
+import View from './eye.png'
 import GooglePin from './google-maps-pin.png'
 import Tag from './tag.png'
 
@@ -87,9 +89,19 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
 
               <div className='flex flex-col gap-1 p-2 text-sm'>
                 <Skeleton isLoaded={isLoaded} className='rounded-xl'>
-                  <p className='mb-1 w-48 truncate text-xl font-bold'>{route.routeTitle}</p>
+                  <div className='ml-1 flex items-center gap-3'>
+                    <div className='scale-90'>
+                      <LikeDislike data={route} />
+                    </div>
+                    <p className='w-40 truncate text-xl font-bold'>{route.routeTitle}</p>
+                  </div>
                 </Skeleton>
-                <p>Likes: {route.likeCount}</p>
+                <Skeleton isLoaded={isLoaded} className='rounded-xl'>
+                  <div className='ml-1 flex items-center'>
+                    <img src={View} alt='View eye' className='h-4 w-auto' />
+                    <p>{route.viewCount}</p>
+                  </div>
+                </Skeleton>
                 <Skeleton isLoaded={isLoaded} className='rounded-xl'>
                   <div className='flex flex-wrap gap-2'>
                     {/* <p>Tag: </p> */}
@@ -98,7 +110,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                         <Link
                           key={`${route.routeID}_tag_${index}`}
                           to={`/search/${tag}`}
-                          className='z-10 flex items-center gap-1 rounded-xl bg-blue-100 pl-2 pr-2'
+                          className='z-10 flex items-center gap-1 rounded-xl bg-blue-100 pl-1 pr-1'
                         >
                           <img src={Tag} alt='Tag' className='h-3 w-auto' />
                           <p className='max-w-[144px] truncate'>{tag}</p>
@@ -117,7 +129,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                         <Link
                           key={`${route.routeID}_spot_${index}`}
                           to={`/search/${spot.spotTitle}`}
-                          className='z-10 flex items-center gap-1 rounded-xl bg-blue-100 pl-2 pr-2'
+                          className='z-10 flex items-center gap-1 rounded-xl bg-blue-100 pl-1 pr-1'
                         >
                           <img src={GooglePin} alt='Pin' className='h-3 w-auto' />
                           <p className='max-w-[144px] truncate'>{spot.spotTitle}</p>
