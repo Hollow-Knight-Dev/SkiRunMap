@@ -219,3 +219,32 @@ button:focus {
 .swipe-down {
   animation: swipeDown 1s ease;
 }
+
+/* User management */
+@keyframes iconSlide {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-icon {
+  animation: iconSlide 0.3s ease-in;
+}
+
+@keyframes navItemSlide {
+  from {
+    transform: translateX(-24px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.slide-nav-item {
+  animation: navItemSlide 0.3s ease-in;
+}

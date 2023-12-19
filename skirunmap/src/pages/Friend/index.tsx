@@ -1,3 +1,4 @@
+import { Skeleton } from '@nextui-org/react'
 import {
   arrayRemove,
   arrayUnion,
@@ -12,7 +13,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/CloudStorage'
 import { useUserStore } from '../../store/useUser'
-import SearchIcon from './search-icon.png'
+import SkiIcon from './skiing-icon.png'
+import SnowboardIcon from './snowboarder-icon.png'
 
 interface UserSimpleData {
   userID: string
@@ -27,6 +29,12 @@ const Friends = () => {
   const [friendList, setFriendList] = useState<UserSimpleData[]>()
   const [friendReqList, setFriendReqList] = useState<UserSimpleData[]>()
   const [sentFriendReqList, setSentFriendReqList] = useState<UserSimpleData[]>()
+  const [filter, setFilter] = useState<string>('Following')
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
+  setTimeout(() => {
+    setIsLoaded(true)
+  }, 500)
 
   const retrieveUserSimpleData = async (list: string[]) => {
     if (list.length > 0) {
@@ -169,149 +177,249 @@ const Friends = () => {
     setSentFriendReqList(updateList)
   }
 
+  const handleFilter = (filter: string) => {
+    setFilter(filter)
+  }
+
   return (
-    <div className='flex items-center justify-center'>
-      <div className='flex w-1/2 flex-col p-8'>
-        <div className='relative mb-8 w-2/3 self-end'>
+    <div className='h-screen-64px flex justify-center'>
+      <div className='min-w-64 m-8 h-fit rounded-xl border border-zinc-200 p-4 shadow-[0px_0px_10px_-6px_#555555]'>
+        <p className='mb-4 text-2xl font-bold'>User management</p>
+        <div className='flex flex-col text-xl'>
+          {/* <p>Search user</p> */}
+          <div className='flex items-center gap-1 rounded-lg'>
+            {filter === 'Following' && (
+              <img src={SkiIcon} alt='ski icon' className='slide-icon h-5 w-5' />
+            )}
+            <p
+              className={`w-full cursor-pointer p-1 ${
+                filter === 'Following' && 'slide-nav-item font-bold'
+              }`}
+              onClick={() => {
+                handleFilter('Following')
+              }}
+            >
+              Following
+            </p>
+          </div>
+          <div className='flex items-center gap-1 rounded-lg'>
+            {filter === 'Followers' && (
+              <img src={SnowboardIcon} alt='ski icon' className='slide-icon h-5 w-5' />
+            )}
+            <p
+              className={`w-full cursor-pointer p-1 ${
+                filter === 'Followers' && 'slide-nav-item font-bold'
+              }`}
+              onClick={() => {
+                handleFilter('Followers')
+              }}
+            >
+              Followers
+            </p>
+          </div>
+          <div className='flex items-center gap-1 rounded-lg'>
+            {filter === 'Friends' && (
+              <img src={SkiIcon} alt='ski icon' className='slide-icon h-5 w-5' />
+            )}
+            <p
+              className={`w-full cursor-pointer p-1 ${
+                filter === 'Friends' && 'slide-nav-item font-bold'
+              }`}
+              onClick={() => {
+                handleFilter('Friends')
+              }}
+            >
+              Friends
+            </p>
+          </div>
+          <div className='flex items-center gap-1 rounded-lg'>
+            {filter === 'Friend Requests' && (
+              <img src={SnowboardIcon} alt='ski icon' className='slide-icon h-5 w-5' />
+            )}
+            <p
+              className={`w-full cursor-pointer p-1 ${
+                filter === 'Friend Requests' && 'slide-nav-item font-bold'
+              }`}
+              onClick={() => {
+                handleFilter('Friend Requests')
+              }}
+            >
+              Friend Requests
+            </p>
+          </div>
+          <div className='flex items-center gap-1 rounded-lg'>
+            {filter === 'Sent Invitations' && (
+              <img src={SkiIcon} alt='ski icon' className='slide-icon h-5 w-5' />
+            )}
+            <p
+              className={`w-full cursor-pointer p-1 ${
+                filter === 'Sent Invitations' && 'slide-nav-item font-bold'
+              }`}
+              onClick={() => {
+                handleFilter('Sent Invitations')
+              }}
+            >
+              Sent Invitations
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className='m-8 flex w-[500px] flex-col pt-4'>
+        {/* <div className='relative mb-8 w-2/3 self-end'>
           <img className='absolute left-4 top-2 w-7' src={SearchIcon} alt='Search Icon' />
           <input
             className='w-full rounded-3xl border border-zinc-300 p-2 pl-16'
             placeholder='Search user by username'
           />
-        </div>
-        <div className='mb-16'>
-          <p className='mb-4 text-2xl font-bold'>Following</p>
-          <div className='mb-8 w-full border border-zinc-300' />
-          <div className='flex flex-col gap-4'>
-            {followList &&
-              followList.map((user, index) => (
-                <div key={index} className='flex items-center justify-between'>
-                  <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
-                    <img
-                      className='h-20 w-20 rounded-full object-cover'
-                      src={user.userIconUrl}
-                      alt='Friend Profile Icon'
-                    />
-                    <p className='text-xl'>{user.username}</p>
-                  </Link>
-                  <button
-                    className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
-                    onClick={() => handleUnfollowFollows(user.userID)}
-                  >
-                    Unfollow
-                  </button>
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className='mb-16'>
-          <p className='mb-4 text-2xl font-bold'>Followers</p>
-          <div className='mb-8 w-full border border-zinc-300' />
-          <div className='flex flex-col gap-4'>
-            {followerList &&
-              followerList.map((user, index) => (
-                <div key={index} className='flex items-center justify-between'>
-                  <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
-                    <img
-                      className='h-20 w-20 rounded-full object-cover'
-                      src={user.userIconUrl}
-                      alt='Friend Profile Icon'
-                    />
-                    <p className='text-xl'>{user.username}</p>
-                  </Link>
-                  <button
-                    className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
-                    onClick={() => handleRemoveFollowers(user.userID)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className='mb-16'>
-          <p className='mb-4 text-2xl font-bold'>My Friend</p>
-          <div className='mb-8 w-full border border-zinc-300' />
-          <div className='flex flex-col gap-4'>
-            {friendList &&
-              friendList.map((user, index) => (
-                <div key={index} className='flex items-center justify-between'>
-                  <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
-                    <img
-                      className='h-20 w-20 rounded-full object-cover'
-                      src={user.userIconUrl}
-                      alt='Friend Profile Icon'
-                    />
-                    <p className='text-xl'>{user.username}</p>
-                  </Link>
-                  <button
-                    className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
-                    onClick={() => handleBreakUpFriends(user.userID)}
-                  >
-                    Break up
-                  </button>
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className='mb-16'>
-          <p className='mb-4 text-2xl font-bold'>Friend Request</p>
-          <div className='mb-8 w-full border border-zinc-300' />
-          <div className='flex flex-col gap-4'>
-            {friendReqList &&
-              friendReqList.map((user, index) => (
-                <div key={index} className='flex items-center justify-between'>
-                  <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
-                    <img
-                      className='h-20 w-20 rounded-full object-cover'
-                      src={user.userIconUrl}
-                      alt='Friend Profile Icon'
-                    />
-                    <p className='text-xl'>{user.username}</p>
-                  </Link>
-                  <div className='flex gap-4'>
+        </div> */}
+        {filter === 'Following' && (
+          <div className='mb-16'>
+            <p className='mb-4 text-2xl font-bold'>Following</p>
+            <div className='flex flex-col gap-4'>
+              {followList &&
+                followList.map((user, index) => (
+                  <div key={index} className='flex items-center justify-between'>
+                    <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                      <Skeleton isLoaded={isLoaded} className='rounded-full'>
+                        <img
+                          className='h-16 w-16 rounded-full object-cover'
+                          src={user.userIconUrl}
+                          alt='Friend Profile Icon'
+                        />
+                      </Skeleton>
+                      <p className='text-xl'>{user.username}</p>
+                    </Link>
                     <button
-                      className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-green-200'
-                      onClick={() => handleAcceptFriendReqs(user.userID)}
+                      className='button-shadow h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
+                      onClick={() => handleUnfollowFollows(user.userID)}
                     >
-                      Accept
-                    </button>
-                    <button
-                      className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
-                      onClick={() => handleRejectFriendReqs(user.userID)}
-                    >
-                      Reject
+                      Unfollow
                     </button>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
-        </div>
-        <div className='mb-16'>
-          <p className='mb-4 text-2xl font-bold'>Sent Invitation</p>
-          <div className='mb-8 w-full border border-zinc-300' />
-          <div className='flex flex-col gap-4'>
-            {sentFriendReqList &&
-              sentFriendReqList.map((user, index) => (
-                <div key={index} className='flex items-center justify-between'>
-                  <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
-                    <img
-                      className='h-20 w-20 rounded-full object-cover'
-                      src={user.userIconUrl}
-                      alt='Friend Profile Icon'
-                    />
-                    <p className='text-xl'>{user.username}</p>
-                  </Link>
-                  <button
-                    className='h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
-                    onClick={() => handleWithdrawSentFriendReqs(user.userID)}
-                  >
-                    Withdraw
-                  </button>
-                </div>
-              ))}
+        )}
+        {filter === 'Followers' && (
+          <div className='mb-16'>
+            <p className='mb-4 text-2xl font-bold'>Followers</p>
+            <div className='flex flex-col gap-4'>
+              {followerList &&
+                followerList.map((user, index) => (
+                  <div key={index} className='flex items-center justify-between'>
+                    <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                      <Skeleton isLoaded={isLoaded} className='rounded-full'>
+                        <img
+                          className='h-16 w-16 rounded-full object-cover'
+                          src={user.userIconUrl}
+                          alt='Friend Profile Icon'
+                        />
+                      </Skeleton>
+                      <p className='text-xl'>{user.username}</p>
+                    </Link>
+                    <button
+                      className='button-shadow h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
+                      onClick={() => handleRemoveFollowers(user.userID)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+            </div>
           </div>
-        </div>
+        )}
+        {filter === 'Friends' && (
+          <div className='mb-16'>
+            <p className='mb-4 text-2xl font-bold'>Friends</p>
+            <div className='flex flex-col gap-4'>
+              {friendList &&
+                friendList.map((user, index) => (
+                  <div key={index} className='flex items-center justify-between'>
+                    <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                      <Skeleton isLoaded={isLoaded} className='rounded-full'>
+                        <img
+                          className='h-16 w-16 rounded-full object-cover'
+                          src={user.userIconUrl}
+                          alt='Friend Profile Icon'
+                        />
+                      </Skeleton>
+                      <p className='text-xl'>{user.username}</p>
+                    </Link>
+                    <button
+                      className='button-shadow h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
+                      onClick={() => handleBreakUpFriends(user.userID)}
+                    >
+                      Break up
+                    </button>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+        {filter === 'Friend Requests' && (
+          <div className='mb-16'>
+            <p className='mb-4 text-2xl font-bold'>Friend Requests</p>
+            <div className='flex flex-col gap-4'>
+              {friendReqList &&
+                friendReqList.map((user, index) => (
+                  <div key={index} className='flex items-center justify-between'>
+                    <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                      <Skeleton isLoaded={isLoaded} className='rounded-full'>
+                        <img
+                          className='h-16 w-16 rounded-full object-cover'
+                          src={user.userIconUrl}
+                          alt='Friend Profile Icon'
+                        />
+                      </Skeleton>
+                      <p className='text-xl'>{user.username}</p>
+                    </Link>
+                    <div className='flex gap-4'>
+                      <button
+                        className='button-shadow h-10 w-20 rounded-xl bg-zinc-100 hover:bg-green-200'
+                        onClick={() => handleAcceptFriendReqs(user.userID)}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className='button-shadow h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
+                        onClick={() => handleRejectFriendReqs(user.userID)}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+        {filter === 'Sent Invitations' && (
+          <div className='mb-16'>
+            <p className='mb-4 text-2xl font-bold'>Sent Invitations</p>
+            <div className='flex flex-col gap-4'>
+              {sentFriendReqList &&
+                sentFriendReqList.map((user, index) => (
+                  <div key={index} className='flex items-center justify-between'>
+                    <Link to={`/member/${user.userID}`} className='flex items-center gap-4'>
+                      <Skeleton isLoaded={isLoaded} className='rounded-full'>
+                        <img
+                          className='h-16 w-16 rounded-full object-cover'
+                          src={user.userIconUrl}
+                          alt='Friend Profile Icon'
+                        />
+                      </Skeleton>
+                      <p className='text-xl'>{user.username}</p>
+                    </Link>
+                    <button
+                      className='button-shadow h-10 w-20 rounded-xl bg-zinc-100 hover:bg-red-200'
+                      onClick={() => handleWithdrawSentFriendReqs(user.userID)}
+                    >
+                      Withdraw
+                    </button>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
