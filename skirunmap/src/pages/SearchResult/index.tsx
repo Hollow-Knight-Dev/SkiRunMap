@@ -124,7 +124,7 @@ const SearchResult = () => {
   }, [resultRoutes])
 
   return (
-    <div className='flex w-full flex-col items-center'>
+    <div className='h-screen-64px flex w-full flex-col items-center'>
       <HeroHeader />
       <div className='mt-4 flex w-4/5 flex-col items-center p-8'>
         <div className='mb-4 flex w-full flex-wrap items-center'>
@@ -167,7 +167,7 @@ const SearchResult = () => {
           </div>
         </div>
 
-        <div className='h-screen-64px flex w-full flex-col flex-wrap gap-4'>
+        <div className='flex w-full flex-col flex-wrap gap-4'>
           {isLoading ? (
             <p>Loading...</p>
           ) : resultRoutes.length > 0 ? (
