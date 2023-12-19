@@ -18,6 +18,18 @@ import { db } from '../../auth/CloudStorage'
 import RouteCard from '../../components/RouteCard'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { User, useUserStore } from '../../store/useUser'
+import AboutMeIcon from './about-me-icon.png'
+import Bookmark from './bookmark.png'
+import CalenderIcon from './calendar-icon.png'
+import CountryIcon from './country-icon.png'
+import EditIcon from './edit.png'
+import ViewIcon from './eye.png'
+import FollowerIcon from './follower-icon.png'
+import FriendIcon from './friend-icon.png'
+import GenderIcon from './gender-icon.png'
+import RouteIcon from './route-icon.png'
+import SkiIcon from './skiing-icon.png'
+import SnowboardIcon from './snowboarder-icon.png'
 
 interface RouteDocsInList {
   listName: string
@@ -256,11 +268,11 @@ const Member = () => {
   }, [userCreatedRoutes])
 
   return (
-    <div className='p-8'>
-      <div className='mb-8 w-full'>
-        <div className='flex w-4/5'>
+    <div className='flex justify-center p-8'>
+      <div className='mb-8 w-[1280px]'>
+        <div className='mb-16 flex w-full'>
           <img
-            className='ml-16 mr-16 h-32 w-32 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
+            className='mr-16 h-32 w-32 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
             src={memberDoc?.userIconUrl}
             alt='Profile Icon'
           />
@@ -311,85 +323,106 @@ const Member = () => {
                   </div>
                 ) : (
                   <Link
-                    className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold'
+                    className='flex h-fit w-fit items-center gap-2 rounded-2xl bg-zinc-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
                     to='/member-info'
                   >
+                    <img src={EditIcon} alt='Edit icon' className='h-4 w-4' />
                     Edit info
                   </Link>
                 )}
               </div>
-              <div className='mb-2 flex items-center gap-2'>
-                <p className='text-xl font-bold'>Joined Time:</p>
-                <p className='text-lg'>
-                  {memberDoc?.userJoinedTime &&
-                    formatTimestamp(memberDoc?.userJoinedTime as Timestamp)}
-                </p>
-              </div>
-              <div className='flex flex-wrap gap-4'>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Routes:</p>
-                  <p className='text-lg'>{memberDoc?.userRouteIDs.length}</p>
-                </div>
-                <div className='flex gap-2'>
-                  <p className='text-xl font-bold'>Views:</p>
-                  <p className='text-lg'>{viewCount}</p>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Friends:</p>
-                  <p className='text-lg'>{memberDoc?.userFriends.length}</p>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Followers:</p>
-                  <p className='text-lg'>{memberDoc?.userFollowers.length}</p>
-                </div>
-              </div>
 
-              <div className='mb-2 mt-6 flex items-center gap-2'>
-                <p className='text-xl font-bold'>About me:</p>
-                <p className='text-lg'>{memberDoc?.userDescription}</p>
-              </div>
-              <div className='flex flex-wrap gap-4'>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Gender:</p>
-                  <p className='text-lg'>{memberDoc?.userGender}</p>
+              <div className='flex gap-20'>
+                <div className='flex flex-col gap-2'>
+                  <div className='flex items-center gap-2'>
+                    <div className='flex items-center gap-2'>
+                      <img src={RouteIcon} alt=' icon' className='h-5 w-5' />
+                      <p className='text-xl font-bold'>Routes:</p>
+                    </div>
+                    <p className='text-lg'>{memberDoc?.userRouteIDs.length}</p>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <img src={ViewIcon} alt='View icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Views:</p>
+                    <p className='text-lg'>{viewCount}</p>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <img src={FriendIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Friends:</p>
+                    <p className='text-lg'>{memberDoc?.userFriends.length}</p>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <img src={FollowerIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Followers:</p>
+                    <p className='text-lg'>{memberDoc?.userFollowers.length}</p>
+                  </div>
                 </div>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Country:</p>
-                  <p className='text-lg'>{memberDoc?.userCountry}</p>
+
+                <div className='flex flex-col gap-2'>
+                  <div className='flex items-center gap-2'>
+                    <img src={SkiIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Ski Age:</p>
+                    <p className='text-lg'>{memberDoc?.userSkiAge}</p>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <img src={SnowboardIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Snowboard Age:</p>
+                    <p className='text-lg'>{memberDoc?.userSnowboardAge}</p>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <img src={GenderIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Gender:</p>
+                    <p className='text-lg'>{memberDoc?.userGender}</p>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <img src={CountryIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Country:</p>
+                    <p className='text-lg'>{memberDoc?.userCountry}</p>
+                  </div>
                 </div>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Ski Age:</p>
-                  <p className='text-lg'>{memberDoc?.userSkiAge}</p>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <p className='text-xl font-bold'>Snowboard Age:</p>
-                  <p className='text-lg'>{memberDoc?.userSnowboardAge}</p>
+
+                <div className='flex flex-col gap-2'>
+                  <div className='flex items-center gap-2'>
+                    <img src={CalenderIcon} alt=' icon' className='h-5 w-5' />
+                    <p className='text-xl font-bold'>Joined Time:</p>
+                    <p className='text-lg'>
+                      {memberDoc?.userJoinedTime &&
+                        formatTimestamp(memberDoc?.userJoinedTime as Timestamp)}
+                    </p>
+                  </div>
+
+                  <div className='flex flex-col gap-2'>
+                    <div className='flex items-center gap-2'>
+                      <img src={AboutMeIcon} alt=' icon' className='h-5 w-5' />
+                      <p className='text-xl font-bold'>About me:</p>
+                    </div>
+                    <p className='max-w-lg text-justify text-lg'>{memberDoc?.userDescription}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className='mb-16'>
-        <p className='mb-4 text-2xl font-bold'>My Routes</p>
-        <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
-          <div className='flex w-full flex-col flex-wrap gap-4'>
-            {userCreatedRoutes && <RouteCard data={userCreatedRoutes} />}
+
+        <div className='mb-16'>
+          <p className='mb-4 text-3xl font-bold'>My Routes</p>
+          <div className='flex items-center justify-center'>
+            <div className='flex w-full flex-col flex-wrap gap-4'>
+              {userCreatedRoutes && <RouteCard data={userCreatedRoutes} />}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className='mb-16'>
-        <p className='mb-4 text-2xl font-bold'>My Favorite Routes</p>
-        <div className='mb-8 w-full border border-zinc-300' />
-        <div className='flex items-center justify-center'>
+        <div className='mb-16'>
+          <p className='mb-4 text-3xl font-bold'>Saved Routes</p>
           <div className='flex w-3/4 flex-col gap-10'>
-            {userStoredLists &&
+            {userStoredLists.length > 0 ? (
               userStoredLists.map((map, index) => (
                 <div key={index}>
-                  <p className='mb-2 text-2xl font-bold'>{map.listName}</p>
-                  <div className='mb-6 w-full border border-zinc-300' />
+                  <div className='flex items-center gap-2'>
+                    <img src={Bookmark} alt='Bookmark icon' className='h-4 w-4' />
+                    <p className='text-2xl font-bold'>{map.listName}</p>
+                  </div>
                   <div className='flex w-full flex-col flex-wrap gap-4'>
                     {map.routeDoc.length === 0 ? (
                       <p className='mb-2 text-lg font-bold text-zinc-400'>
@@ -400,7 +433,12 @@ const Member = () => {
                     )}
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className='mb-2 text-lg font-bold text-zinc-400'>
+                Currently haven't save any route
+              </p>
+            )}
           </div>
         </div>
       </div>
