@@ -222,7 +222,7 @@ const SignIn: React.FC = () => {
       </div>
       <div className='mb-16 flex h-full w-full flex-col items-center gap-8'>
         <div className='bg-ski-input flex h-[60px] w-[900px] cursor-pointer items-center pl-40 font-bold duration-300 hover:-translate-y-1'>
-          <label className='w-36 text-2xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+          <label className='w-36 cursor-pointer text-2xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
             Email
           </label>
           <input
@@ -233,7 +233,7 @@ const SignIn: React.FC = () => {
           />
         </div>
         <div className='bg-ski-input flex h-[60px] w-[900px] cursor-pointer items-center pl-40 font-bold duration-300 hover:-translate-y-1'>
-          <label className='w-36 text-2xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+          <label className='w-36 cursor-pointer text-2xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
             Password
           </label>
           <input

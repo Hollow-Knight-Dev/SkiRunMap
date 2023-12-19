@@ -24,7 +24,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
 
   setTimeout(() => {
     setIsLoaded(true)
-  }, 2000)
+  }, 500)
 
   // useEffect(() => {
   //   console.log('selectedImages:', selectedImages)
@@ -97,8 +97,8 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                   </div>
                 </Skeleton>
                 <Skeleton isLoaded={isLoaded} className='rounded-xl'>
-                  <div className='ml-1 flex items-center'>
-                    <img src={View} alt='View eye' className='h-4 w-auto' />
+                  <div className='ml-1 flex items-center gap-1'>
+                    <img src={View} alt='View eye' className='h-3 w-auto' />
                     <p>{route.viewCount}</p>
                   </div>
                 </Skeleton>
