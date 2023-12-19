@@ -270,9 +270,9 @@ const Member = () => {
   return (
     <div className='flex justify-center p-8'>
       <div className='mb-8 w-[1280px]'>
-        <div className='mb-16 flex w-full'>
+        <div className='mb-16 flex w-full gap-8'>
           <img
-            className='mr-16 h-32 w-32 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd]'
+            className='max-w-32 max-h-32 rounded-full object-cover shadow-[5px_10px_15px_-8px_#555555]'
             src={memberDoc?.userIconUrl}
             alt='Profile Icon'
           />
@@ -404,49 +404,51 @@ const Member = () => {
           </div>
         </div>
 
-        <div className='mb-16'>
-          <div className='mb-4 flex items-center gap-8'>
-            <p className='text-3xl font-bold'>My Routes</p>
-            <Link
-              to='/edit-route'
-              className='rounded-2xl bg-zinc-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
-            >
-              + Create new route
-            </Link>
-          </div>
-          <div className='flex items-center justify-center'>
-            <div className='flex w-full flex-col flex-wrap gap-4'>
-              {userCreatedRoutes && <RouteCard data={userCreatedRoutes} />}
+        <div className='flex flex-col items-center'>
+          <div className='mb-16 w-[900px]'>
+            <div className='mb-4 flex items-center gap-8'>
+              <p className='text-3xl font-bold'>My Routes</p>
+              <Link
+                to='/edit-route'
+                className='rounded-2xl bg-zinc-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
+              >
+                + Create new route
+              </Link>
+            </div>
+            <div className='flex items-center justify-center'>
+              <div className='flex w-full flex-col flex-wrap gap-4'>
+                {userCreatedRoutes && <RouteCard data={userCreatedRoutes} />}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className='mb-16'>
-          <p className='mb-4 text-3xl font-bold'>Saved Routes</p>
-          <div className='flex w-3/4 flex-col gap-10'>
-            {userStoredLists.length > 0 ? (
-              userStoredLists.map((map, index) => (
-                <div key={index}>
-                  <div className='flex items-center gap-2'>
-                    <img src={Bookmark} alt='Bookmark icon' className='h-4 w-4' />
-                    <p className='text-2xl font-bold'>{map.listName}</p>
+          <div className='mb-16 w-[900px]'>
+            <p className='mb-4 text-3xl font-bold'>Saved Routes</p>
+            <div className='flex flex-col gap-10'>
+              {userStoredLists.length > 0 ? (
+                userStoredLists.map((map, index) => (
+                  <div key={index}>
+                    <div className='mb-1 flex items-center gap-2'>
+                      <img src={Bookmark} alt='Bookmark icon' className='h-4 w-4' />
+                      <p className='text-2xl font-bold'>{map.listName}</p>
+                    </div>
+                    <div className='flex w-full flex-col flex-wrap gap-4'>
+                      {map.routeDoc.length === 0 ? (
+                        <p className='mb-2 text-lg font-bold text-zinc-400'>
+                          Currently no route in this list
+                        </p>
+                      ) : (
+                        <RouteCard data={map.routeDoc} />
+                      )}
+                    </div>
                   </div>
-                  <div className='flex w-full flex-col flex-wrap gap-4'>
-                    {map.routeDoc.length === 0 ? (
-                      <p className='mb-2 text-lg font-bold text-zinc-400'>
-                        Currently no route in this list
-                      </p>
-                    ) : (
-                      <RouteCard data={map.routeDoc} />
-                    )}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className='mb-2 text-lg font-bold text-zinc-400'>
-                Currently haven't save any route
-              </p>
-            )}
+                ))
+              ) : (
+                <p className='mb-2 text-lg font-bold text-zinc-400'>
+                  Currently haven't save any route
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
