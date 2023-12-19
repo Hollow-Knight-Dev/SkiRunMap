@@ -124,7 +124,7 @@ const SignIn: React.FC = () => {
               theme: 'light'
             })
           } else if (error.code === 'auth/weak-password') {
-            toast.warn(`Weak password`, {
+            toast.warn(`Please use stronger password (at least 6 characters)`, {
               position: 'top-right',
               autoClose: 1000,
               hideProgressBar: false,
@@ -191,7 +191,7 @@ const SignIn: React.FC = () => {
       <div className='mb-12 flex gap-16'>
         <div
           className={`relative cursor-pointer duration-300 ${
-            isSignUp && '-translate-y-16 rotate-[30deg]'
+            isSignUp && '-translate-y-16 rotate-[45deg]'
           }`}
           onClick={() => setIsSignUp(false)}
         >
@@ -206,7 +206,7 @@ const SignIn: React.FC = () => {
         </div>
         <div
           className={`relative cursor-pointer duration-300 ${
-            !isSignUp && '-translate-y-16 -rotate-[30deg]'
+            !isSignUp && '-translate-y-16 -rotate-[45deg]'
           }`}
           onClick={() => setIsSignUp(true)}
         >

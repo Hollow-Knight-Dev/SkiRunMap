@@ -126,14 +126,14 @@ const SearchResult = () => {
   return (
     <div className='flex w-full flex-col items-center'>
       <HeroHeader />
-      <div className='flex w-4/5 flex-col items-center p-8'>
-        <div className='mb-4 flex w-full flex-col items-center'>
-          <div className='flex w-full flex-wrap justify-between'>
+      <div className='mt-4 flex w-4/5 flex-col items-center p-8'>
+        <div className='mb-4 flex w-full flex-wrap items-center'>
+          <div className='flex w-full flex-wrap gap-2'>
             <p className='text-3xl font-bold'>
               Search Result: {keyword} ({resultRoutes.length})
             </p>
-            <div className='mb-4 flex items-center gap-2' onClick={handleFilterClick}>
-              <p className='text-xl font-bold'>filter</p>
+            <div className='flex items-center gap-2' onClick={handleFilterClick}>
+              {/* <p className='text-xl font-bold'>filter</p> */}
               <FilterSVG />
             </div>
             {hasFilter && (
@@ -166,7 +166,6 @@ const SearchResult = () => {
             )}
           </div>
         </div>
-        <div className='mb-6 w-full border border-zinc-300' />
 
         <div className='h-screen-64px flex w-full flex-col flex-wrap gap-4'>
           {isLoading ? (

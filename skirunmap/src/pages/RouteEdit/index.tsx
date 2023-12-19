@@ -125,21 +125,39 @@ const EditRoute: React.FC = () => {
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
-    if (title.length <= 30) {
+    if (title.length <= 50) {
       setRouteTitle(title)
     } else {
-      alert('Route title exceeds letter limitation')
-      setRouteTitle(title.slice(0, 30))
+      setRouteTitle(title.slice(0, 50))
+      toast.warn('Route title exceeds 50 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
   const handleRouteDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const description = event.target.value
-    if (description.length <= 50) {
+    if (description.length <= 500) {
       setRouteDescription(description)
     } else {
-      alert('Route description exceeds letter limitation')
-      setRouteDescription(description.slice(0, 50))
+      setRouteDescription(description.slice(0, 500))
+      toast.warn('Route description exceeds 500 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -148,8 +166,17 @@ const EditRoute: React.FC = () => {
     if (tagTempInput.length <= 20) {
       setTagInput(tagTempInput)
     } else {
-      alert('Tag name exceeds letter limitation')
       setTagInput(tagTempInput.slice(0, 20))
+      toast.warn('Tag exceeds 20 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -168,11 +195,20 @@ const EditRoute: React.FC = () => {
 
   const handleBuddyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const buddyTempInput = event.target.value
-    if (buddyTempInput.length <= 20) {
+    if (buddyTempInput.length <= 50) {
       setBuddyInput(buddyTempInput)
     } else {
-      alert('Buddy name exceeds letter limitation')
-      setBuddyInput(buddyTempInput.slice(0, 20))
+      setBuddyInput(buddyTempInput.slice(0, 50))
+      toast.warn('Buddy name exceeds 50 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -236,10 +272,28 @@ const EditRoute: React.FC = () => {
           theme: 'light'
         })
       } else {
-        alert('Invalid file type. Please upload a GPX file.')
+        toast.warn('Invalid file type. Please upload a GPX file.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select a GPX file.')
+      toast.warn('Please select a GPX file.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -265,10 +319,28 @@ const EditRoute: React.FC = () => {
         setGpxFileName(file.name)
         uploadAndDownloadGpx(file, routeID.concat('.gpx'))
       } else {
-        alert('Invalid file type. Please upload a GPX file.')
+        toast.warn('Invalid file type. Please upload a GPX file.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select a GPX file.')
+      toast.warn('Please select a GPX file.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -312,7 +384,16 @@ const EditRoute: React.FC = () => {
       marker.addListener('dragend', () => renewMarkerPosition(marker))
       marker.addListener('click', () => renewMarkerPosition(marker))
     } else {
-      alert('Please upload a gpx file first')
+      toast.warn('Please upload a gpx file first', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -399,10 +480,28 @@ const EditRoute: React.FC = () => {
           theme: 'light'
         })
       } else {
-        alert('Invalid file type. Please upload an image.')
+        toast.warn('Invalid file type. Please upload an image.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select an image.')
+      toast.warn('Please select an image.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
       return
     }
   }
@@ -441,10 +540,28 @@ const EditRoute: React.FC = () => {
           theme: 'light'
         })
       } else {
-        alert('Invalid file type. Please upload an MP4 video.')
+        toast.warn('Invalid file type. Please upload an MP4 video.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select an MP4 video.')
+      toast.warn('Please select an MP4 video.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
       return
     }
   }
@@ -585,6 +702,29 @@ const EditRoute: React.FC = () => {
         const file = new File([blob], 'Kutchan.gpx', { type: 'application/gpx+xml' })
         uploadAndDownloadGpx(file, routeID.concat('.gpx'))
       })
+  }
+
+  const handleSpotDescription = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    spot: Spot,
+    index: number
+  ) => {
+    const input = e.target.value
+    if (input.length <= 500) {
+      handleUpdateSpot(index, { ...spot, spotDescription: input })
+    } else {
+      handleUpdateSpot(index, { ...spot, spotDescription: input.slice(0, 500) })
+      toast.warn('Spot description exceeds 500 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
   }
 
   return (
@@ -949,9 +1089,7 @@ const EditRoute: React.FC = () => {
                       className='nice-shadow h-fit w-full resize-none p-2'
                       placeholder='Add spot description'
                       value={spot.spotDescription}
-                      onChange={(event) =>
-                        handleUpdateSpot(index, { ...spot, spotDescription: event.target.value })
-                      }
+                      onChange={(e) => handleSpotDescription(e, spot, index)}
                     />
                   </div>
 

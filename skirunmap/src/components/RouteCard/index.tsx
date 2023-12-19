@@ -42,7 +42,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
         return (
           <div
             key={index}
-            className='relative h-fit w-56 cursor-pointer rounded-2xl bg-blue-50 p-4 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
+            className='relative h-fit w-52 cursor-pointer rounded-2xl bg-zinc-50 shadow-[0px_4px_7px_-4px_#7e7e7e] duration-300 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
           >
             <Link
               key={`${route.routeID}_${index}`}
