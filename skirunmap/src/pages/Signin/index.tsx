@@ -188,32 +188,32 @@ const SignIn: React.FC = () => {
 
   return (
     <div className='h-screen-64px bg-groomed-piste flex w-full flex-col items-center justify-center'>
-      <div className='mb-12 flex gap-16'>
+      <div className='mb-12 flex'>
         <div
-          className={`relative cursor-pointer duration-300 ${
-            isSignUp && '-translate-y-16 rotate-[45deg]'
+          className={`relative transform cursor-pointer transition-transform duration-300 ${
+            isSignUp ? '-translate-y-16 rotate-[45deg]' : 'rotate-0'
           }`}
           onClick={() => setIsSignUp(false)}
         >
           <div className='bg-ski-boot-left mb-8 h-52 w-52' />
           <p
-            className={`absolute bottom-0 left-16 text-2xl font-bold italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)] ${
-              !isSignUp && 'animate-bounce'
+            className={`absolute bottom-0 left-16 text-2xl font-bold italic ${
+              !isSignUp && 'ski-boot-bounce'
             }`}
           >
             Sign In
           </p>
         </div>
         <div
-          className={`relative cursor-pointer duration-300 ${
-            !isSignUp && '-translate-y-16 -rotate-[45deg]'
+          className={`relative transform cursor-pointer transition-transform duration-300 ${
+            !isSignUp ? '-translate-y-16 -rotate-[45deg]' : 'rotate-0'
           }`}
           onClick={() => setIsSignUp(true)}
         >
           <div className='bg-ski-boot-left mb-8 h-52 w-52' />
           <p
-            className={`absolute bottom-0 left-16 text-2xl font-bold italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)] ${
-              isSignUp && 'animate-bounce'
+            className={`absolute bottom-0 left-16 text-2xl font-bold italic ${
+              isSignUp && 'ski-boot-bounce'
             }`}
           >
             Sign Up
@@ -245,11 +245,24 @@ const SignIn: React.FC = () => {
         </div>
       </div>
       {isSignUp ? (
+        <div
+          className='mb-2 flex cursor-pointer gap-2 font-bold'
+          onClick={() => setIsSignUp(false)}
+        >
+          Already have an account?
+        </div>
+      ) : (
+        <div className='mb-2 flex cursor-pointer gap-2 font-bold' onClick={() => setIsSignUp(true)}>
+          <p>Don't have an account?</p>
+          <p className='underline'>Sign up for free</p>
+        </div>
+      )}
+      {isSignUp ? (
         <button
           className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
           onClick={() => handleSignUp()}
         >
-          Sign up
+          Sign Up
         </button>
       ) : (
         <button
