@@ -1,7 +1,6 @@
 import {
   Timestamp,
   addDoc,
-  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -39,8 +38,6 @@ const RouteView = () => {
   const { id } = useParams<{ id: string }>()
   const { map, infoWindow, setInfoWindow } = useMapStore()
   const { userDoc, isSignIn } = useUserStore()
-  const [isLike, setIsLike] = useState<boolean>(false)
-  const [isDislike, setIsDislike] = useState<boolean>(false)
   const [routeDocData, setRouteDocData] = useState<Route>()
   const [userDocData, setUserDocData] = useState<User>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
@@ -52,7 +49,7 @@ const RouteView = () => {
   const [commentInput, setCommentInput] = useState<string>('')
   const [commentsDocData, setCommentsDocData] = useState<Comment[]>()
   const [authorLatestIconUrl, setAuthorLatestIconUrl] = useState<string>('')
-  const { setSelectedImages, setLikeRouteCards, setDislikeRouteCards } = useRouteCardStore()
+  const { setLikeRouteCards, setDislikeRouteCards } = useRouteCardStore()
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -296,74 +293,6 @@ const RouteView = () => {
         theme: 'light'
       })
     })
-  }
-
-  const handleLikeClick = async () => {
-    if (id && isSignIn) {
-      const routeRef = doc(db, 'routes', id)
-      const docSnap = await getDoc(routeRef)
-      const routeData = docSnap.data() as Route
-      if (isLike) {
-        if (routeData?.likeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(-1) })
-        }
-      } else {
-        if (routeData?.dislikeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(1) })
-        }
-        if (!routeData?.likeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { likeUsers: arrayUnion(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(1) })
-        }
-      }
-    } else {
-      toast.warn('Sign in to like this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-    }
-  }
-
-  const handleDislikeClick = async () => {
-    if (id && isSignIn) {
-      const routeRef = doc(db, 'routes', id)
-      const docSnap = await getDoc(routeRef)
-      const routeData = docSnap.data() as Route
-      if (isDislike) {
-        if (routeData?.dislikeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(1) })
-        }
-      } else {
-        if (routeData?.likeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(-1) })
-        }
-        if (!routeData?.dislikeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { dislikeUsers: arrayUnion(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(-1) })
-        }
-      }
-    } else {
-      toast.warn('Sign in to dislike this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-    }
   }
 
   const handleClickBookmark = () => {
