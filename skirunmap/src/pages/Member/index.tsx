@@ -405,7 +405,15 @@ const Member = () => {
         </div>
 
         <div className='mb-16'>
-          <p className='mb-4 text-3xl font-bold'>My Routes</p>
+          <div className='mb-4 flex items-center gap-8'>
+            <p className='text-3xl font-bold'>My Routes</p>
+            <Link
+              to='/edit-route'
+              className='rounded-2xl bg-zinc-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
+            >
+              + Create new route
+            </Link>
+          </div>
           <div className='flex items-center justify-center'>
             <div className='flex w-full flex-col flex-wrap gap-4'>
               {userCreatedRoutes && <RouteCard data={userCreatedRoutes} />}
