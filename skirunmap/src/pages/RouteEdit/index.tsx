@@ -728,7 +728,7 @@ const EditRoute: React.FC = () => {
   }
 
   return (
-    <div className='relative flex w-full'>
+    <div className='max-h-screen-contain-header relative flex w-full'>
       {blocker.state === 'blocked' ? (
         <div>
           <Modal

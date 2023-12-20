@@ -478,7 +478,7 @@ const RouteView = () => {
   }
 
   return (
-    <div className='h-screen-64px flex'>
+    <div className='max-h-screen-contain-header flex'>
       {routeDocData ? (
         <>
           <div className='flex w-2/3 flex-col bg-zinc-100'>
