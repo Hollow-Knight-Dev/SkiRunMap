@@ -22,6 +22,11 @@ import { useUserStore } from '../../store/useUser'
 import CrossPoles from './cross-poles.png'
 
 const EditRoute: React.FC = () => {
+  const markerIconUrl =
+    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
+  const exampleGpxFileUrl =
+    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
+
   const navigate = useNavigate()
 
   const blocker = useBlocker(
@@ -361,8 +366,8 @@ const EditRoute: React.FC = () => {
         position: addedSpotCoordinate,
         map: map,
         icon: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
-          scaledSize: new google.maps.Size(40, 40)
+          url: markerIconUrl,
+          scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,
         draggable: true,
@@ -694,8 +699,7 @@ const EditRoute: React.FC = () => {
   }
 
   const handleExampleGpxUpload = () => {
-    const fileLink =
-      'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
+    const fileLink = exampleGpxFileUrl
     fetch(fileLink)
       .then((response) => response.blob())
       .then((blob) => {

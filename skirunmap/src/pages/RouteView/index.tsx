@@ -35,6 +35,8 @@ interface VisibilityState {
 }
 
 const RouteView = () => {
+  const markerIconUrl =
+    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
   const { id } = useParams<{ id: string }>()
   const { map, infoWindow, setInfoWindow } = useMapStore()
   const { userDoc, isSignIn } = useUserStore()
@@ -218,8 +220,8 @@ const RouteView = () => {
         position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
         map: map,
         icon: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
-          scaledSize: new google.maps.Size(25, 25)
+          url: markerIconUrl,
+          scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,
         draggable: false,
