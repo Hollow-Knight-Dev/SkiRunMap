@@ -5,7 +5,7 @@ import Header from './components/Header'
 const RootLayout = () => {
   return (
     <div>
-      <div className='fixed top-0 z-10 w-full'>
+      <div className='fixed top-0 z-50 w-full'>
         <Header />
       </div>
       <div className='h-16' />

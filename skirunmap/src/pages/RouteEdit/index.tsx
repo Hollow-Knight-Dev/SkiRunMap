@@ -22,6 +22,11 @@ import { useUserStore } from '../../store/useUser'
 import CrossPoles from './cross-poles.png'
 
 const EditRoute: React.FC = () => {
+  const markerIconUrl =
+    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
+  const exampleGpxFileUrl =
+    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
+
   const navigate = useNavigate()
 
   const blocker = useBlocker(
@@ -125,21 +130,39 @@ const EditRoute: React.FC = () => {
 
   const handleRouteTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value
-    if (title.length <= 30) {
+    if (title.length <= 50) {
       setRouteTitle(title)
     } else {
-      alert('Route title exceeds letter limitation')
-      setRouteTitle(title.slice(0, 30))
+      setRouteTitle(title.slice(0, 50))
+      toast.warn('Route title exceeds 50 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
   const handleRouteDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const description = event.target.value
-    if (description.length <= 50) {
+    if (description.length <= 500) {
       setRouteDescription(description)
     } else {
-      alert('Route description exceeds letter limitation')
-      setRouteDescription(description.slice(0, 50))
+      setRouteDescription(description.slice(0, 500))
+      toast.warn('Route description exceeds 500 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -148,8 +171,17 @@ const EditRoute: React.FC = () => {
     if (tagTempInput.length <= 20) {
       setTagInput(tagTempInput)
     } else {
-      alert('Tag name exceeds letter limitation')
       setTagInput(tagTempInput.slice(0, 20))
+      toast.warn('Tag exceeds 20 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -168,11 +200,20 @@ const EditRoute: React.FC = () => {
 
   const handleBuddyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const buddyTempInput = event.target.value
-    if (buddyTempInput.length <= 20) {
+    if (buddyTempInput.length <= 50) {
       setBuddyInput(buddyTempInput)
     } else {
-      alert('Buddy name exceeds letter limitation')
-      setBuddyInput(buddyTempInput.slice(0, 20))
+      setBuddyInput(buddyTempInput.slice(0, 50))
+      toast.warn('Buddy name exceeds 50 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -236,10 +277,28 @@ const EditRoute: React.FC = () => {
           theme: 'light'
         })
       } else {
-        alert('Invalid file type. Please upload a GPX file.')
+        toast.warn('Invalid file type. Please upload a GPX file.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select a GPX file.')
+      toast.warn('Please select a GPX file.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -265,10 +324,28 @@ const EditRoute: React.FC = () => {
         setGpxFileName(file.name)
         uploadAndDownloadGpx(file, routeID.concat('.gpx'))
       } else {
-        alert('Invalid file type. Please upload a GPX file.')
+        toast.warn('Invalid file type. Please upload a GPX file.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select a GPX file.')
+      toast.warn('Please select a GPX file.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -289,8 +366,8 @@ const EditRoute: React.FC = () => {
         position: addedSpotCoordinate,
         map: map,
         icon: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
-          scaledSize: new google.maps.Size(40, 40)
+          url: markerIconUrl,
+          scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,
         draggable: true,
@@ -312,7 +389,16 @@ const EditRoute: React.FC = () => {
       marker.addListener('dragend', () => renewMarkerPosition(marker))
       marker.addListener('click', () => renewMarkerPosition(marker))
     } else {
-      alert('Please upload a gpx file first')
+      toast.warn('Please upload a gpx file first', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
     }
   }
 
@@ -399,10 +485,28 @@ const EditRoute: React.FC = () => {
           theme: 'light'
         })
       } else {
-        alert('Invalid file type. Please upload an image.')
+        toast.warn('Invalid file type. Please upload an image.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select an image.')
+      toast.warn('Please select an image.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
       return
     }
   }
@@ -441,10 +545,28 @@ const EditRoute: React.FC = () => {
           theme: 'light'
         })
       } else {
-        alert('Invalid file type. Please upload an MP4 video.')
+        toast.warn('Invalid file type. Please upload an MP4 video.', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: 'light'
+        })
       }
     } else {
-      alert('Please select an MP4 video.')
+      toast.warn('Please select an MP4 video.', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
       return
     }
   }
@@ -577,8 +699,7 @@ const EditRoute: React.FC = () => {
   }
 
   const handleExampleGpxUpload = () => {
-    const fileLink =
-      'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
+    const fileLink = exampleGpxFileUrl
     fetch(fileLink)
       .then((response) => response.blob())
       .then((blob) => {
@@ -587,8 +708,31 @@ const EditRoute: React.FC = () => {
       })
   }
 
+  const handleSpotDescription = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    spot: Spot,
+    index: number
+  ) => {
+    const input = e.target.value
+    if (input.length <= 500) {
+      handleUpdateSpot(index, { ...spot, spotDescription: input })
+    } else {
+      handleUpdateSpot(index, { ...spot, spotDescription: input.slice(0, 500) })
+      toast.warn('Spot description exceeds 500 letters', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light'
+      })
+    }
+  }
+
   return (
-    <div className='relative flex w-full'>
+    <div className='max-h-screen-contain-header relative flex w-full'>
       {blocker.state === 'blocked' ? (
         <div>
           <Modal
@@ -949,9 +1093,7 @@ const EditRoute: React.FC = () => {
                       className='nice-shadow h-fit w-full resize-none p-2'
                       placeholder='Add spot description'
                       value={spot.spotDescription}
-                      onChange={(event) =>
-                        handleUpdateSpot(index, { ...spot, spotDescription: event.target.value })
-                      }
+                      onChange={(e) => handleSpotDescription(e, spot, index)}
                     />
                   </div>
 
@@ -1014,7 +1156,7 @@ const EditRoute: React.FC = () => {
                 className='nice-shadow mt-4 h-fit w-full cursor-pointer rounded-2xl bg-blue-500 pl-4 pr-4 text-center text-lg font-bold text-white'
                 onClick={() => handleAddSpot()}
               >
-                + Add spot
+                Add new spot
               </div>
             </div>
           </div>

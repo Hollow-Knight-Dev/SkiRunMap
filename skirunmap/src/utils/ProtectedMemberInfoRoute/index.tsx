@@ -5,8 +5,8 @@ import MemberInfo from '../../pages/MemberInfo'
 import { useUserStore } from '../../store/useUser'
 
 const ProtectedMemberInfoRoute = () => {
-  const { isLoadedUserDoc, isSignIn } = useUserStore()
-  if (isLoadedUserDoc && !isSignIn) {
+  const { isLoadedPage, isSignIn } = useUserStore()
+  if (isLoadedPage && !isSignIn) {
     toast.warn(`Please sign in first`, {
       position: 'top-right',
       autoClose: 1000,

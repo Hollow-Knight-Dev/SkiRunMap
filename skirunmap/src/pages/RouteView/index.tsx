@@ -1,7 +1,6 @@
 import {
   Timestamp,
   addDoc,
-  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -18,31 +17,29 @@ import { Link, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/CloudStorage'
+import LikeDislike from '../../components/LikeDislike'
 import Map from '../../components/Map'
 import SearchBar from '../../components/SearchBar'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
+import { useRouteCardStore } from '../../store/useRouteCard'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import BookmarkIcon from './bookmark.png'
-import ClickedDislikeArrow from './clicked-dislike-arrow.png'
-import ClickedLikeArrow from './clicked-like-arrow.png'
 import GoogleMapPin from './google-maps-pin.png'
 import LatitudeIcon from './latitude.png'
 import LongitudeIcon from './longitude.png'
 import ShareIcon from './share-icon.png'
-import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
-import UnclickedLikeArrow from './unclicked-like-arrow.png'
 
 interface VisibilityState {
   [spotIndex: number]: boolean
 }
 
 const RouteView = () => {
+  const markerIconUrl =
+    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
   const { id } = useParams<{ id: string }>()
   const { map, infoWindow, setInfoWindow } = useMapStore()
   const { userDoc, isSignIn } = useUserStore()
-  const [isLike, setIsLike] = useState<boolean>(false)
-  const [isDislike, setIsDislike] = useState<boolean>(false)
   const [routeDocData, setRouteDocData] = useState<Route>()
   const [userDocData, setUserDocData] = useState<User>()
   const [spotsVisibility, setSpotsVisibility] = useState<VisibilityState>({})
@@ -54,6 +51,7 @@ const RouteView = () => {
   const [commentInput, setCommentInput] = useState<string>('')
   const [commentsDocData, setCommentsDocData] = useState<Comment[]>()
   const [authorLatestIconUrl, setAuthorLatestIconUrl] = useState<string>('')
+  const { setLikeRouteCards, setDislikeRouteCards } = useRouteCardStore()
 
   const toggleVisibility = (spotIndex: number) => {
     setSpotsVisibility((prevVisibility) => ({
@@ -131,18 +129,40 @@ const RouteView = () => {
     }
   }, [userDoc])
 
+  // useEffect(() => {
+  //   if (userDoc && routeDocData) {
+  //     if (routeDocData?.likeUsers.includes(userDoc.userID)) {
+  //       setIsLike(true)
+  //     } else {
+  //       setIsLike(false)
+  //     }
+  //     if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
+  //       setIsDislike(true)
+  //     } else {
+  //       setIsDislike(false)
+  //     }
+  //   }
+  // }, [routeDocData, userDoc])
+
   useEffect(() => {
-    if (userDoc && routeDocData) {
-      if (routeDocData?.likeUsers.includes(userDoc.userID)) {
-        setIsLike(true)
+    const initialLikeRouteCard: { [routeID: string]: boolean } = {}
+    const initialDislikeRouteCard: { [routeID: string]: boolean } = {}
+
+    if (userDoc?.userID && routeDocData) {
+      if (routeDocData.likeUsers.includes(userDoc.userID)) {
+        initialLikeRouteCard[routeDocData.routeID] = true
       } else {
-        setIsLike(false)
+        initialLikeRouteCard[routeDocData.routeID] = false
       }
-      if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
-        setIsDislike(true)
+
+      if (routeDocData.dislikeUsers.includes(userDoc.userID)) {
+        initialDislikeRouteCard[routeDocData.routeID] = true
       } else {
-        setIsDislike(false)
+        initialDislikeRouteCard[routeDocData.routeID] = false
       }
+
+      setLikeRouteCards(initialLikeRouteCard)
+      setDislikeRouteCards(initialDislikeRouteCard)
     }
   }, [routeDocData, userDoc])
 
@@ -200,8 +220,8 @@ const RouteView = () => {
         position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
         map: map,
         icon: {
-          url: 'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/logo.png?alt=media&token=d49dbd60-cfea-48a3-b15a-d7de4b1facdd',
-          scaledSize: new google.maps.Size(25, 25)
+          url: markerIconUrl,
+          scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,
         draggable: false,
@@ -275,74 +295,6 @@ const RouteView = () => {
         theme: 'light'
       })
     })
-  }
-
-  const handleLikeClick = async () => {
-    if (id && isSignIn) {
-      const routeRef = doc(db, 'routes', id)
-      const docSnap = await getDoc(routeRef)
-      const routeData = docSnap.data() as Route
-      if (isLike) {
-        if (routeData?.likeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(-1) })
-        }
-      } else {
-        if (routeData?.dislikeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(1) })
-        }
-        if (!routeData?.likeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { likeUsers: arrayUnion(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(1) })
-        }
-      }
-    } else {
-      toast.warn('Sign in to like this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-    }
-  }
-
-  const handleDislikeClick = async () => {
-    if (id && isSignIn) {
-      const routeRef = doc(db, 'routes', id)
-      const docSnap = await getDoc(routeRef)
-      const routeData = docSnap.data() as Route
-      if (isDislike) {
-        if (routeData?.dislikeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { dislikeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(1) })
-        }
-      } else {
-        if (routeData?.likeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { likeUsers: arrayRemove(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(-1) })
-        }
-        if (!routeData?.dislikeUsers.includes(userDoc.userID)) {
-          await updateDoc(routeRef, { dislikeUsers: arrayUnion(userDoc.userID) })
-          await updateDoc(routeRef, { likeCount: increment(-1) })
-        }
-      }
-    } else {
-      toast.warn('Sign in to dislike this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-    }
   }
 
   const handleClickBookmark = () => {
@@ -528,7 +480,7 @@ const RouteView = () => {
   }
 
   return (
-    <div className='h-screen-64px flex'>
+    <div className='max-h-screen-contain-header flex'>
       {routeDocData ? (
         <>
           <div className='flex w-2/3 flex-col bg-zinc-100'>
@@ -620,41 +572,8 @@ const RouteView = () => {
 
               <div className='flex flex-col gap-4 p-2 pt-12'>
                 <div className='ml-3 flex items-center gap-6'>
-                  <div className='flex flex-col items-center'>
-                    <div className='h-fit w-fit cursor-pointer' onClick={() => handleLikeClick()}>
-                      {isLike ? (
-                        <img
-                          className='h-auto w-4'
-                          src={ClickedLikeArrow}
-                          alt='Clicked like arrow'
-                        />
-                      ) : (
-                        <img
-                          className='h-auto w-4'
-                          src={UnclickedLikeArrow}
-                          alt='Unclicked like arrow'
-                        />
-                      )}
-                    </div>
-                    <p>{routeDocData.likeUsers.length - routeDocData.dislikeUsers.length}</p>
-                    <div
-                      className='h-fit w-fit cursor-pointer'
-                      onClick={() => handleDislikeClick()}
-                    >
-                      {isDislike ? (
-                        <img
-                          className='h-auto w-4'
-                          src={ClickedDislikeArrow}
-                          alt='Clicked dislike arrow'
-                        />
-                      ) : (
-                        <img
-                          className='h-auto w-4'
-                          src={UnclickedDislikeArrow}
-                          alt='Unclicked dislike arrow'
-                        />
-                      )}
-                    </div>
+                  <div>
+                    <LikeDislike data={routeDocData} />
                   </div>
                   <p className='text-2xl font-bold'>{routeDocData.routeTitle}</p>
                 </div>

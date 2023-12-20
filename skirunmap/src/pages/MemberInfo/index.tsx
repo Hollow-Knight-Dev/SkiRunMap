@@ -157,8 +157,8 @@ const MemberInfo = () => {
   }
 
   return (
-    <div className='h-screen-64px flex flex-col items-center justify-center bg-blue-100'>
-      <div className='flex w-3/5 gap-12'>
+    <div className='h-screen-64px bg-groomed-piste flex flex-col items-center justify-center bg-blue-100'>
+      <div className='flex w-4/5 flex-col items-center gap-12'>
         <div className='relative h-fit w-28'>
           <label
             htmlFor='userIcon'
@@ -168,8 +168,8 @@ const MemberInfo = () => {
             <img
               src={userIconUrl}
               alt='User icon'
-              className={`h-28 w-28 rounded-full object-cover shadow-[10px_15px_30px_-10px_#4da5fd] duration-100 ${
-                isHoverOnIcon && 'opacity-30'
+              className={`h-28 w-28 rounded-full object-cover shadow-[0px_0px_15px_-5px_#ffffff] duration-100 ${
+                isHoverOnIcon && 'opacity-70'
               }`}
               onMouseEnter={() => setIsHoverOnIcon(true)}
             />
@@ -198,7 +198,77 @@ const MemberInfo = () => {
             accept='image/jpeg, image/png, image/svg+xml'
           />
         </div>
-        <div className='mb-8 flex w-5/6 flex-col items-center gap-8'>
+
+        <div className='flex h-full w-full flex-col items-center gap-4'>
+          <div className='bg-ski-input flex h-[60px] w-[900px] items-center pl-[140px] font-bold duration-300 hover:-translate-y-1'>
+            <label className='w-52 text-xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+              Username
+            </label>
+            <input
+              className='h-6 w-2/5 rounded-lg bg-white/90 pl-4'
+              type='text'
+              value={username}
+              onChange={(e) => handleUsername(e)}
+            />
+          </div>
+          <div className='bg-ski-input flex h-[60px] w-[900px] items-center pl-[140px] font-bold duration-300 hover:-translate-y-1'>
+            <label className='w-52 text-xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+              Ski age
+            </label>
+            <input
+              className='h-6 w-2/5 rounded-lg bg-white/90 pl-4'
+              type='text'
+              value={userSkiAge}
+              onChange={(e) => handleSkiAge(e)}
+            />
+          </div>
+          <div className='bg-ski-input flex h-[60px] w-[900px] items-center pl-[140px] font-bold duration-300 hover:-translate-y-1'>
+            <label className='w-52 text-xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+              Snowboard age
+            </label>
+            <input
+              className='h-6 w-2/5 rounded-lg bg-white/90 pl-4'
+              type='text'
+              value={userSnowboardAge}
+              onChange={(e) => handleSnowboardAge(e)}
+            />
+          </div>
+          <div className='bg-ski-input flex h-[60px] w-[900px] items-center pl-[140px] font-bold duration-300 hover:-translate-y-1'>
+            <label className='w-52 text-xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+              Country
+            </label>
+            <input
+              className='h-6 w-2/5 rounded-lg bg-white/90 pl-4'
+              type='text'
+              value={userCountry}
+              onChange={(e) => handleCountry(e)}
+            />
+          </div>
+          <div className='bg-ski-input flex h-[60px] w-[900px] items-center pl-[140px] font-bold duration-300 hover:-translate-y-1'>
+            <label className='w-52 text-xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+              Gender
+            </label>
+            <input
+              className='h-6 w-2/5 rounded-lg bg-white/90 pl-4'
+              type='text'
+              value={userGender}
+              onChange={(e) => handleGender(e)}
+            />
+          </div>
+          <div className='bg-ski-input flex h-[60px] w-[900px] items-center pl-[140px] font-bold duration-300 hover:-translate-y-1'>
+            <label className='w-52 text-xl italic text-white drop-shadow-[2px_1px_2px_rgba(0,0,0,0.7)]'>
+              About me
+            </label>
+            <input
+              className='h-6 w-2/5 rounded-lg bg-white/90 pl-4'
+              type='text'
+              value={userDescription}
+              onChange={(e) => handleDescription(e)}
+            />
+          </div>
+        </div>
+
+        {/* <div className='mb-8 flex w-5/6 flex-col items-center gap-8'>
           <div className='flex w-full flex-col gap-2'>
             <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
               <label className='w-48'>Username</label>
@@ -260,32 +330,11 @@ const MemberInfo = () => {
               onChange={(e) => handleDescription(e)}
             />
           </div>
-
-          {/* <div className='mb-8 flex w-full flex-col gap-2'>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Email</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='email'
-                // value={email}
-                // onChange={(e) => handleEmail(e)}
-              />
-            </div>
-            <div className='flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Password</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                // value={password}
-                // onChange={(e) => handlePassword(e)}
-              />
-            </div>
-          </div> */}
-        </div>
+        </div> */}
       </div>
-      <div className='flex gap-8'>
+      <div className='mt-12 flex gap-8'>
         <button
-          className='button-shadow h-fit w-fit rounded-full bg-blue-500 p-4 text-white hover:bg-blue-600'
+          className='nice-shadow h-fit w-fit rounded-full bg-zinc-600 pb-2 pl-4 pr-4 pt-2 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
           onClick={() => handleMemberInfoSubmit()}
         >
           Save profile

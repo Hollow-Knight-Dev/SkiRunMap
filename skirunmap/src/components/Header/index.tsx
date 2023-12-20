@@ -1,14 +1,14 @@
+import { Image } from '@nextui-org/react'
 import { getAuth, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
-import DefaultUserIcon from './default-user-icon.png'
 import Logo from './logo.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const { isSignIn, userDoc, setIsSignIn } = useUserStore()
+  const { isSignIn, userDoc, setIsSignIn, setIsLoadedUserDoc } = useUserStore()
   const auth = getAuth()
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -25,6 +25,8 @@ const Header: React.FC = () => {
     navigate('/')
     await signOut(auth)
     setIsSignIn(false)
+    setIsLoadedUserDoc(false)
+    handleItemLeave()
     toast.success('Sign out successed!', {
       position: 'top-right',
       autoClose: 1000,
@@ -39,8 +41,12 @@ const Header: React.FC = () => {
 
   useEffect(() => {}, [userDoc])
 
+  // useEffect(() => {
+  //   console.log('Header hoveredItem: ', hoveredItem)
+  // }, [hoveredItem])
+
   return (
-    <div className='flex justify-between bg-white pl-8 pr-8'>
+    <div className='flex justify-between bg-white pl-5 pr-5 shadow-[3px_3px_7px_-6px_#7e7e7e]'>
       <div className='flex h-16 items-center'>
         <Link to='/'>
           <img src={Logo} alt='Logo' />
@@ -60,7 +66,7 @@ const Header: React.FC = () => {
               <SubNavItem
                 items={[
                   { name: 'Create New Route', url: '/edit-route' },
-                  { name: 'My Route', url: `/member/${userDoc.userID}` }
+                  { name: 'My Route', url: `/member/${userDoc?.userID}` }
                   // { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
                   // { name: 'Followed User Routes', url: '/' },
                   // { name: 'Friend Routes', url: '/' }
@@ -89,31 +95,27 @@ const Header: React.FC = () => {
       <div className='relative flex items-center'>
         <div onMouseLeave={handleItemLeave} className='h-full'>
           <Link
-            className={`flex h-full items-center font-bold transition-transform duration-200 hover:translate-y-[-2px] hover:italic focus:outline-none ${
-              !isSignIn && 'pl-20'
+            className={`flex h-full items-center font-bold transition-transform duration-200 focus:outline-none ${
+              hoveredItem === 'Member' && 'translate-y-[-2px] italic'
             }`}
-            to={isSignIn ? `/member/${userDoc.userID}` : '/signin'}
+            to={isSignIn ? `/member/${userDoc?.userID}` : '/signin'}
             onMouseEnter={() => handleItemHover('Member')}
           >
-            {isSignIn && userDoc.username && <p className='pr-3 text-lg'>Hi, {userDoc.username}</p>}
-            {isSignIn ? (
-              <img
-                className='mr-4 h-8 w-8 rounded-full object-cover shadow-[2px_2px_10px_-2px_#4da5fd]'
-                src={userDoc.userIconUrl}
-                alt='User icon'
-              />
-            ) : (
-              <img
-                className='mr-4 h-8 w-8 rounded-full shadow-[4px_4px_20px_-4px_#4da5fd]'
-                src={DefaultUserIcon}
+            {isSignIn && userDoc?.username && (
+              <p className='pr-3 text-lg'>Hi, {userDoc?.username}</p>
+            )}
+            {isSignIn && (
+              <Image
+                className='h-10 w-10 rounded-full object-cover shadow-[2px_2px_8px_-4px_#000]'
+                src={userDoc?.userIconUrl}
                 alt='User icon'
               />
             )}
           </Link>
           {hoveredItem === 'Member' && isSignIn && (
-            <div className='absolute top-[60px] flex w-48 flex-col rounded-lg bg-white p-2 text-base leading-8 shadow-[1px_1px_5px_-1px_#7e7e7e]'>
+            <div className='absolute right-0 top-[60px] flex w-36 flex-col rounded-lg bg-white p-2 text-base leading-8 shadow-[1px_1px_5px_-1px_#7e7e7e]'>
               <Link
-                to={`/member/${userDoc.userID}`}
+                to={`/member/${userDoc?.userID}`}
                 className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
               >
                 My Page
@@ -124,26 +126,25 @@ const Header: React.FC = () => {
               >
                 My Friend
               </Link>
+              <button
+                className='bg-grey-700 w-full rounded-md pl-2 pr-2 text-start hover:bg-zinc-100'
+                onClick={() => handleSignOut()}
+              >
+                Sign out
+              </button>
+              {/* <Link
+                to='/notification'
+                className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
+              >
+                Notification
+              </Link> */}
             </div>
           )}
         </div>
 
-        {/* <img
-          className='mr-4 h-auto w-7 cursor-pointer duration-200 hover:translate-y-[-2px]'
-          src={Notification}
-          alt='Notification icon'
-        /> */}
-
-        {isSignIn ? (
-          <button
-            className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold hover:bg-blue-200'
-            onClick={() => handleSignOut()}
-          >
-            Sign out
-          </button>
-        ) : (
+        {!isSignIn && (
           <Link
-            className='button-shadow h-fit w-fit rounded-2xl bg-blue-100 pl-4 pr-4 text-lg font-bold hover:bg-blue-200'
+            className='h-fit w-fit rounded-2xl bg-zinc-200 pl-4 pr-4 text-lg font-bold hover:bg-zinc-300'
             to='/signin'
           >
             Sign in
