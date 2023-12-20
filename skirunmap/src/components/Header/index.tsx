@@ -1,3 +1,4 @@
+import { Image } from '@nextui-org/react'
 import { getAuth, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -104,7 +105,7 @@ const Header: React.FC = () => {
               <p className='pr-3 text-lg'>Hi, {userDoc?.username}</p>
             )}
             {isSignIn && (
-              <img
+              <Image
                 className='h-10 w-10 rounded-full object-cover shadow-[2px_2px_8px_-4px_#000]'
                 src={userDoc?.userIconUrl}
                 alt='User icon'
