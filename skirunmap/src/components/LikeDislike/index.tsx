@@ -138,7 +138,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
   }
 
   return (
-    <div className='z-10 flex w-full flex-col items-center'>
+    <div className='z-20 flex w-full flex-col items-center'>
       <p>{likeRouteCards.routeID}</p>
       <div className='h-fit w-fit cursor-pointer' onClick={() => handleLikeClick()}>
         {likeRouteCards[routeID] ? (

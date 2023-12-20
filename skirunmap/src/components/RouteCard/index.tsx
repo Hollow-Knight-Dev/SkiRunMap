@@ -1,7 +1,7 @@
 import { Image, Skeleton } from '@nextui-org/react'
 import { DocumentData } from 'firebase/firestore'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import LikeDislike from '../LikeDislike'
@@ -14,6 +14,7 @@ interface RouteCardDocData {
 }
 
 const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
+  const navigate = useNavigate()
   const { selectedImages, setSelectedImages } = useRouteCardStore()
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
@@ -64,6 +65,9 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                           className={`aspect-square rounded-xl object-cover ${
                             selectedImages[route.routeID] === imageIndex ? 'block' : 'hidden'
                           }`}
+                          onClick={() => {
+                            navigate(`/route/${route.routeID}`)
+                          }}
                           // onClick={() => handleImageBug(imageIndex)}
                         />
                       ))
@@ -78,8 +82,10 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                     }).map((_, spanIndex) => (
                       <span
                         key={spanIndex}
-                        className={`dot h-2 w-2 rounded-full opacity-70 ${
-                          selectedImages[route.routeID] === spanIndex ? 'bg-blue-500' : 'bg-white'
+                        className={`dot h-2 w-2 rounded-full ${
+                          selectedImages[route.routeID] === spanIndex
+                            ? 'bg-white'
+                            : 'bg-zinc-500 shadow-[0px_0px_4px_-2px_#ffffff] '
                         }`}
                         onClick={() => handleDotClick(route.routeID, spanIndex)}
                       />
@@ -111,7 +117,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                         <Link
                           key={`${route.routeID}_tag_${index}`}
                           to={`/search/${tag}`}
-                          className='z-10 flex items-center gap-1 rounded-xl bg-blue-100 pl-1 pr-1'
+                          className='z-20 flex items-center gap-1 rounded-xl bg-blue-100 pl-1 pr-1'
                         >
                           <img src={Tag} alt='Tag' className='h-3 w-auto' />
                           <p className='max-w-[144px] truncate'>{tag}</p>
@@ -130,7 +136,7 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                         <Link
                           key={`${route.routeID}_spot_${index}`}
                           to={`/search/${spot.spotTitle}`}
-                          className='z-10 flex items-center gap-1 rounded-xl bg-blue-100 pl-1 pr-1'
+                          className='z-20 flex items-center gap-1 rounded-xl bg-blue-100 pl-1 pr-1'
                         >
                           <img src={GooglePin} alt='Pin' className='h-3 w-auto' />
                           <p className='max-w-[144px] truncate'>{spot.spotTitle}</p>
