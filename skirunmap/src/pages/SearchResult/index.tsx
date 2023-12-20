@@ -126,9 +126,9 @@ const SearchResult = () => {
   return (
     <div className='h-screen-64px flex w-full flex-col items-center'>
       <HeroHeader />
-      <div className='mt-4 flex w-4/5 flex-col items-center p-8'>
-        <div className='mb-4 flex w-full flex-wrap items-center'>
-          <div className='flex w-full flex-wrap gap-2'>
+      <div className='mt-4 flex w-[880px] flex-col items-center p-8'>
+        <div className='mb-4 flex w-full flex-wrap items-center gap-2'>
+          <div className='flex flex-wrap gap-2'>
             <p className='text-3xl font-bold'>
               Search Result: {keyword} ({resultRoutes.length})
             </p>
@@ -137,7 +137,7 @@ const SearchResult = () => {
               <FilterSVG />
             </div>
             {hasFilter && (
-              <div className='flex w-full items-center  justify-evenly rounded-xl bg-white pb-2 pt-2 font-semibold shadow-[0px_1px_8px_-4px_#7e7e7e]'>
+              <div className='flex w-full items-center justify-evenly rounded-xl bg-white pb-2 pt-2 font-semibold shadow-[0px_1px_8px_-4px_#7e7e7e]'>
                 <button
                   className={`w-fit rounded-xl pl-16 pr-16 ${
                     filter.includes('Newest') && 'bg-blue-200'
