@@ -36,9 +36,9 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
   //   console.log('dislikeRouteCards:', dislikeRouteCards)
   // }, [likeRouteCards, dislikeRouteCards])
 
-  useEffect(() => {
-    console.log('LikeDislike: Detect likeCount changed')
-  }, [likeCount])
+  // useEffect(() => {
+  //   console.log('LikeDislike: Detect likeCount changed')
+  // }, [likeCount])
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'routes', routeID), (doc) => {
