@@ -18,11 +18,29 @@ import NoMatch from './pages/NoMatch'
 import RouteEdit from './pages/RouteEdit'
 import RouteView from './pages/RouteView'
 import SearchResult from './pages/SearchResult'
-import Test from './pages/Test'
 import { User, useUserStore } from './store/useUser'
 import ProtectedMemberInfoRoute from './utils/ProtectedMemberInfoRoute'
 import ProtectedRoute from './utils/ProtectedRoute'
 import ProtectedSignInRoute from './utils/ProtectedSignInRoute'
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<RootLayout />}>
+      <Route index element={<Home />} />
+      <Route path='route/:id' element={<RouteView />} />
+      <Route path='search/:keyword' element={<SearchResult />} />
+      <Route path='signin' element={<ProtectedSignInRoute />} />
+      <Route path='credit' element={<ImageCredit />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path='edit-route' element={<RouteEdit />} />
+        <Route path='member/:memberID' element={<Member />} />
+        <Route path='friend' element={<Friend />} />
+      </Route>
+      <Route path='member-info' element={<ProtectedMemberInfoRoute />} />
+      <Route path='*' element={<NoMatch />} />
+    </Route>
+  )
+)
 
 const App: React.FC = () => {
   const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc, setIsLoadedPage } =
@@ -50,31 +68,6 @@ const App: React.FC = () => {
 
     return () => unsubscribe()
   }, [isSignIn, setUserID])
-
-  // useEffect(() => {
-  //   console.log('App.tsx always userDoc:', userDoc)
-  //   console.log('App.tsx always userID: ', userID)
-  // }, [userDoc])
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path='/' element={<RootLayout />}>
-        <Route index element={<Home />} />
-        <Route path='route/:id' element={<RouteView />} />
-        <Route path='search/:keyword' element={<SearchResult />} />
-        <Route path='signin' element={<ProtectedSignInRoute />} />
-        <Route path='credit' element={<ImageCredit />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path='edit-route' element={<RouteEdit />} />
-          <Route path='member/:memberID' element={<Member />} />
-          <Route path='friend' element={<Friend />} />
-        </Route>
-        <Route path='member-info' element={<ProtectedMemberInfoRoute />} />
-        <Route path='*' element={<NoMatch />} />
-        <Route path='/test' element={<Test />} />
-      </Route>
-    )
-  )
 
   return <RouterProvider router={router} />
 }
