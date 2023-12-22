@@ -52,12 +52,8 @@ const Member = () => {
   useEffect(() => {
     if (isLoadedUserDoc && userDoc.userID === memberID) {
       setIsMyself(true)
-      // console.log('userDoc.userID', userDoc.userID)
-      // console.log('memberID', memberID)
     } else {
       setIsMyself(false)
-      // console.log('2userDoc.userID', userDoc.userID)
-      // console.log('2memberID', memberID)
     }
   }, [userDoc])
 
@@ -76,40 +72,6 @@ const Member = () => {
 
     return time
   }
-
-  // const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   if (isLoadedPage && !isSignIn) {
-  //     toast.warn('Please sign in to view your page', {
-  //       position: 'top-right',
-  //       autoClose: 1000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: false,
-  //       draggable: false,
-  //       progress: undefined,
-  //       theme: 'light',
-  //       onClose: () => {
-  //         navigate('/signin')
-  //       }
-  //     })
-  //   } else if (isLoadedUserDoc && userDoc.username === undefined) {
-  //     toast.warn("You haven't finish your profile", {
-  //       position: 'top-right',
-  //       autoClose: 1000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: false,
-  //       draggable: false,
-  //       progress: undefined,
-  //       theme: 'light',
-  //       onClose: () => {
-  //         navigate('/member-info')
-  //       }
-  //     })
-  //   }
-  // }, [userDoc])
 
   const getMemberDoc = async () => {
     if (memberID) {
@@ -160,9 +122,7 @@ const Member = () => {
       let routeLists: RouteDocsInList[] = []
       await Promise.all(
         storeRoutes.map(async (map) => {
-          // console.log(map)
           if (map.routeIDs.length > 0) {
-            // console.log('map.routeIDs', map.routeIDs)
             const routesQuery = query(
               collection(db, 'routes'),
               where('routeID', 'in', map.routeIDs)
@@ -182,7 +142,6 @@ const Member = () => {
         })
       )
       setUserStoredLists(routeLists)
-      // console.log(routeLists)
     }
   }
 
