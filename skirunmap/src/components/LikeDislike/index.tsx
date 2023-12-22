@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import { Route } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { useUserStore } from '../../store/useUser'

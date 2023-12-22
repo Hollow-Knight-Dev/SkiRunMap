@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import { User, useUserStore } from '../../store/useUser'
 
 const SignIn: React.FC = () => {

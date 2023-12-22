@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import { useUserStore } from '../../store/useUser'
 import SkiIcon from './skiing-icon.png'
 import SnowboardIcon from './snowboarder-icon.png'

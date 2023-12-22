@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import RouteCard from '../../components/RouteCard'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { User, useUserStore } from '../../store/useUser'

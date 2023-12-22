@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import { RouteKeywords } from '../../store/useSearch'
 import SearchIcon from '/images/search-icon.png'
 

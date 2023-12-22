@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom'
 import './App.css'
 import RootLayout from './RootLayout'
-import { db } from './auth/CloudStorage'
+import { db } from './auth/Firebase'
 import Friend from './pages/Friend'
 import Home from './pages/Home'
 import ImageCredit from './pages/ImageCredit'

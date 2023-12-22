@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { db, storage } from '../../auth/CloudStorage'
+import { db, storage } from '../../auth/Firebase'
 import { User, useUserStore } from '../../store/useUser'
 
 const MemberInfo = () => {
