@@ -41,10 +41,6 @@ const Header: React.FC = () => {
 
   useEffect(() => {}, [userDoc])
 
-  // useEffect(() => {
-  //   console.log('Header hoveredItem: ', hoveredItem)
-  // }, [hoveredItem])
-
   return (
     <div className='flex justify-between bg-white pl-5 pr-5 shadow-[3px_3px_7px_-6px_#7e7e7e]'>
       <div className='flex h-16 items-center'>
@@ -67,29 +63,10 @@ const Header: React.FC = () => {
                 items={[
                   { name: 'Create New Route', url: '/edit-route' },
                   { name: 'My Route', url: `/member/${userDoc?.userID}` }
-                  // { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
-                  // { name: 'Followed User Routes', url: '/' },
-                  // { name: 'Friend Routes', url: '/' }
                 ]}
               />
             )}
           </div>
-          {/* <div className='h-full' onMouseLeave={handleItemLeave}>
-            <NavItem
-              name='Explore'
-              url='/'
-              isHovered={hoveredItem === 'Explore'}
-              onMouseEnter={() => handleItemHover('Explore')}
-            />
-            {hoveredItem === 'Explore' && (
-              <SubNavItem
-                items={[
-                  { name: 'Niseko Ski Resort', url: '/' },
-                  { name: 'Popular Users', url: '/' }
-                ]}
-              />
-            )}
-          </div> */}
         </div>
       </div>
       <div className='relative flex items-center'>
@@ -132,12 +109,6 @@ const Header: React.FC = () => {
               >
                 Sign out
               </button>
-              {/* <Link
-                to='/notification'
-                className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
-              >
-                Notification
-              </Link> */}
             </div>
           )}
         </div>
