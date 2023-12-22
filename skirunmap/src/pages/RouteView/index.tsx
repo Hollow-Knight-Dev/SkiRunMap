@@ -129,21 +129,6 @@ const RouteView = () => {
     }
   }, [userDoc])
 
-  // useEffect(() => {
-  //   if (userDoc && routeDocData) {
-  //     if (routeDocData?.likeUsers.includes(userDoc.userID)) {
-  //       setIsLike(true)
-  //     } else {
-  //       setIsLike(false)
-  //     }
-  //     if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
-  //       setIsDislike(true)
-  //     } else {
-  //       setIsDislike(false)
-  //     }
-  //   }
-  // }, [routeDocData, userDoc])
-
   useEffect(() => {
     const initialLikeRouteCard: { [routeID: string]: boolean } = {}
     const initialDislikeRouteCard: { [routeID: string]: boolean } = {}
@@ -175,7 +160,6 @@ const RouteView = () => {
         .filter((list) => list.routeIDs.includes(id))
         .map((list) => list.listName)
       setSelectedLists(initialiseSelectedLists)
-      // console.log('selectedLists:', selectedLists)
     }
   }, [userDocData])
 
@@ -189,7 +173,6 @@ const RouteView = () => {
         snapshot.docs.map((doc) => {
           updatedComments.push(doc.data() as Comment)
         })
-        // console.log('comments:', updatedComments)
         setCommentsDocData(updatedComments)
       })
     }
@@ -207,12 +190,6 @@ const RouteView = () => {
   useEffect(() => {
     updateAuthorIconUrl()
   }, [routeDocData])
-
-  // useEffect(() => {
-  //   if (commentsDocData) {
-  //     console.log('commentsDocData:', commentsDocData)
-  //   }
-  // }, [commentsDocData])
 
   const markSpots = (spots: Spot[]) => {
     spots.forEach((spot) => {
@@ -338,10 +315,7 @@ const RouteView = () => {
     } else if (id && isSignIn && userDocData) {
       const userRef = doc(db, 'users', userDoc.userID)
       const userListData = userDocData.userRouteLists
-      // console.log(userListData)
-
       const hasListName = userListData.some((item) => item.listName === createListName)
-      // console.log(hasListName)
 
       if (!hasListName) {
         setIsCreatingList(false)
@@ -580,7 +554,6 @@ const RouteView = () => {
 
                 <div className='mb-4 flex items-center'>
                   <Link to={`/member/${routeDocData.userID}`} className='h-fit w-fit'>
-                    {/* need to use dynamic user icon */}
                     <img
                       className='h-10 w-10 rounded-full object-cover'
                       src={authorLatestIconUrl}
