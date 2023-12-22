@@ -46,7 +46,6 @@ const MemberInfo = () => {
 
   useEffect(() => {
     if (isUpdated) {
-      // console.log('After updating member info userDoc:', userDoc)
       navigate(`/member/${userID}`)
     }
   }, [userDoc, isUpdated])
@@ -267,70 +266,6 @@ const MemberInfo = () => {
             />
           </div>
         </div>
-
-        {/* <div className='mb-8 flex w-5/6 flex-col items-center gap-8'>
-          <div className='flex w-full flex-col gap-2'>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Username</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={username}
-                onChange={(e) => handleUsername(e)}
-              />
-            </div>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Ski age</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={userSkiAge}
-                onChange={(e) => handleSkiAge(e)}
-              />
-            </div>
-          </div>
-
-          <div className='nice-shadow flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-            <label className='w-48'>Snowboard age</label>
-            <input
-              className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
-              type='text'
-              value={userSnowboardAge}
-              onChange={(e) => handleSnowboardAge(e)}
-            />
-          </div>
-
-          <div className='flex w-full flex-col gap-2'>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Country</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={userCountry}
-                onChange={(e) => handleCountry(e)}
-              />
-            </div>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Gender</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={userGender}
-                onChange={(e) => handleGender(e)}
-              />
-            </div>
-          </div>
-
-          <div className='nice-shadow flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-            <label className='w-48'>About me</label>
-            <input
-              className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
-              type='text'
-              value={userDescription}
-              onChange={(e) => handleDescription(e)}
-            />
-          </div>
-        </div> */}
       </div>
       <div className='mt-12 flex gap-8'>
         <button
