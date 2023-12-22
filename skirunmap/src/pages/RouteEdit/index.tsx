@@ -112,8 +112,6 @@ const EditRoute: React.FC = () => {
 
   useEffect(() => {
     latestSpotsRef.current = spots
-    // console.log('spots are altered: ', spots)
-    // console.log('latestSpotsRef are altered: ', latestSpotsRef.current)
   }, [spots])
 
   const toggleRouteVisibility = () => {
@@ -420,10 +418,6 @@ const EditRoute: React.FC = () => {
     const markercontent = JSON.stringify(markerPosition?.toJSON(), null, 2)
     const markerLat = markerPosition?.lat()
     const markerLng = markerPosition?.lng()
-    // console.log('Marker latlng', markerPosition, typeof markerPosition)
-    // console.log('markerLat', markerLat, typeof markerLat)
-    // console.log('markerLng', markerLng, typeof markerLng)
-    // console.log('Marker content', markercontent, typeof markercontent)
     marker.setPosition(new google.maps.LatLng(markerLat, markerLng))
     updateMarker(marker.spotID, marker)
 
@@ -437,19 +431,11 @@ const EditRoute: React.FC = () => {
     setInfoWindow(newInfoWindow)
 
     const addedSpotCoordinate = { lat: markerLat, lng: markerLng }
-    // console.log(addedSpotCoordinate)
-    // console.log('marker can get spots: ', spots)
-    // console.log('marker SpotID: ', markerSpotID)
     const spotIndex = latestSpotsRef.current.findIndex((spot) => spot.spotID === markerSpotID)
-    // console.log('spotIndex: ', spotIndex)
     if (spotIndex !== -1) {
       alterSpot(spotIndex, { spotCoordinate: addedSpotCoordinate })
     }
   }
-
-  // const handleAlterMarker = (index: number) => {
-  //   specific marker blink
-  // }
 
   const uploadAndDownloadImages = async (file: File, fileName: string, spotIndex: number) => {
     const imageRef = ref(imagesRef, fileName)
@@ -1057,12 +1043,6 @@ const EditRoute: React.FC = () => {
                   <div className='flex flex-col'>
                     <div className='flex items-center'>
                       <p className='w-40 text-lg font-bold'>Spot Coordinate:</p>
-                      {/* <p
-                      className='cursor-pointer rounded-md bg-zinc-100 pl-2 pr-2 text-sm'
-                      // onClick={() => handleAlterMarker(index)}
-                    >
-                      Alter marker
-                    </p> */}
                     </div>
 
                     <div className='flex flex-col gap-1'>
