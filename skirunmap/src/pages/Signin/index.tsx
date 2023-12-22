@@ -14,13 +14,7 @@ const SignIn: React.FC = () => {
   const { userID, setUserID, userEmail, setUserEmail, userPassword, setUserPassword } =
     useUserStore()
 
-  useEffect(() => {
-    if (userID) {
-      // console.log('sign in userID:', userID)
-    }
-  }, [userID])
-
-  // useEffect(() => {}, [navigate])
+  useEffect(() => {}, [userID])
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
@@ -57,7 +51,6 @@ const SignIn: React.FC = () => {
         .then(async (userCredential) => {
           const userID = userCredential.user.uid
           setUserID(userID)
-          // console.log(userID)
 
           const data: User = {
             userID: userID,
@@ -84,16 +77,6 @@ const SignIn: React.FC = () => {
           await setDoc(doc(db, 'users', userID), data)
 
           signInWithEmailAndPassword(auth, userEmail, userPassword)
-          // .then((userCredential) => {
-          //   // const userID = userCredential.user.uid
-          //   // console.log(userID)
-          //   // setUserID(userID)
-          //   // setIsSignIn(true)
-          // })
-          // .catch((error) => {
-          //   console.log(error.code, ': ', error.message)
-          // })
-
           toast.success('Sign up successed!', {
             position: 'top-right',
             autoClose: 1000,
@@ -143,10 +126,7 @@ const SignIn: React.FC = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword)
       const userID = userCredential.user.uid
-      console.log('signin page:', userID)
-
       const userDoc = await getDoc(doc(db, 'users', userID))
-      // // console.log(userDoc.data()?.userFinishedInfo)
 
       if (userDoc.data()?.userFinishedInfo) {
         toast.success(`Welcome back, ${userDoc.data()?.username}`, {
@@ -185,7 +165,7 @@ const SignIn: React.FC = () => {
       })
     }
   }
-  // max-h-screen-contain-header
+
   return (
     <div className='max-h-screen-contain-header bg-groomed-piste flex w-full flex-col items-center justify-center'>
       <div className='flex flex-col items-center gap-6'>
