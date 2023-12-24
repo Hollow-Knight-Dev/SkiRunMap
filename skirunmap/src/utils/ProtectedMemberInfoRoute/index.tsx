@@ -1,22 +1,12 @@
 import { Navigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import MemberInfo from '../../pages/MemberInfo'
 import { useUserStore } from '../../store/useUser'
+import showToast from '../showToast'
 
 const ProtectedMemberInfoRoute = () => {
   const { isLoadedPage, isSignIn } = useUserStore()
   if (isLoadedPage && !isSignIn) {
-    toast.warn(`Please sign in first`, {
-      position: 'top-right',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light'
-    })
+    showToast('warn', 'Please sign in first.')
     return <Navigate to='/signin' />
   }
   return <MemberInfo />

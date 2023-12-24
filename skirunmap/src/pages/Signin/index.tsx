@@ -2,10 +2,9 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/Firebase'
 import { User, useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
@@ -31,16 +30,7 @@ const SignIn: React.FC = () => {
     if (regex.test(email)) {
       return true
     } else {
-      toast.warn(`Email format error`, {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Please enter correct email format.')
       return false
     }
   }
@@ -77,18 +67,8 @@ const SignIn: React.FC = () => {
           await setDoc(doc(db, 'users', userID), data)
 
           signInWithEmailAndPassword(auth, userEmail, userPassword)
-          toast.success('Sign up successed!', {
-            position: 'top-right',
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: 'light',
-            onClose: () => {
-              navigate('/member-info')
-            }
+          showToast('success', 'Sign up successed!', () => {
+            navigate('/member-info')
           })
         })
         .catch((error) => {
@@ -96,27 +76,9 @@ const SignIn: React.FC = () => {
           console.error(error)
 
           if (error.code === 'auth/email-already-in-use') {
-            toast.warn(`Email has been signed up`, {
-              position: 'top-right',
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: 'light'
-            })
+            showToast('warn', 'Email has been signed up.')
           } else if (error.code === 'auth/weak-password') {
-            toast.warn(`Please use stronger password (at least 6 characters)`, {
-              position: 'top-right',
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: 'light'
-            })
+            showToast('warn', 'Please use stronger password (at least 6 characters)')
           }
         })
     }
@@ -129,40 +91,12 @@ const SignIn: React.FC = () => {
       const userDoc = await getDoc(doc(db, 'users', userID))
 
       if (userDoc.data()?.userFinishedInfo) {
-        toast.success(`Welcome back, ${userDoc.data()?.username}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `Welcome back, ${userDoc.data()?.username}`)
       } else {
-        toast.warn(`You haven't finish your profile`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', "You haven't finish your profile.")
       }
     } catch (error) {
-      console.error(error)
-      toast.warn(`Incorrect email or password`, {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Incorrect email or password')
     }
   }
 

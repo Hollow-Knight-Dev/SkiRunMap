@@ -10,8 +10,6 @@ import {
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useRef, useState } from 'react'
 import { useBlocker, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/Firebase'
 import Map from '../../components/Map'
@@ -19,6 +17,7 @@ import Modal from '../../components/Modal'
 import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
 import { Route, Spot, useRouteStore, useSpotStore } from '../../store/useRoute'
 import { useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 import CrossPoles from './cross-poles.png'
 
 const EditRoute: React.FC = () => {
@@ -34,7 +33,7 @@ const EditRoute: React.FC = () => {
       isSaveToLeave !== true && currentLocation.pathname !== nextLocation.pathname
   )
 
-  const { userID, userDoc, isSignIn, isLoadedUserDoc } = useUserStore()
+  const { userID, userDoc } = useUserStore()
   const {
     routeID,
     setRouteID,
@@ -82,27 +81,11 @@ const EditRoute: React.FC = () => {
   }, [isSaveToLeave, blocker])
 
   useEffect(() => {
-    if (isLoadedUserDoc && !isSignIn) {
-      toast.warn('Please sign in to create a new route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        onClose: () => {
-          navigate('/signin')
-        }
-      })
-    } else if (isLoadedUserDoc && isSignIn) {
-      if (!routeID) {
-        const id = uuidv4()
-        setRouteID(id)
-      }
+    if (!routeID) {
+      const id = uuidv4()
+      setRouteID(id)
     }
-  }, [userDoc])
+  }, [])
 
   useEffect(() => {
     if (gpxUrl) {
@@ -132,16 +115,7 @@ const EditRoute: React.FC = () => {
       setRouteTitle(title)
     } else {
       setRouteTitle(title.slice(0, 50))
-      toast.warn('Route title exceeds 50 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Route title exceeds 50 letters.')
     }
   }
 
@@ -151,16 +125,7 @@ const EditRoute: React.FC = () => {
       setRouteDescription(description)
     } else {
       setRouteDescription(description.slice(0, 500))
-      toast.warn('Route description exceeds 500 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Route description exceeds 500 letters.')
     }
   }
 
@@ -170,16 +135,7 @@ const EditRoute: React.FC = () => {
       setTagInput(tagTempInput)
     } else {
       setTagInput(tagTempInput.slice(0, 20))
-      toast.warn('Tag exceeds 20 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Tag exceeds 20 letters.')
     }
   }
 
@@ -202,16 +158,7 @@ const EditRoute: React.FC = () => {
       setBuddyInput(buddyTempInput)
     } else {
       setBuddyInput(buddyTempInput.slice(0, 50))
-      toast.warn('Buddy name exceeds 50 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Buddy name exceeds 50 letters.')
     }
   }
 
@@ -250,7 +197,7 @@ const EditRoute: React.FC = () => {
 
     if (files) {
       const file: File = files[0]
-      const maxSize = 500 * 1024 // 500KB
+      const maxSize = 500 * 1024
 
       if (
         file.name !== undefined &&
@@ -264,39 +211,12 @@ const EditRoute: React.FC = () => {
         file.name.toLowerCase().endsWith('.gpx') &&
         file.size > maxSize
       ) {
-        toast.warn('GPX size no larger than 500KB', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'GPX file size no larger than 500KB.')
       } else {
-        toast.warn('Invalid file type. Please upload a GPX file.', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Invalid file type. Please upload a GPX file.')
       }
     } else {
-      toast.warn('Please select a GPX file.', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Please select a GPX file.')
     }
   }
 
@@ -322,28 +242,10 @@ const EditRoute: React.FC = () => {
         setGpxFileName(file.name)
         uploadAndDownloadGpx(file, routeID.concat('.gpx'))
       } else {
-        toast.warn('Invalid file type. Please upload a GPX file.', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Invalid file type. Please upload a GPX file.')
       }
     } else {
-      toast.warn('Please select a GPX file.', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Please select a GPX file.')
     }
   }
 
@@ -387,16 +289,7 @@ const EditRoute: React.FC = () => {
       marker.addListener('dragend', () => renewMarkerPosition(marker))
       marker.addListener('click', () => renewMarkerPosition(marker))
     } else {
-      toast.warn('Please upload a gpx file first', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Please upload a gpx file first.')
     }
   }
 
@@ -455,45 +348,15 @@ const EditRoute: React.FC = () => {
 
     if (files) {
       const file: File = files[0]
-      const maxSize = 500 * 1024 // 500KB
+      const maxSize = 500 * 1024
 
       if (file.name && file.size <= maxSize) {
         uploadAndDownloadImages(file, file.name, spotIndex)
       } else if (file.name && file.size > maxSize) {
-        toast.warn('Image size no larger than 500KB', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Image size no larger than 500KB.')
       } else {
-        toast.warn('Invalid file type. Please upload an image.', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Invalid file type. Please upload jpeg, png, svg, or gif.')
       }
-    } else {
-      toast.warn('Please select an image.', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-      return
     }
   }
 
@@ -520,40 +383,10 @@ const EditRoute: React.FC = () => {
       if (file.name && file.size <= maxSize) {
         uploadAndDownloadVideos(file, file.name, spotIndex)
       } else if (file.name && file.size > maxSize) {
-        toast.warn('Video size no larger than 1000KB', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Video size no larger than 1000KB.')
       } else {
-        toast.warn('Invalid file type. Please upload an MP4 video.', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Invalid file type. Please upload a MP4 video.')
       }
-    } else {
-      toast.warn('Please select an MP4 video.', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-      return
     }
   }
 
@@ -586,17 +419,7 @@ const EditRoute: React.FC = () => {
           await updateDoc(userRef, { userDraftRouteIDs: arrayUnion(routeID) })
         }
       }
-
-      toast.success('Draft saved!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Draft saved!')
       setIsSaveToLeave(true)
     }
   }
@@ -641,19 +464,8 @@ const EditRoute: React.FC = () => {
         keywords: keywords
       }
       await setDoc(doc(db, 'keywords', routeID), kewordData)
-
-      toast.success('Submitted route!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        onClose: () => {
-          navigate(`/member/${userDoc.userID}`)
-        }
+      showToast('success', 'Route submitted!', () => {
+        navigate(`/member/${userDoc.userID}`)
       })
     }
   }
@@ -704,16 +516,7 @@ const EditRoute: React.FC = () => {
       handleUpdateSpot(index, { ...spot, spotDescription: input })
     } else {
       handleUpdateSpot(index, { ...spot, spotDescription: input.slice(0, 500) })
-      toast.warn('Spot description exceeds 500 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Spot description exceeds 500 letters.')
     }
   }
 

@@ -9,12 +9,11 @@ import {
   updateDoc
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/Firebase'
 import { Route } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 import ClickedDislikeArrow from './clicked-dislike-arrow.png'
 import ClickedLikeArrow from './clicked-like-arrow.png'
 import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
@@ -29,16 +28,6 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
     data.likeUsers.length - data.dislikeUsers.length
   )
   const [swipeDirection, setSwipeDirection] = useState<string>('')
-
-  // useEffect(() => {
-  //   console.log('data:', data)
-  //   console.log('likeRouteCards:', likeRouteCards)
-  //   console.log('dislikeRouteCards:', dislikeRouteCards)
-  // }, [likeRouteCards, dislikeRouteCards])
-
-  // useEffect(() => {
-  //   console.log('LikeDislike: Detect likeCount changed')
-  // }, [likeCount])
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'routes', routeID), (doc) => {
@@ -82,16 +71,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
         }
       }
     } else {
-      toast.warn('Sign in to like this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Sign in to like this route.')
     }
   }
 
@@ -124,16 +104,7 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
         }
       }
     } else {
-      toast.warn('Sign in to dislike this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Sign in to dislike this route.')
     }
   }
 
@@ -148,7 +119,6 @@ const LikeDislike: React.FC<DocumentData> = ({ data }) => {
         )}
       </div>
       <p className={`${swipeDirection}`}>{likeCount}</p>
-      {/* <p>{data.likeUsers.length - data.dislikeUsers.length}</p> */}
       <div className='h-fit w-fit cursor-pointer' onClick={() => handleDislikeClick()}>
         {dislikeRouteCards[routeID] ? (
           <img className='h-[22px] w-4' src={ClickedDislikeArrow} alt='Clicked dislike arrow' />

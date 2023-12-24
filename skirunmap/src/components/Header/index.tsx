@@ -2,8 +2,8 @@ import { Image } from '@nextui-org/react'
 import { getAuth, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 import Logo from './logo.png'
 
 const Header: React.FC = () => {
@@ -27,16 +27,7 @@ const Header: React.FC = () => {
     setIsSignIn(false)
     setIsLoadedUserDoc(false)
     handleItemLeave()
-    toast.success('Sign out successed!', {
-      position: 'top-right',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light'
-    })
+    showToast('success', 'Sign out successed!')
   }
 
   useEffect(() => {}, [userDoc])

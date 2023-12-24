@@ -14,8 +14,6 @@ import {
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/Firebase'
 import LikeDislike from '../../components/LikeDislike'
 import Map from '../../components/Map'
@@ -24,6 +22,7 @@ import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 import BookmarkIcon from './bookmark.png'
 import GoogleMapPin from './google-maps-pin.png'
 import LatitudeIcon from './latitude.png'
@@ -261,16 +260,7 @@ const RouteView = () => {
   const handleShareLink = () => {
     const pageUrl = window.location.href
     navigator.clipboard.writeText(pageUrl).then(() => {
-      toast.success('Copied!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Copied route link!')
     })
   }
 
@@ -278,16 +268,7 @@ const RouteView = () => {
     if (isSignIn) {
       setIsOpeningBookmark((prev) => !prev)
     } else {
-      toast.warn('Sign in to save this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Sign in to save this route.')
     }
   }
 
@@ -302,16 +283,7 @@ const RouteView = () => {
 
   const handleCreateList = async () => {
     if (createListName.trim() === '') {
-      toast.warn('List name cannot be empty', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'List name cannot be empty.')
     } else if (id && isSignIn && userDocData) {
       const userRef = doc(db, 'users', userDoc.userID)
       const userListData = userDocData.userRouteLists
@@ -321,28 +293,10 @@ const RouteView = () => {
         setIsCreatingList(false)
         const data: StoreRouteLists = { listName: createListName, routeIDs: [] }
         await updateDoc(userRef, { userRouteLists: arrayUnion(data) })
-        toast.success(`List ${createListName} created!`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `List ${createListName} created!`)
         setCreateListName('')
       } else {
-        toast.warn('This list name already exists', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'List name already existed.')
       }
     }
   }
@@ -367,27 +321,9 @@ const RouteView = () => {
       })
       await updateDoc(userRef, { userRouteLists: updatedUserRouteLists })
       if (isChecked) {
-        toast.success(`Route has been added into list: ${listName}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `Route has been added into list: ${listName}`)
       } else {
-        toast.success(`Route has been removed from list: ${listName}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `Route has been removed from list: ${listName}`)
       }
     }
   }
@@ -397,16 +333,7 @@ const RouteView = () => {
     if (input.length <= 250) {
       setCommentInput(input)
     } else {
-      toast.warn('Comment exceeds 250 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Comment exceeds 250 letters.')
       setCommentInput(input.slice(0, 250))
     }
   }
@@ -422,28 +349,10 @@ const RouteView = () => {
         commentTimestamp: serverTimestamp()
       }
       await addDoc(collection(routeRef, 'comments'), newComment)
-      toast.success('Comment submitted!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Comment submitted!')
       setCommentInput('')
     } else {
-      toast.warn('Sign in to leave your comment', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Sign in to leave your comment.')
     }
   }
 

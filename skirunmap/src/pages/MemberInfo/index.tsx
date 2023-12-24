@@ -2,10 +2,9 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { db, storage } from '../../auth/Firebase'
 import { User, useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 
 const MemberInfo = () => {
   const navigate = useNavigate()
@@ -130,28 +129,9 @@ const MemberInfo = () => {
       const userDocData = userDoc.data() as User
       setUserDoc(userDocData)
       setIsUpdated(true)
-
-      toast.success('Updated personal info!', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Personal info updated!')
     } else {
-      toast.warn('Username cannot be empty', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Username cannot be empty.')
     }
   }
 

@@ -1,10 +1,9 @@
 import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { db } from '../../auth/Firebase'
 import { RouteKeywords } from '../../store/useSearch'
+import showToast from '../../utils/showToast'
 import SearchIcon from '/images/search-icon.png'
 
 const SearchBar = () => {
@@ -95,16 +94,7 @@ const SearchBar = () => {
       if (selectedKeyword) {
         handleSearch(selectedKeyword)
       } else {
-        toast.warn('Please enter keyword', {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'Please enter keyword.')
       }
     }
   }
@@ -124,16 +114,7 @@ const SearchBar = () => {
     if (searchKeyword.trim() !== '') {
       handleSearch(searchKeyword)
     } else {
-      toast.warn('Please enter keyword', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Please enter keyword.')
     }
   }
 
