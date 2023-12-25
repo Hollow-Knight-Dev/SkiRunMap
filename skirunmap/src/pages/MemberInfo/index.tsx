@@ -74,11 +74,8 @@ const MemberInfo = () => {
       if (file.name) {
         uploadAndDownloadIcon(file, userID)
       } else {
-        alert('Invalid file type. Please upload an image.')
+        showToast('warn', 'Invalid file type. Please upload jpeg, png, svg, or gif.')
       }
-    } else {
-      alert('Please select an image.')
-      return
     }
   }
 
@@ -160,7 +157,7 @@ const MemberInfo = () => {
             type='file'
             id='userIcon'
             onChange={(e) => handleUserIcon(e)}
-            accept='image/jpeg, image/png, image/svg+xml'
+            accept='image/jpeg, image/png, image/svg+xml, image/gif'
           />
         </div>
 
