@@ -21,6 +21,7 @@ import SkiIcon from '../../images/skiing-icon.png'
 import SnowboardIcon from '../../images/snowboarder-icon.png'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { User, useUserStore } from '../../store/useUser'
+import { formatTimestamp } from '../../utils/formatTimestamp'
 import AboutMeIcon from './images/about-me-icon.png'
 import CalenderIcon from './images/calendar-icon.png'
 import CountryIcon from './images/country-icon.png'
@@ -55,22 +56,6 @@ const Member = () => {
       setIsMyself(false)
     }
   }, [userDoc])
-
-  const formatTimestamp = (timestamp: Timestamp) => {
-    const time = timestamp
-      .toDate()
-      .toLocaleDateString('en-UK', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour12: false,
-        hour: 'numeric',
-        minute: 'numeric'
-      })
-      .replace(',', ' at')
-
-    return time
-  }
 
   const getMemberDoc = async () => {
     if (memberID) {

@@ -25,6 +25,7 @@ import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
+import { formatTimestamp } from '../../utils/formatTimestamp'
 import showToast from '../../utils/showToast'
 import LatitudeIcon from './images/latitude.png'
 import LongitudeIcon from './images/longitude.png'
@@ -61,22 +62,6 @@ const RouteView = () => {
   const [commentVisibility, setCommentVisibility] = useState<boolean>(true)
   const toggleCommentVisibility = () => {
     setCommentVisibility((prev) => !prev)
-  }
-
-  const formatTimestamp = (timestamp: Timestamp) => {
-    const time = timestamp
-      .toDate()
-      .toLocaleDateString('en-UK', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour12: false,
-        hour: 'numeric',
-        minute: 'numeric'
-      })
-      .replace(',', ' at')
-
-    return time
   }
 
   const addViewCount = async (id: string) => {
