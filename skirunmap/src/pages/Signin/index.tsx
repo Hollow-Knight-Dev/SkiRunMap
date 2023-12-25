@@ -6,6 +6,9 @@ import { db } from '../../auth/Firebase'
 import { User, useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
 
+const defaultUserIconUrl =
+  'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777'
+
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const auth = getAuth()
@@ -47,8 +50,7 @@ const SignIn: React.FC = () => {
             userEmail: userEmail,
             userJoinedTime: serverTimestamp(),
             username: '',
-            userIconUrl:
-              'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777',
+            userIconUrl: defaultUserIconUrl,
             userSkiAge: '',
             userSnowboardAge: '',
             userCountry: '',

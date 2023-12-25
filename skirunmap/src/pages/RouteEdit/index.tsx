@@ -23,12 +23,11 @@ import { useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
 import CrossPoles from './images/cross-poles.png'
 
+const exampleGpxFileUrl =
+  'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
+
 const EditRoute: React.FC = () => {
-  const exampleGpxFileUrl =
-    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
-
   const navigate = useNavigate()
-
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
       isSaveToLeave !== true && currentLocation.pathname !== nextLocation.pathname
