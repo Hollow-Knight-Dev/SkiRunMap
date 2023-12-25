@@ -1,6 +1,6 @@
-import Notification from '../../components/Header/notification.png'
-import BlueBird from '/images/bluebird.png'
-import SearchIcon from '/images/search-icon.png'
+import BlueBird from '../../images/bluebird.png'
+import Notification from '../../images/notification.png'
+import SearchIcon from '../../images/search-icon.png'
 
 const ImageCredit = () => {
   return (

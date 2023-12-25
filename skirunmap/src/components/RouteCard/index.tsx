@@ -5,9 +5,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import LikeDislike from '../LikeDislike'
-import View from './eye.png'
-import GooglePin from './google-maps-pin.png'
-import Tag from './tag.png'
+import View from './images/eye.png'
+import GooglePin from './images/google-maps-pin.png'
+import Tag from './images/tag.png'
 
 interface RouteCardDocData {
   data: DocumentData[]

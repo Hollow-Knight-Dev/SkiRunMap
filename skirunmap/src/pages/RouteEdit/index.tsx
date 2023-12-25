@@ -16,15 +16,14 @@ import Map from '../../components/Map'
 import Modal from '../../components/Modal'
 import ShowOrHideArrowSVG from '../../images/ShowOrHideArrowSVG'
 import UploadGpxFileSVG from '../../images/UploadGpxFileSVG'
+import MarkerIcon from '../../images/google-maps-pin.png'
 import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
 import { Route, Spot, useRouteStore, useSpotStore } from '../../store/useRoute'
 import { useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
-import CrossPoles from './cross-poles.png'
+import CrossPoles from './images/cross-poles.png'
 
 const EditRoute: React.FC = () => {
-  const markerIconUrl =
-    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
   const exampleGpxFileUrl =
     'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/Kutchan.gpx?alt=media&token=9f076f2c-291d-4f6b-b3d6-85b5417ed4f3'
 
@@ -268,7 +267,7 @@ const EditRoute: React.FC = () => {
         position: addedSpotCoordinate,
         map: map,
         icon: {
-          url: markerIconUrl,
+          url: MarkerIcon,
           scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,

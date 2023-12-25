@@ -2,9 +2,9 @@ import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../../auth/Firebase'
+import SearchIcon from '../../images/search-icon.png'
 import { RouteKeywords } from '../../store/useSearch'
 import showToast from '../../utils/showToast'
-import SearchIcon from '/images/search-icon.png'
 
 const SearchBar = () => {
   const navigate = useNavigate()

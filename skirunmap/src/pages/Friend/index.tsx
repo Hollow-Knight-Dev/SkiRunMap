@@ -12,9 +12,9 @@ import {
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/Firebase'
+import SkiIcon from '../../images/skiing-icon.png'
+import SnowboardIcon from '../../images/snowboarder-icon.png'
 import { useUserStore } from '../../store/useUser'
-import SkiIcon from './skiing-icon.png'
-import SnowboardIcon from './snowboarder-icon.png'
 
 interface UserSimpleData {
   userID: string

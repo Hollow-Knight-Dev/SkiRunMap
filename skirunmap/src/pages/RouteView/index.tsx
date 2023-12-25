@@ -19,24 +19,22 @@ import LikeDislike from '../../components/LikeDislike'
 import Map from '../../components/Map'
 import SearchBar from '../../components/SearchBar'
 import ShowOrHideArrowSVG from '../../images/ShowOrHideArrowSVG'
+import BookmarkIcon from '../../images/bookmark.png'
+import MarkerIcon from '../../images/google-maps-pin.png'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
-import BookmarkIcon from './bookmark.png'
-import GoogleMapPin from './google-maps-pin.png'
-import LatitudeIcon from './latitude.png'
-import LongitudeIcon from './longitude.png'
-import ShareIcon from './share-icon.png'
+import LatitudeIcon from './images/latitude.png'
+import LongitudeIcon from './images/longitude.png'
+import ShareIcon from './images/share-icon.png'
 
 interface VisibilityState {
   [spotIndex: number]: boolean
 }
 
 const RouteView = () => {
-  const markerIconUrl =
-    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
   const { id } = useParams<{ id: string }>()
   const { map, infoWindow, setInfoWindow } = useMapStore()
   const { userDoc, isSignIn } = useUserStore()
@@ -197,7 +195,7 @@ const RouteView = () => {
         position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
         map: map,
         icon: {
-          url: markerIconUrl,
+          url: MarkerIcon,
           scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,
@@ -530,7 +528,7 @@ const RouteView = () => {
                         onClick={() => toggleVisibility(index)}
                       >
                         <div className='mb-1 flex items-center gap-2'>
-                          <img className='h-6 w-auto' src={GoogleMapPin} alt='Map pin' />
+                          <img className='h-6 w-auto' src={MarkerIcon} alt='Map pin' />
                           <p className='w-fit pr-2 text-lg font-bold'>{spot.spotTitle}</p>
                         </div>
                         <ShowOrHideArrowSVG isShown={spotsVisibility[index]} />

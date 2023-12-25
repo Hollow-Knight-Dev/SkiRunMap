@@ -14,10 +14,10 @@ import { Route } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
-import ClickedDislikeArrow from './clicked-dislike-arrow.png'
-import ClickedLikeArrow from './clicked-like-arrow.png'
-import UnclickedDislikeArrow from './unclicked-dislike-arrow.png'
-import UnclickedLikeArrow from './unclicked-like-arrow.png'
+import ClickedDislikeArrow from './images/clicked-dislike-arrow.png'
+import ClickedLikeArrow from './images/clicked-like-arrow.png'
+import UnclickedDislikeArrow from './images/unclicked-dislike-arrow.png'
+import UnclickedLikeArrow from './images/unclicked-like-arrow.png'
 
 const LikeDislike: React.FC<DocumentData> = ({ data }) => {
   const routeID = data.routeID

@@ -2,9 +2,9 @@ import { Image } from '@nextui-org/react'
 import { getAuth, signOut } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Logo from '../../images/logo.png'
 import { useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
-import Logo from './logo.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
