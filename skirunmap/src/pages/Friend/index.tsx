@@ -12,9 +12,8 @@ import {
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../../auth/Firebase'
-import SkiIcon from '../../images/skiing-icon.png'
-import SnowboardIcon from '../../images/snowboarder-icon.png'
 import { useUserStore } from '../../store/useUser'
+import { NavItem } from './NavItem'
 
 interface UserSimpleData {
   userID: string
@@ -181,87 +180,27 @@ const Friends = () => {
     setFilter(filter)
   }
 
+  const navItemOptions = [
+    { navItemName: 'Following', img: 'ski' },
+    { navItemName: 'Followers', img: 'snowboard' },
+    { navItemName: 'Friends', img: 'ski' },
+    { navItemName: 'Friend Requests', img: 'snowboard' },
+    { navItemName: 'Sent Invitations', img: 'ski' }
+  ]
   return (
     <div className='h-screen-64px flex justify-center'>
       <div className='min-w-64 m-8 h-fit rounded-xl border border-zinc-200 p-4 shadow-[0px_0px_10px_-6px_#555555]'>
         <p className='mb-4 text-2xl font-bold'>User management</p>
         <div className='flex flex-col text-xl'>
-          {/* <p>Search user</p> */}
-          <div className='flex items-center gap-1 rounded-lg'>
-            {filter === 'Following' && (
-              <img src={SkiIcon} alt='ski icon' className='slide-icon h-5 w-5' />
-            )}
-            <p
-              className={`w-full cursor-pointer p-1 ${
-                filter === 'Following' && 'slide-nav-item font-bold'
-              }`}
-              onClick={() => {
-                handleFilter('Following')
-              }}
-            >
-              Following
-            </p>
-          </div>
-          <div className='flex items-center gap-1 rounded-lg'>
-            {filter === 'Followers' && (
-              <img src={SnowboardIcon} alt='ski icon' className='slide-icon h-5 w-5' />
-            )}
-            <p
-              className={`w-full cursor-pointer p-1 ${
-                filter === 'Followers' && 'slide-nav-item font-bold'
-              }`}
-              onClick={() => {
-                handleFilter('Followers')
-              }}
-            >
-              Followers
-            </p>
-          </div>
-          <div className='flex items-center gap-1 rounded-lg'>
-            {filter === 'Friends' && (
-              <img src={SkiIcon} alt='ski icon' className='slide-icon h-5 w-5' />
-            )}
-            <p
-              className={`w-full cursor-pointer p-1 ${
-                filter === 'Friends' && 'slide-nav-item font-bold'
-              }`}
-              onClick={() => {
-                handleFilter('Friends')
-              }}
-            >
-              Friends
-            </p>
-          </div>
-          <div className='flex items-center gap-1 rounded-lg'>
-            {filter === 'Friend Requests' && (
-              <img src={SnowboardIcon} alt='ski icon' className='slide-icon h-5 w-5' />
-            )}
-            <p
-              className={`w-full cursor-pointer p-1 ${
-                filter === 'Friend Requests' && 'slide-nav-item font-bold'
-              }`}
-              onClick={() => {
-                handleFilter('Friend Requests')
-              }}
-            >
-              Friend Requests
-            </p>
-          </div>
-          <div className='flex items-center gap-1 rounded-lg'>
-            {filter === 'Sent Invitations' && (
-              <img src={SkiIcon} alt='ski icon' className='slide-icon h-5 w-5' />
-            )}
-            <p
-              className={`w-full cursor-pointer p-1 ${
-                filter === 'Sent Invitations' && 'slide-nav-item font-bold'
-              }`}
-              onClick={() => {
-                handleFilter('Sent Invitations')
-              }}
-            >
-              Sent Invitations
-            </p>
-          </div>
+          {navItemOptions.map(({ navItemName, img }) => (
+            <NavItem
+              key={navItemName}
+              filter={filter}
+              navItemName={navItemName}
+              img={img}
+              onClick={() => handleFilter(navItemName)}
+            />
+          ))}
         </div>
       </div>
       <div className='m-8 flex w-[500px] flex-col pt-4'>
@@ -284,7 +223,7 @@ const Friends = () => {
                         <img
                           className='h-16 w-16 rounded-full object-cover'
                           src={user.userIconUrl}
-                          alt='Friend Profile Icon'
+                          alt='User Icon'
                         />
                       </Skeleton>
                       <p className='text-xl'>{user.username}</p>
@@ -312,7 +251,7 @@ const Friends = () => {
                         <img
                           className='h-16 w-16 rounded-full object-cover'
                           src={user.userIconUrl}
-                          alt='Friend Profile Icon'
+                          alt='User Icon'
                         />
                       </Skeleton>
                       <p className='text-xl'>{user.username}</p>
@@ -340,7 +279,7 @@ const Friends = () => {
                         <img
                           className='h-16 w-16 rounded-full object-cover'
                           src={user.userIconUrl}
-                          alt='Friend Profile Icon'
+                          alt='User Icon'
                         />
                       </Skeleton>
                       <p className='text-xl'>{user.username}</p>
@@ -368,7 +307,7 @@ const Friends = () => {
                         <img
                           className='h-16 w-16 rounded-full object-cover'
                           src={user.userIconUrl}
-                          alt='Friend Profile Icon'
+                          alt='User Icon'
                         />
                       </Skeleton>
                       <p className='text-xl'>{user.username}</p>
@@ -404,7 +343,7 @@ const Friends = () => {
                         <img
                           className='h-16 w-16 rounded-full object-cover'
                           src={user.userIconUrl}
-                          alt='Friend Profile Icon'
+                          alt='User Icon'
                         />
                       </Skeleton>
                       <p className='text-xl'>{user.username}</p>
