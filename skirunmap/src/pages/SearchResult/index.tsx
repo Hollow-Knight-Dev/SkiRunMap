@@ -10,9 +10,9 @@ import {
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { db } from '../../auth/Firebase'
-import FilterSVG from '../../components/FilterSVG'
 import HeroHeader from '../../components/HeroHeader'
 import RouteCard from '../../components/RouteCard'
+import FilterSVG from '../../images/FilterSVG'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { RouteKeywords } from '../../store/useSearch'
 

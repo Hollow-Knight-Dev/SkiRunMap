@@ -18,6 +18,7 @@ import { db } from '../../auth/Firebase'
 import LikeDislike from '../../components/LikeDislike'
 import Map from '../../components/Map'
 import SearchBar from '../../components/SearchBar'
+import ShowOrHideArrowSVG from '../../images/ShowOrHideArrowSVG'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
@@ -532,37 +533,7 @@ const RouteView = () => {
                           <img className='h-6 w-auto' src={GoogleMapPin} alt='Map pin' />
                           <p className='w-fit pr-2 text-lg font-bold'>{spot.spotTitle}</p>
                         </div>
-                        {spotsVisibility[index] ? (
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              d='M4.5 15.75l7.5-7.5 7.5 7.5'
-                            ></path>
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              d='M19 9l-7 7-7-7'
-                            ></path>
-                          </svg>
-                        )}
+                        <ShowOrHideArrowSVG isShown={spotsVisibility[index]} />
                         <div className='w-full border border-zinc-300' />
                       </div>
                       {spotsVisibility[index] && (
@@ -619,37 +590,7 @@ const RouteView = () => {
                     onClick={() => toggleCommentVisibility()}
                   >
                     <p className='text-lg font-bold'>Comment</p>
-                    {commentVisibility ? (
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth='1.5'
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M4.5 15.75l7.5-7.5 7.5 7.5'
-                        ></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth='1.5'
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M19 9l-7 7-7-7'
-                        ></path>
-                      </svg>
-                    )}
+                    <ShowOrHideArrowSVG isShown={commentVisibility} />
                     <div className='w-full border border-zinc-300' />
                   </div>
                   {commentVisibility && (

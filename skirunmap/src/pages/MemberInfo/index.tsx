@@ -3,6 +3,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db, storage } from '../../auth/Firebase'
+import UploadFileSVG from '../../images/UploadUserIconSVG'
 import { User, useUserStore } from '../../store/useUser'
 import showToast from '../../utils/showToast'
 
@@ -148,26 +149,11 @@ const MemberInfo = () => {
               src={userIconUrl}
               alt='User icon'
               className={`h-28 w-28 rounded-full object-cover shadow-[0px_0px_15px_-5px_#ffffff] duration-100 ${
-                isHoverOnIcon && 'opacity-70'
+                isHoverOnIcon && 'opacity-50'
               }`}
               onMouseEnter={() => setIsHoverOnIcon(true)}
             />
-            {isHoverOnIcon && (
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='1.5'
-                stroke='black'
-                className='absolute inset-1/2 z-10 h-8 w-8 -translate-x-1/2 -translate-y-1/2'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5'
-                />
-              </svg>
-            )}
+            {isHoverOnIcon && <UploadFileSVG />}
           </label>
           <input
             className='hidden'
