@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore'
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useRef, useState } from 'react'
-import { useBlocker, useNavigate } from 'react-router-dom'
+import { useBlocker, useLocation, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { db, storage } from '../../auth/Firebase'
 import Map from '../../components/Map'
@@ -28,6 +28,7 @@ const exampleGpxFileUrl =
 
 const EditRoute: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
       isSaveToLeave !== true && currentLocation.pathname !== nextLocation.pathname
@@ -64,12 +65,16 @@ const EditRoute: React.FC = () => {
     useMapStore()
   const [gpxFileName, setGpxFileName] = useState<string>('')
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
-  const [routeVisibility, setRouteVisibility] = useState<boolean>(false)
-  const [spotVisibility, setSpotVisibility] = useState<boolean>(false)
+  const [routeVisibility, setRouteVisibility] = useState<boolean>(true)
+  const [spotVisibility, setSpotVisibility] = useState<boolean>(true)
 
   useEffect(() => {
-    // Need to think a way to clear all redundent data
-    // handleInitialisingForm()
+    handleInitialisingForm()
+    const id = uuidv4()
+    setRouteID(id)
+  }, [location])
+
+  useEffect(() => {
     console.log('routeID:', routeID)
   }, [routeID])
 
@@ -79,13 +84,6 @@ const EditRoute: React.FC = () => {
       blocker.reset()
     }
   }, [isSaveToLeave, blocker])
-
-  useEffect(() => {
-    if (!routeID) {
-      const id = uuidv4()
-      setRouteID(id)
-    }
-  }, [])
 
   useEffect(() => {
     if (gpxUrl) {
