@@ -465,6 +465,13 @@ const RouteView = () => {
                   </p>
                 </div>
 
+                <div className='flex items-center gap-2'>
+                  <p className='text-lg font-bold'>Route description:</p>
+                  <p>
+                    {routeDocData.routeDescription ? `${routeDocData.routeDescription}` : 'None'}
+                  </p>
+                </div>
+
                 <div className='flex gap-2'>
                   <p className='w-1/2 text-lg font-bold'>Route start coordinate:</p>
                   <div className='flex w-1/2 flex-col justify-start gap-2'>

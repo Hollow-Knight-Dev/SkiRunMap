@@ -20,6 +20,7 @@ import MarkerIcon from '../../images/google-maps-pin.png'
 import { MarkerWithSpotId, useMapStore } from '../../store/useMap'
 import { Route, Spot, useRouteStore, useSpotStore } from '../../store/useRoute'
 import { useUserStore } from '../../store/useUser'
+import { useValidationStore } from '../../store/useValidation'
 import showToast from '../../utils/showToast'
 import CrossPoles from './images/cross-poles.png'
 
@@ -59,7 +60,7 @@ const EditRoute: React.FC = () => {
     isSaveToLeave,
     setIsSaveToLeave
   } = useRouteStore()
-  const { spots, addSpot, updateSpot, removeSpot, alterSpot } = useSpotStore()
+  const { spots, addSpot, updateSpot, removeSpot, alterSpot, setSpots } = useSpotStore()
   let latestSpotsRef = useRef(spots)
   const { map, markers, addMarker, updateMarker, infoWindow, setInfoWindow, removeMarker } =
     useMapStore()
@@ -67,6 +68,15 @@ const EditRoute: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
   const [routeVisibility, setRouteVisibility] = useState<boolean>(true)
   const [spotVisibility, setSpotVisibility] = useState<boolean>(true)
+  const { hasRouteTitleError, setHasRouteTitleError, hasSpotTitleError, setHasSpotTitleError } =
+    useValidationStore()
+  const [hasClickedSubmit, setHasClickedSubmit] = useState<boolean>(false)
+
+  useEffect(() => {
+    console.log('hasRouteTitleError:', hasRouteTitleError)
+    console.log('hasSpotTitleError:', hasSpotTitleError)
+    console.log('hasClickedSubmit:', hasClickedSubmit)
+  }, [hasRouteTitleError, hasSpotTitleError])
 
   useEffect(() => {
     handleInitialisingForm()
@@ -75,12 +85,12 @@ const EditRoute: React.FC = () => {
   }, [location])
 
   useEffect(() => {
-    console.log('routeID:', routeID)
+    // console.log('routeID:', routeID)
   }, [routeID])
 
   useEffect(() => {
-    console.log('isSaveToLeave:', isSaveToLeave)
-    console.log('blocker state', blocker)
+    // console.log('isSaveToLeave:', isSaveToLeave)
+    // console.log('blocker state', blocker)
     if (blocker.state === 'blocked' && isSaveToLeave) {
       blocker.reset()
     }
@@ -94,7 +104,24 @@ const EditRoute: React.FC = () => {
 
   useEffect(() => {
     latestSpotsRef.current = spots
+    let spotTitleCheckList: boolean[] = []
+    spots.forEach((spot) => {
+      if (spot.spotTitle) {
+        spotTitleCheckList.push(false)
+      } else {
+        spotTitleCheckList.push(true)
+      }
+    })
+    setHasSpotTitleError(spotTitleCheckList)
   }, [spots])
+
+  useEffect(() => {
+    if (routeTitle === '') {
+      setHasRouteTitleError(true)
+    } else {
+      setHasRouteTitleError(false)
+    }
+  }, [routeTitle])
 
   const toggleRouteVisibility = () => {
     setRouteVisibility((prevVisibility) => !prevVisibility)
@@ -187,7 +214,7 @@ const EditRoute: React.FC = () => {
       .then((url) => {
         setGpxUrl(url)
       })
-      .catch((error) => console.log('Failed to uplaod and download gpx file', error))
+      .catch((error) => console.log('Failed to uplaod and download GPX file', error))
   }
 
   const handleGpxFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -288,7 +315,7 @@ const EditRoute: React.FC = () => {
       marker.addListener('dragend', () => renewMarkerPosition(marker))
       marker.addListener('click', () => renewMarkerPosition(marker))
     } else {
-      showToast('warn', 'Please upload a gpx file first.')
+      showToast('warn', 'Please upload a GPX file to add new spot.')
     }
   }
 
@@ -398,6 +425,7 @@ const EditRoute: React.FC = () => {
         routeTitle: routeTitle,
         gpxUrl: gpxUrl,
         routeCoordinate: { lat: routeCoordinate.lat, lng: routeCoordinate.lng },
+        routeDescription: routeDescription,
         tags: tags,
         snowBuddies: buddies,
         spots: spots,
@@ -423,6 +451,17 @@ const EditRoute: React.FC = () => {
     }
   }
 
+  const handleSubmitValidation = () => {
+    if (gpxUrl === '') {
+      showToast('warn', 'Please upload a GPX file first.')
+    } else if (hasRouteTitleError || hasSpotTitleError.includes(true)) {
+      setHasClickedSubmit(true)
+      showToast('warn', 'Please complete all mandatory fields.')
+    } else {
+      handleSubmit()
+    }
+  }
+
   const handleSubmit = async () => {
     if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
       setIsSaveToLeave(true)
@@ -433,6 +472,7 @@ const EditRoute: React.FC = () => {
         routeTitle: routeTitle,
         gpxUrl: gpxUrl,
         routeCoordinate: { lat: routeCoordinate.lat, lng: routeCoordinate.lng },
+        routeDescription: routeDescription,
         tags: tags,
         snowBuddies: buddies,
         spots: spots,
@@ -478,8 +518,6 @@ const EditRoute: React.FC = () => {
       .catch((error): void => {
         console.error('Fail to delete route document in Storage', error)
       })
-
-    handleInitialisingForm()
   }
 
   const handleInitialisingForm = () => {
@@ -493,6 +531,7 @@ const EditRoute: React.FC = () => {
     setBuddies([])
     setBuddyInput('')
     setAccessRight(true)
+    setSpots([])
   }
 
   const handleExampleGpxUpload = () => {
@@ -622,15 +661,22 @@ const EditRoute: React.FC = () => {
 
             <div className={`mb-4 flex flex-col gap-4 ${!routeVisibility && 'hidden'}`}>
               <div className='flex flex-col'>
-                <label className='w-40 text-lg font-bold'>Route Title:</label>
+                <label className='w-40 text-lg font-bold'>Route Title: *</label>
                 <input
                   type='text'
                   value={routeTitle}
                   onChange={(event) => {
                     handleRouteTitle(event)
                   }}
-                  className='nice-shadow h-10 p-2'
+                  className={`nice-shadow h-10 p-2 ${
+                    hasRouteTitleError && hasClickedSubmit && 'border-2 border-red-400'
+                  }`}
                 />
+                {hasRouteTitleError && hasClickedSubmit && (
+                  <p className='w-full text-end text-sm text-red-400'>
+                    Please fill in route title.
+                  </p>
+                )}
               </div>
 
               <div className='flex flex-col'>
@@ -766,15 +812,22 @@ const EditRoute: React.FC = () => {
                   </div>
 
                   <div className='flex flex-col'>
-                    <label className='w-40 text-lg font-bold'>Spot Title:</label>
+                    <label className='w-40 text-lg font-bold'>Spot Title: *</label>
                     <input
                       type='text'
                       value={spot.spotTitle}
                       onChange={(event) => {
                         handleUpdateSpot(index, { ...spot, spotTitle: event.target.value })
                       }}
-                      className='nice-shadow h-10 p-2'
+                      className={`nice-shadow h-10 p-2 ${
+                        hasSpotTitleError[index] && hasClickedSubmit && 'border-2 border-red-400'
+                      }`}
                     />
+                    {hasSpotTitleError[index] && hasClickedSubmit && (
+                      <p className='w-full text-end text-sm text-red-400'>
+                        Please fill in spot title.
+                      </p>
+                    )}
                   </div>
 
                   <div className='flex flex-col'>
@@ -870,7 +923,7 @@ const EditRoute: React.FC = () => {
               ))}
 
               <div
-                className='nice-shadow mt-4 h-fit w-full cursor-pointer rounded-2xl bg-blue-500 pl-4 pr-4 text-center text-lg font-bold text-white'
+                className='nice-shadow mt-4 h-fit w-full cursor-pointer rounded-2xl bg-blue-500 pl-4 pr-4 text-center text-lg font-bold text-white hover:bg-blue-400'
                 onClick={() => handleAddSpot()}
               >
                 Add new spot
@@ -878,16 +931,16 @@ const EditRoute: React.FC = () => {
             </div>
           </div>
 
-          <div className='mt-8 flex justify-between'>
+          <div className='mt-8 flex justify-between pl-2 pr-2'>
             <div
-              className='button-shadow h-fit w-fit cursor-pointer rounded-3xl bg-blue-300 p-4 text-xl font-bold text-white hover:text-black'
+              className='button-shadow h-fit w-fit cursor-pointer rounded-3xl bg-blue-500 p-4 text-xl font-bold text-white hover:bg-blue-400'
               onClick={() => handleSaveDraft()}
             >
               Save draft
             </div>
             <div
-              className='button-shadow h-fit w-fit cursor-pointer rounded-3xl bg-blue-300 p-4 text-xl font-bold text-white hover:text-black'
-              onClick={() => handleSubmit()}
+              className='button-shadow h-fit w-fit cursor-pointer rounded-3xl bg-blue-500 p-4 text-xl font-bold text-white hover:bg-blue-400'
+              onClick={() => handleSubmitValidation()}
             >
               Submit route
             </div>
