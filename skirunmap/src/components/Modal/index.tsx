@@ -27,9 +27,9 @@ const Modal: React.FC<ModalProps> = ({
         <div className='mt-auto flex w-full flex-col items-center gap-2 text-lg'>
           <button
             className='w-full rounded-full bg-blue-100 p-1 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:bg-blue-200 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
-            onClick={onConfirm}
+            onClick={onCancel}
           >
-            {confirmButton}
+            {cancelButton}
           </button>
           {middleTitle && (
             <button
@@ -41,9 +41,9 @@ const Modal: React.FC<ModalProps> = ({
           )}
           <button
             className='w-full rounded-full bg-blue-100 p-1 shadow-[3px_5px_7px_-6px_#7e7e7e] duration-300 hover:bg-blue-200 hover:shadow-[10px_12px_10px_-12px_#7e7e7e]'
-            onClick={onCancel}
+            onClick={onConfirm}
           >
-            {cancelButton}
+            {confirmButton}
           </button>
         </div>
       </div>
