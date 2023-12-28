@@ -80,6 +80,7 @@ const EditRoute: React.FC = () => {
 
   useEffect(() => {
     console.log('isSaveToLeave:', isSaveToLeave)
+    console.log('blocker state', blocker)
     if (blocker.state === 'blocked' && isSaveToLeave) {
       blocker.reset()
     }
@@ -127,17 +128,17 @@ const EditRoute: React.FC = () => {
     }
   }
 
-  const handleTagInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTagInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const tagTempInput = event.target.value
-    if (tagTempInput.length <= 20) {
+    if (tagTempInput.length <= 30) {
       setTagInput(tagTempInput)
     } else {
-      setTagInput(tagTempInput.slice(0, 20))
-      showToast('warn', 'Tag exceeds 20 letters.')
+      setTagInput(tagTempInput.slice(0, 30))
+      showToast('warn', 'Tag exceeds 30 letters.')
     }
   }
 
-  const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleTagInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && tagInput.trim() !== '') {
       event.preventDefault()
       setTags([...tags, tagInput.trim()])
@@ -150,17 +151,17 @@ const EditRoute: React.FC = () => {
     setTags(newTags)
   }
 
-  const handleBuddyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleBuddyInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const buddyTempInput = event.target.value
-    if (buddyTempInput.length <= 50) {
+    if (buddyTempInput.length <= 30) {
       setBuddyInput(buddyTempInput)
     } else {
-      setBuddyInput(buddyTempInput.slice(0, 50))
-      showToast('warn', 'Buddy name exceeds 50 letters.')
+      setBuddyInput(buddyTempInput.slice(0, 30))
+      showToast('warn', 'Buddy name exceeds 30 letters.')
     }
   }
 
-  const handleBuddyInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleBuddyInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && buddyInput.trim() !== '') {
       event.preventDefault()
       setBuddies([...buddies, buddyInput.trim()])
@@ -529,6 +530,7 @@ const EditRoute: React.FC = () => {
             onConfirm={() => {
               handleClearAllInputs()
               blocker.proceed()
+              blocker.reset()
             }}
             middleTitle='Save draft'
             onMiddleOption={() => {
@@ -660,7 +662,7 @@ const EditRoute: React.FC = () => {
               <div className='flex flex-col'>
                 <label className='text-lg font-bold'>Route Description:</label>
                 <textarea
-                  className='nice-shadow h-fit w-full resize-none p-2'
+                  className='nice-shadow h-fit w-full p-2'
                   placeholder='Add route description'
                   value={routeDescription}
                   onChange={(event) => handleRouteDescription(event)}
@@ -686,7 +688,7 @@ const EditRoute: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <textarea
+                <input
                   className='nice-shadow h-10 w-full resize-none p-2'
                   placeholder='Press Enter to add tag ex. niseko, gondola, the-best-lift'
                   onChange={(event) => handleTagInput(event)}
@@ -709,7 +711,7 @@ const EditRoute: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <textarea
+                <input
                   className='nice-shadow h-10 w-full resize-none p-2'
                   placeholder='Press Enter to tag snow buddy with this route'
                   onChange={(event) => handleBuddyInput(event)}
