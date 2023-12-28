@@ -638,7 +638,7 @@ const EditRoute: React.FC = () => {
                   <p className='w-40 text-lg font-bold'>Route Coordinate:</p>
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <div className='ml-16 flex items-center'>
+                  <div className='flex max-w-full items-center self-end'>
                     <label className='w-28 text-lg'>Latitude:</label>
                     <input
                       type='number'
@@ -647,7 +647,7 @@ const EditRoute: React.FC = () => {
                       readOnly
                     />
                   </div>
-                  <div className='ml-16 flex items-center'>
+                  <div className='flex max-w-full items-center self-end'>
                     <label className='w-28 text-lg'>Longitude:</label>
                     <input
                       type='number'
@@ -783,7 +783,7 @@ const EditRoute: React.FC = () => {
                     </div>
 
                     <div className='flex flex-col gap-1'>
-                      <div className='ml-16 flex items-center'>
+                      <div className='flex max-w-full items-center self-end'>
                         <label className='w-28 text-lg'>Latitude:</label>
                         <input
                           type='number'
@@ -792,7 +792,7 @@ const EditRoute: React.FC = () => {
                           readOnly
                         />
                       </div>
-                      <div className='ml-16 flex items-center'>
+                      <div className='flex max-w-full items-center self-end'>
                         <label className='w-28 text-lg'>Longitude:</label>
                         <input
                           type='number'
