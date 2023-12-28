@@ -15,8 +15,8 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { db } from '../../auth/Firebase'
 import RouteCard from '../../components/RouteCard'
-import Bookmark from '../../images/bookmark.png'
 import ViewIcon from '../../images/eye.png'
+import SavedBookmark from '../../images/saved-bookmark.png'
 import SkiIcon from '../../images/skiing-icon.png'
 import SnowboardIcon from '../../images/snowboarder-icon.png'
 import { useRouteCardStore } from '../../store/useRouteCard'
@@ -409,7 +409,7 @@ const Member = () => {
                 userStoredLists.map((map, index) => (
                   <div key={index}>
                     <div className='mb-1 flex items-center gap-2'>
-                      <img src={Bookmark} alt='Bookmark icon' className='h-4 w-4' />
+                      <img src={SavedBookmark} alt='Bookmark icon' className='h-4 w-4' />
                       <p className='text-2xl font-bold'>{map.listName}</p>
                     </div>
                     <div className='flex w-full flex-col flex-wrap gap-4'>
