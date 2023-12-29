@@ -102,6 +102,11 @@ const SignIn: React.FC = () => {
     }
   }
 
+  const handleTestAccount = () => {
+    setUserEmail('legolas@gmail.com')
+    setUserPassword('123456')
+  }
+
   return (
     <div className='max-h-screen-contain-header bg-groomed-piste flex w-full flex-col items-center justify-center'>
       <div className='flex flex-col items-center gap-6'>
@@ -163,38 +168,46 @@ const SignIn: React.FC = () => {
           </div>
         </div>
 
-        {isSignUp ? (
-          <div className='mt-4 flex flex-col items-center'>
-            <div
-              className='mb-2 flex cursor-pointer gap-2 font-bold'
-              onClick={() => setIsSignUp(false)}
-            >
-              Already have an account?
+        <div className='flex flex-col items-center gap-4'>
+          {isSignUp ? (
+            <div className='mt-4 flex flex-col items-center'>
+              <div
+                className='mb-2 flex cursor-pointer gap-2 font-bold'
+                onClick={() => setIsSignUp(false)}
+              >
+                Already have an account?
+              </div>
+              <button
+                className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
+                onClick={() => handleSignUp()}
+              >
+                Sign Up
+              </button>
             </div>
-            <button
-              className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
-              onClick={() => handleSignUp()}
-            >
-              Sign Up
-            </button>
-          </div>
-        ) : (
-          <div className='mt-4 flex flex-col items-center'>
-            <div
-              className='mb-2 flex cursor-pointer gap-2 font-bold'
-              onClick={() => setIsSignUp(true)}
-            >
-              <p>Don't have an account?</p>
-              <p className='underline'>Sign up for free</p>
+          ) : (
+            <div className='mt-4 flex flex-col items-center'>
+              <div
+                className='mb-2 flex cursor-pointer gap-2 font-bold'
+                onClick={() => setIsSignUp(true)}
+              >
+                <p>Don't have an account?</p>
+                <p className='underline'>Sign up for free</p>
+              </div>
+              <button
+                className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
+                onClick={() => handleSignIn()}
+              >
+                Sign In
+              </button>
             </div>
-            <button
-              className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
-              onClick={() => handleSignIn()}
-            >
-              Sign In
-            </button>
-          </div>
-        )}
+          )}
+          <button
+            className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
+            onClick={() => handleTestAccount()}
+          >
+            Use test account
+          </button>
+        </div>
       </div>
     </div>
   )
