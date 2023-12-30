@@ -324,12 +324,17 @@ const RouteView = () => {
 
   const handleCommentSubmit = async () => {
     if (id && isSignIn) {
+      if (commentInput.trim() === '') {
+        showToast('warn', 'Comment cannot be empty.')
+        return
+      }
+
       const routeRef = doc(db, 'routes', id)
       const newComment = {
         userID: userDoc.userID,
         username: userDoc.username,
         userIconUrl: userDoc.userIconUrl,
-        comment: commentInput,
+        comment: commentInput.trim(),
         commentTimestamp: serverTimestamp()
       }
       await addDoc(collection(routeRef, 'comments'), newComment)
@@ -337,12 +342,6 @@ const RouteView = () => {
       setCommentInput('')
     } else {
       showToast('warn', 'Sign in to leave your comment.')
-    }
-  }
-
-  const handleCommentEnterSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && commentInput.trim() !== '') {
-      handleCommentSubmit()
     }
   }
 
@@ -590,7 +589,6 @@ const RouteView = () => {
                         value={commentInput}
                         placeholder='Comment on this route'
                         onChange={(e) => handleCommentInput(e)}
-                        onKeyDown={(e) => handleCommentEnterSubmit(e)}
                       />
                       <button
                         className='mb-6 self-end rounded-xl bg-blue-300 pl-2 pr-2 font-bold'
