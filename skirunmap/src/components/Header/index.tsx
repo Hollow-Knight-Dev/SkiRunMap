@@ -22,10 +22,10 @@ const Header: React.FC = () => {
   }
 
   const handleSignOut = async () => {
-    navigate('/')
-    await signOut(auth)
+    navigate('/signin')
     setIsSignIn(false)
     setIsLoadedUserDoc(false)
+    await signOut(auth)
     handleItemLeave()
     showToast('success', 'Sign out successed!')
   }

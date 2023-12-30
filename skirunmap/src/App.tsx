@@ -56,7 +56,6 @@ const App: React.FC = () => {
         setUserDoc(userDocData)
         setIsLoadedUserDoc(true)
         setIsLoadedPage(true)
-        console.log('App.tsx userDoc has been updated: ', userDocData)
       } else {
         setIsSignIn(false)
         setUserID('')

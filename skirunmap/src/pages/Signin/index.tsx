@@ -13,10 +13,12 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const auth = getAuth()
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
-  const { userID, setUserID, userEmail, setUserEmail, userPassword, setUserPassword } =
-    useUserStore()
+  const { setUserID, userEmail, setUserEmail, userPassword, setUserPassword } = useUserStore()
 
-  useEffect(() => {}, [userID])
+  useEffect(() => {
+    setUserEmail('')
+    setUserPassword('')
+  }, [])
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
@@ -86,9 +88,9 @@ const SignIn: React.FC = () => {
     }
   }
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword)
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const userID = userCredential.user.uid
       const userDoc = await getDoc(doc(db, 'users', userID))
 
@@ -105,6 +107,11 @@ const SignIn: React.FC = () => {
   const handleTestAccount = () => {
     setUserEmail('legolas@gmail.com')
     setUserPassword('123456')
+    showToast('info', 'Signing in with test account...')
+
+    setTimeout(() => {
+      handleSignIn('legolas@gmail.com', '123456')
+    }, 1000)
   }
 
   return (
@@ -195,7 +202,7 @@ const SignIn: React.FC = () => {
               </div>
               <button
                 className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
-                onClick={() => handleSignIn()}
+                onClick={() => handleSignIn(userEmail, userPassword)}
               >
                 Sign In
               </button>
