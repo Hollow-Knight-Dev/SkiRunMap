@@ -1,6 +1,6 @@
 import { Image } from '@nextui-org/react'
 import { getAuth, signOut } from 'firebase/auth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../images/logo.png'
 import { useUserStore } from '../../store/useUser'
@@ -22,15 +22,13 @@ const Header: React.FC = () => {
   }
 
   const handleSignOut = async () => {
-    navigate('/signin')
     setIsSignIn(false)
     setIsLoadedUserDoc(false)
+    navigate('/signin')
     await signOut(auth)
     handleItemLeave()
-    showToast('success', 'Sign out successed!')
+    showToast('success', 'Sign out.')
   }
-
-  useEffect(() => {}, [userDoc])
 
   return (
     <div className='flex justify-between bg-white pl-5 pr-5 shadow-[3px_3px_7px_-6px_#7e7e7e]'>

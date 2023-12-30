@@ -43,21 +43,35 @@ const router = createBrowserRouter(
 )
 
 const App: React.FC = () => {
-  const { isSignIn, setIsSignIn, setUserID, setUserDoc, setIsLoadedUserDoc, setIsLoadedPage } =
-    useUserStore()
+  const {
+    isSignIn,
+    setIsSignIn,
+    setUserID,
+    setUserDoc,
+    isLoadedUserDoc,
+    setIsLoadedUserDoc,
+    setIsLoadedPage
+  } = useUserStore()
+
   const auth = getAuth()
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setIsSignIn(!!user)
+
       if (user) {
-        setIsSignIn(true)
         setUserID(user.uid)
-        const userDoc = await getDoc(doc(db, 'users', user.uid))
-        const userDocData = userDoc.data() as User
-        setUserDoc(userDocData)
-        setIsLoadedUserDoc(true)
-        setIsLoadedPage(true)
+
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid))
+          const userDocData = userDoc.data() as User
+          setUserDoc(userDocData)
+          setIsLoadedUserDoc(true)
+          setIsLoadedPage(true)
+        } catch (error) {
+          console.error('Error fetching user document with onAuthStateChanged:', error)
+        }
       } else {
-        setIsSignIn(false)
         setUserID('')
         setIsLoadedUserDoc(false)
         setUserDoc({} as User)
@@ -66,7 +80,7 @@ const App: React.FC = () => {
     })
 
     return () => unsubscribe()
-  }, [isSignIn, setUserID])
+  }, [isSignIn, isLoadedUserDoc])
 
   return <RouterProvider router={router} />
 }

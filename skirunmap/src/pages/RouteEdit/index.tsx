@@ -73,20 +73,10 @@ const EditRoute: React.FC = () => {
   const [hasClickedSubmit, setHasClickedSubmit] = useState<boolean>(false)
 
   useEffect(() => {
-    console.log('hasRouteTitleError:', hasRouteTitleError)
-    console.log('hasSpotTitleError:', hasSpotTitleError)
-    console.log('hasClickedSubmit:', hasClickedSubmit)
-  }, [hasRouteTitleError, hasSpotTitleError])
-
-  useEffect(() => {
     handleInitialisingForm()
     const id = uuidv4()
     setRouteID(id)
   }, [location])
-
-  useEffect(() => {
-    // console.log('routeID:', routeID)
-  }, [routeID])
 
   useEffect(() => {
     // console.log('isSaveToLeave:', isSaveToLeave)
