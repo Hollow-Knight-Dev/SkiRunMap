@@ -2,10 +2,10 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { db, storage } from '../../auth/CloudStorage'
+import { db, storage } from '../../auth/Firebase'
+import UploadFileSVG from '../../images/UploadUserIconSVG'
 import { User, useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
 
 const MemberInfo = () => {
   const navigate = useNavigate()
@@ -46,7 +46,6 @@ const MemberInfo = () => {
 
   useEffect(() => {
     if (isUpdated) {
-      // console.log('After updating member info userDoc:', userDoc)
       navigate(`/member/${userID}`)
     }
   }, [userDoc, isUpdated])
@@ -75,11 +74,8 @@ const MemberInfo = () => {
       if (file.name) {
         uploadAndDownloadIcon(file, userID)
       } else {
-        alert('Invalid file type. Please upload an image.')
+        showToast('warn', 'Invalid file type. Please upload jpeg, png, svg, or gif.')
       }
-    } else {
-      alert('Please select an image.')
-      return
     }
   }
 
@@ -131,28 +127,9 @@ const MemberInfo = () => {
       const userDocData = userDoc.data() as User
       setUserDoc(userDocData)
       setIsUpdated(true)
-
-      toast.success('Updated personal info!', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Personal info updated!')
     } else {
-      toast.warn('Username cannot be empty', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Username cannot be empty.')
     }
   }
 
@@ -169,33 +146,18 @@ const MemberInfo = () => {
               src={userIconUrl}
               alt='User icon'
               className={`h-28 w-28 rounded-full object-cover shadow-[0px_0px_15px_-5px_#ffffff] duration-100 ${
-                isHoverOnIcon && 'opacity-70'
+                isHoverOnIcon && 'opacity-50'
               }`}
               onMouseEnter={() => setIsHoverOnIcon(true)}
             />
-            {isHoverOnIcon && (
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='1.5'
-                stroke='black'
-                className='absolute inset-1/2 z-10 h-8 w-8 -translate-x-1/2 -translate-y-1/2'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5'
-                />
-              </svg>
-            )}
+            {isHoverOnIcon && <UploadFileSVG />}
           </label>
           <input
             className='hidden'
             type='file'
             id='userIcon'
             onChange={(e) => handleUserIcon(e)}
-            accept='image/jpeg, image/png, image/svg+xml'
+            accept='image/jpeg, image/png, image/svg+xml, image/gif'
           />
         </div>
 
@@ -267,70 +229,6 @@ const MemberInfo = () => {
             />
           </div>
         </div>
-
-        {/* <div className='mb-8 flex w-5/6 flex-col items-center gap-8'>
-          <div className='flex w-full flex-col gap-2'>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Username</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={username}
-                onChange={(e) => handleUsername(e)}
-              />
-            </div>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Ski age</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={userSkiAge}
-                onChange={(e) => handleSkiAge(e)}
-              />
-            </div>
-          </div>
-
-          <div className='nice-shadow flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-            <label className='w-48'>Snowboard age</label>
-            <input
-              className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
-              type='text'
-              value={userSnowboardAge}
-              onChange={(e) => handleSnowboardAge(e)}
-            />
-          </div>
-
-          <div className='flex w-full flex-col gap-2'>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Country</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={userCountry}
-                onChange={(e) => handleCountry(e)}
-              />
-            </div>
-            <div className='nice-shadow flex h-fit items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-              <label className='w-48'>Gender</label>
-              <input
-                className='h-6 w-3/5 rounded-full bg-blue-500 pl-4'
-                type='text'
-                value={userGender}
-                onChange={(e) => handleGender(e)}
-              />
-            </div>
-          </div>
-
-          <div className='nice-shadow flex h-fit w-full items-center justify-center rounded-full bg-blue-600 p-1 pl-4 text-lg text-white'>
-            <label className='w-48'>About me</label>
-            <input
-              className='mb-1 mt-1 h-12 w-3/5 rounded-full bg-blue-500 pl-4'
-              type='text'
-              value={userDescription}
-              onChange={(e) => handleDescription(e)}
-            />
-          </div>
-        </div> */}
       </div>
       <div className='mt-12 flex gap-8'>
         <button

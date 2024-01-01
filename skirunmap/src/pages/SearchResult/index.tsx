@@ -9,10 +9,10 @@ import {
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { db } from '../../auth/CloudStorage'
-import FilterSVG from '../../components/FilterSVG'
+import { db } from '../../auth/Firebase'
 import HeroHeader from '../../components/HeroHeader'
 import RouteCard from '../../components/RouteCard'
+import FilterSVG from '../../images/FilterSVG'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { RouteKeywords } from '../../store/useSearch'
 

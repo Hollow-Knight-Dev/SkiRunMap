@@ -13,23 +13,23 @@ import {
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import RouteCard from '../../components/RouteCard'
+import ViewIcon from '../../images/eye.png'
+import SavedBookmark from '../../images/saved-bookmark.png'
+import SkiIcon from '../../images/skiing-icon.png'
+import SnowboardIcon from '../../images/snowboarder-icon.png'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { User, useUserStore } from '../../store/useUser'
-import AboutMeIcon from './about-me-icon.png'
-import Bookmark from './bookmark.png'
-import CalenderIcon from './calendar-icon.png'
-import CountryIcon from './country-icon.png'
-import EditIcon from './edit.png'
-import ViewIcon from './eye.png'
-import FollowerIcon from './follower-icon.png'
-import FriendIcon from './friend-icon.png'
-import GenderIcon from './gender-icon.png'
-import RouteIcon from './route-icon.png'
-import SkiIcon from './skiing-icon.png'
-import SnowboardIcon from './snowboarder-icon.png'
+import { formatTimestamp } from '../../utils/formatTimestamp'
+import AboutMeIcon from './images/about-me-icon.png'
+import CalenderIcon from './images/calendar-icon.png'
+import CountryIcon from './images/country-icon.png'
+import EditIcon from './images/edit.png'
+import FollowerIcon from './images/follower-icon.png'
+import FriendIcon from './images/friend-icon.png'
+import GenderIcon from './images/gender-icon.png'
+import RouteIcon from './images/route-icon.png'
 
 interface RouteDocsInList {
   listName: string
@@ -52,64 +52,10 @@ const Member = () => {
   useEffect(() => {
     if (isLoadedUserDoc && userDoc.userID === memberID) {
       setIsMyself(true)
-      // console.log('userDoc.userID', userDoc.userID)
-      // console.log('memberID', memberID)
     } else {
       setIsMyself(false)
-      // console.log('2userDoc.userID', userDoc.userID)
-      // console.log('2memberID', memberID)
     }
   }, [userDoc])
-
-  const formatTimestamp = (timestamp: Timestamp) => {
-    const time = timestamp
-      .toDate()
-      .toLocaleDateString('en-UK', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour12: false,
-        hour: 'numeric',
-        minute: 'numeric'
-      })
-      .replace(',', ' at')
-
-    return time
-  }
-
-  // const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   if (isLoadedPage && !isSignIn) {
-  //     toast.warn('Please sign in to view your page', {
-  //       position: 'top-right',
-  //       autoClose: 1000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: false,
-  //       draggable: false,
-  //       progress: undefined,
-  //       theme: 'light',
-  //       onClose: () => {
-  //         navigate('/signin')
-  //       }
-  //     })
-  //   } else if (isLoadedUserDoc && userDoc.username === undefined) {
-  //     toast.warn("You haven't finish your profile", {
-  //       position: 'top-right',
-  //       autoClose: 1000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: false,
-  //       draggable: false,
-  //       progress: undefined,
-  //       theme: 'light',
-  //       onClose: () => {
-  //         navigate('/member-info')
-  //       }
-  //     })
-  //   }
-  // }, [userDoc])
 
   const getMemberDoc = async () => {
     if (memberID) {
@@ -160,9 +106,7 @@ const Member = () => {
       let routeLists: RouteDocsInList[] = []
       await Promise.all(
         storeRoutes.map(async (map) => {
-          // console.log(map)
           if (map.routeIDs.length > 0) {
-            // console.log('map.routeIDs', map.routeIDs)
             const routesQuery = query(
               collection(db, 'routes'),
               where('routeID', 'in', map.routeIDs)
@@ -182,7 +126,6 @@ const Member = () => {
         })
       )
       setUserStoredLists(routeLists)
-      // console.log(routeLists)
     }
   }
 
@@ -466,7 +409,7 @@ const Member = () => {
                 userStoredLists.map((map, index) => (
                   <div key={index}>
                     <div className='mb-1 flex items-center gap-2'>
-                      <img src={Bookmark} alt='Bookmark icon' className='h-4 w-4' />
+                      <img src={SavedBookmark} alt='Bookmark icon' className='h-4 w-4' />
                       <p className='text-2xl font-bold'>{map.listName}</p>
                     </div>
                     <div className='flex w-full flex-col flex-wrap gap-4'>

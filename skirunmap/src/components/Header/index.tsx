@@ -1,10 +1,10 @@
 import { Image } from '@nextui-org/react'
 import { getAuth, signOut } from 'firebase/auth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import Logo from '../../images/logo.png'
 import { useUserStore } from '../../store/useUser'
-import Logo from './logo.png'
+import showToast from '../../utils/showToast'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -22,28 +22,13 @@ const Header: React.FC = () => {
   }
 
   const handleSignOut = async () => {
-    navigate('/')
-    await signOut(auth)
     setIsSignIn(false)
     setIsLoadedUserDoc(false)
+    navigate('/signin')
+    await signOut(auth)
     handleItemLeave()
-    toast.success('Sign out successed!', {
-      position: 'top-right',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light'
-    })
+    showToast('success', 'Sign out.')
   }
-
-  useEffect(() => {}, [userDoc])
-
-  // useEffect(() => {
-  //   console.log('Header hoveredItem: ', hoveredItem)
-  // }, [hoveredItem])
 
   return (
     <div className='flex justify-between bg-white pl-5 pr-5 shadow-[3px_3px_7px_-6px_#7e7e7e]'>
@@ -67,29 +52,10 @@ const Header: React.FC = () => {
                 items={[
                   { name: 'Create New Route', url: '/edit-route' },
                   { name: 'My Route', url: `/member/${userDoc?.userID}` }
-                  // { name: 'My Draft Route', url: `/member/${userDoc.userID}` },
-                  // { name: 'Followed User Routes', url: '/' },
-                  // { name: 'Friend Routes', url: '/' }
                 ]}
               />
             )}
           </div>
-          {/* <div className='h-full' onMouseLeave={handleItemLeave}>
-            <NavItem
-              name='Explore'
-              url='/'
-              isHovered={hoveredItem === 'Explore'}
-              onMouseEnter={() => handleItemHover('Explore')}
-            />
-            {hoveredItem === 'Explore' && (
-              <SubNavItem
-                items={[
-                  { name: 'Niseko Ski Resort', url: '/' },
-                  { name: 'Popular Users', url: '/' }
-                ]}
-              />
-            )}
-          </div> */}
         </div>
       </div>
       <div className='relative flex items-center'>
@@ -132,12 +98,6 @@ const Header: React.FC = () => {
               >
                 Sign out
               </button>
-              {/* <Link
-                to='/notification'
-                className='bg-grey-700 w-full rounded-md pl-2 pr-2 hover:bg-zinc-100'
-              >
-                Notification
-              </Link> */}
             </div>
           )}
         </div>

@@ -2,25 +2,23 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import { User, useUserStore } from '../../store/useUser'
+import showToast from '../../utils/showToast'
+
+const defaultUserIconUrl =
+  'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777'
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const auth = getAuth()
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
-  const { userID, setUserID, userEmail, setUserEmail, userPassword, setUserPassword } =
-    useUserStore()
+  const { setUserID, userEmail, setUserEmail, userPassword, setUserPassword } = useUserStore()
 
   useEffect(() => {
-    if (userID) {
-      // console.log('sign in userID:', userID)
-    }
-  }, [userID])
-
-  // useEffect(() => {}, [navigate])
+    setUserEmail('')
+    setUserPassword('')
+  }, [])
 
   const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim()
@@ -37,16 +35,7 @@ const SignIn: React.FC = () => {
     if (regex.test(email)) {
       return true
     } else {
-      toast.warn(`Email format error`, {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Please enter correct email format.')
       return false
     }
   }
@@ -57,15 +46,13 @@ const SignIn: React.FC = () => {
         .then(async (userCredential) => {
           const userID = userCredential.user.uid
           setUserID(userID)
-          // console.log(userID)
 
           const data: User = {
             userID: userID,
             userEmail: userEmail,
             userJoinedTime: serverTimestamp(),
             username: '',
-            userIconUrl:
-              'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/default-user-icon.png?alt=media&token=d4a1a132-603a-4e91-9adf-2623dda20777',
+            userIconUrl: defaultUserIconUrl,
             userSkiAge: '',
             userSnowboardAge: '',
             userCountry: '',
@@ -84,28 +71,8 @@ const SignIn: React.FC = () => {
           await setDoc(doc(db, 'users', userID), data)
 
           signInWithEmailAndPassword(auth, userEmail, userPassword)
-          // .then((userCredential) => {
-          //   // const userID = userCredential.user.uid
-          //   // console.log(userID)
-          //   // setUserID(userID)
-          //   // setIsSignIn(true)
-          // })
-          // .catch((error) => {
-          //   console.log(error.code, ': ', error.message)
-          // })
-
-          toast.success('Sign up successed!', {
-            position: 'top-right',
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: 'light',
-            onClose: () => {
-              navigate('/member-info')
-            }
+          showToast('success', 'Sign up successed!', () => {
+            navigate('/member-info')
           })
         })
         .catch((error) => {
@@ -113,79 +80,40 @@ const SignIn: React.FC = () => {
           console.error(error)
 
           if (error.code === 'auth/email-already-in-use') {
-            toast.warn(`Email has been signed up`, {
-              position: 'top-right',
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: 'light'
-            })
+            showToast('warn', 'Email has been signed up.')
           } else if (error.code === 'auth/weak-password') {
-            toast.warn(`Please use stronger password (at least 6 characters)`, {
-              position: 'top-right',
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: 'light'
-            })
+            showToast('warn', 'Please use stronger password (at least 6 characters)')
           }
         })
     }
   }
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword)
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const userID = userCredential.user.uid
-      console.log('signin page:', userID)
-
       const userDoc = await getDoc(doc(db, 'users', userID))
-      // // console.log(userDoc.data()?.userFinishedInfo)
 
       if (userDoc.data()?.userFinishedInfo) {
-        toast.success(`Welcome back, ${userDoc.data()?.username}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `Welcome back, ${userDoc.data()?.username}`)
       } else {
-        toast.warn(`You haven't finish your profile`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', "You haven't finish your profile.")
       }
     } catch (error) {
-      console.error(error)
-      toast.warn(`Incorrect email or password`, {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Incorrect email or password')
     }
   }
-  // max-h-screen-contain-header
+
+  const handleTestAccount = () => {
+    setUserEmail('legolas@gmail.com')
+    setUserPassword('123456')
+    showToast('info', 'Signing in with test account...')
+
+    setTimeout(() => {
+      handleSignIn('legolas@gmail.com', '123456')
+    }, 1000)
+  }
+
   return (
     <div className='max-h-screen-contain-header bg-groomed-piste flex w-full flex-col items-center justify-center'>
       <div className='flex flex-col items-center gap-6'>
@@ -247,38 +175,46 @@ const SignIn: React.FC = () => {
           </div>
         </div>
 
-        {isSignUp ? (
-          <div className='mt-4 flex flex-col items-center'>
-            <div
-              className='mb-2 flex cursor-pointer gap-2 font-bold'
-              onClick={() => setIsSignUp(false)}
-            >
-              Already have an account?
+        <div className='flex flex-col items-center gap-4'>
+          {isSignUp ? (
+            <div className='mt-4 flex flex-col items-center'>
+              <div
+                className='mb-2 flex cursor-pointer gap-2 font-bold'
+                onClick={() => setIsSignUp(false)}
+              >
+                Already have an account?
+              </div>
+              <button
+                className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
+                onClick={() => handleSignUp()}
+              >
+                Sign Up
+              </button>
             </div>
-            <button
-              className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
-              onClick={() => handleSignUp()}
-            >
-              Sign Up
-            </button>
-          </div>
-        ) : (
-          <div className='mt-4 flex flex-col items-center'>
-            <div
-              className='mb-2 flex cursor-pointer gap-2 font-bold'
-              onClick={() => setIsSignUp(true)}
-            >
-              <p>Don't have an account?</p>
-              <p className='underline'>Sign up for free</p>
+          ) : (
+            <div className='mt-4 flex flex-col items-center'>
+              <div
+                className='mb-2 flex cursor-pointer gap-2 font-bold'
+                onClick={() => setIsSignUp(true)}
+              >
+                <p>Don't have an account?</p>
+                <p className='underline'>Sign up for free</p>
+              </div>
+              <button
+                className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
+                onClick={() => handleSignIn(userEmail, userPassword)}
+              >
+                Sign In
+              </button>
             </div>
-            <button
-              className='h-fit w-fit rounded-full bg-zinc-600 p-4 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
-              onClick={() => handleSignIn()}
-            >
-              Sign In
-            </button>
-          </div>
-        )}
+          )}
+          <button
+            className='h-fit w-fit rounded-full bg-zinc-600 pb-1 pl-4 pr-4 pt-1 text-xl font-bold text-white transition-transform hover:scale-105 hover:bg-black'
+            onClick={() => handleTestAccount()}
+          >
+            Use test account
+          </button>
+        </div>
       </div>
     </div>
   )

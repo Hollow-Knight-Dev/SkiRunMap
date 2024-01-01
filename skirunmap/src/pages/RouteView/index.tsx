@@ -14,29 +14,28 @@ import {
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { db } from '../../auth/CloudStorage'
+import { db } from '../../auth/Firebase'
 import LikeDislike from '../../components/LikeDislike'
 import Map from '../../components/Map'
 import SearchBar from '../../components/SearchBar'
+import ShowOrHideArrowSVG from '../../images/ShowOrHideArrowSVG'
+import BookmarkIcon from '../../images/bookmark.png'
+import MarkerIcon from '../../images/google-maps-pin.png'
 import { useMapStore } from '../../store/useMap'
 import { Comment, Route, Spot } from '../../store/useRoute'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { StoreRouteLists, User, useUserStore } from '../../store/useUser'
-import BookmarkIcon from './bookmark.png'
-import GoogleMapPin from './google-maps-pin.png'
-import LatitudeIcon from './latitude.png'
-import LongitudeIcon from './longitude.png'
-import ShareIcon from './share-icon.png'
+import { formatTimestamp } from '../../utils/formatTimestamp'
+import showToast from '../../utils/showToast'
+import LatitudeIcon from './images/latitude.png'
+import LongitudeIcon from './images/longitude.png'
+import ShareIcon from './images/share-icon.png'
 
 interface VisibilityState {
   [spotIndex: number]: boolean
 }
 
 const RouteView = () => {
-  const markerIconUrl =
-    'https://firebasestorage.googleapis.com/v0/b/skirunmap.appspot.com/o/google-maps-pin.png?alt=media&token=7675e200-8ab9-4c4c-b98d-12cc7c100dd0'
   const { id } = useParams<{ id: string }>()
   const { map, infoWindow, setInfoWindow } = useMapStore()
   const { userDoc, isSignIn } = useUserStore()
@@ -63,22 +62,6 @@ const RouteView = () => {
   const [commentVisibility, setCommentVisibility] = useState<boolean>(true)
   const toggleCommentVisibility = () => {
     setCommentVisibility((prev) => !prev)
-  }
-
-  const formatTimestamp = (timestamp: Timestamp) => {
-    const time = timestamp
-      .toDate()
-      .toLocaleDateString('en-UK', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour12: false,
-        hour: 'numeric',
-        minute: 'numeric'
-      })
-      .replace(',', ' at')
-
-    return time
   }
 
   const addViewCount = async (id: string) => {
@@ -129,21 +112,6 @@ const RouteView = () => {
     }
   }, [userDoc])
 
-  // useEffect(() => {
-  //   if (userDoc && routeDocData) {
-  //     if (routeDocData?.likeUsers.includes(userDoc.userID)) {
-  //       setIsLike(true)
-  //     } else {
-  //       setIsLike(false)
-  //     }
-  //     if (routeDocData?.dislikeUsers.includes(userDoc.userID)) {
-  //       setIsDislike(true)
-  //     } else {
-  //       setIsDislike(false)
-  //     }
-  //   }
-  // }, [routeDocData, userDoc])
-
   useEffect(() => {
     const initialLikeRouteCard: { [routeID: string]: boolean } = {}
     const initialDislikeRouteCard: { [routeID: string]: boolean } = {}
@@ -175,7 +143,6 @@ const RouteView = () => {
         .filter((list) => list.routeIDs.includes(id))
         .map((list) => list.listName)
       setSelectedLists(initialiseSelectedLists)
-      // console.log('selectedLists:', selectedLists)
     }
   }, [userDocData])
 
@@ -189,7 +156,6 @@ const RouteView = () => {
         snapshot.docs.map((doc) => {
           updatedComments.push(doc.data() as Comment)
         })
-        // console.log('comments:', updatedComments)
         setCommentsDocData(updatedComments)
       })
     }
@@ -208,19 +174,13 @@ const RouteView = () => {
     updateAuthorIconUrl()
   }, [routeDocData])
 
-  // useEffect(() => {
-  //   if (commentsDocData) {
-  //     console.log('commentsDocData:', commentsDocData)
-  //   }
-  // }, [commentsDocData])
-
   const markSpots = (spots: Spot[]) => {
     spots.forEach((spot) => {
       const marker = new google.maps.Marker({
         position: { lat: spot.spotCoordinate.lat, lng: spot.spotCoordinate.lng },
         map: map,
         icon: {
-          url: markerIconUrl,
+          url: MarkerIcon,
           scaledSize: new google.maps.Size(36, 36)
         },
         animation: google.maps.Animation.DROP,
@@ -284,16 +244,7 @@ const RouteView = () => {
   const handleShareLink = () => {
     const pageUrl = window.location.href
     navigator.clipboard.writeText(pageUrl).then(() => {
-      toast.success('Copied!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Copied route link!')
     })
   }
 
@@ -301,16 +252,7 @@ const RouteView = () => {
     if (isSignIn) {
       setIsOpeningBookmark((prev) => !prev)
     } else {
-      toast.warn('Sign in to save this route', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Sign in to save this route.')
     }
   }
 
@@ -325,50 +267,20 @@ const RouteView = () => {
 
   const handleCreateList = async () => {
     if (createListName.trim() === '') {
-      toast.warn('List name cannot be empty', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'List name cannot be empty.')
     } else if (id && isSignIn && userDocData) {
       const userRef = doc(db, 'users', userDoc.userID)
       const userListData = userDocData.userRouteLists
-      // console.log(userListData)
-
       const hasListName = userListData.some((item) => item.listName === createListName)
-      // console.log(hasListName)
 
       if (!hasListName) {
         setIsCreatingList(false)
         const data: StoreRouteLists = { listName: createListName, routeIDs: [] }
         await updateDoc(userRef, { userRouteLists: arrayUnion(data) })
-        toast.success(`List ${createListName} created!`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `List ${createListName} created!`)
         setCreateListName('')
       } else {
-        toast.warn('This list name already exists', {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('warn', 'List name already existed.')
       }
     }
   }
@@ -393,27 +305,9 @@ const RouteView = () => {
       })
       await updateDoc(userRef, { userRouteLists: updatedUserRouteLists })
       if (isChecked) {
-        toast.success(`Route has been added into list: ${listName}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `Route has been added into list: ${listName}`)
       } else {
-        toast.success(`Route has been removed from list: ${listName}`, {
-          position: 'top-right',
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: 'light'
-        })
+        showToast('success', `Route has been removed from list: ${listName}`)
       }
     }
   }
@@ -423,59 +317,31 @@ const RouteView = () => {
     if (input.length <= 250) {
       setCommentInput(input)
     } else {
-      toast.warn('Comment exceeds 250 letters', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('warn', 'Comment exceeds 250 letters.')
       setCommentInput(input.slice(0, 250))
     }
   }
 
   const handleCommentSubmit = async () => {
     if (id && isSignIn) {
+      if (commentInput.trim() === '') {
+        showToast('warn', 'Comment cannot be empty.')
+        return
+      }
+
       const routeRef = doc(db, 'routes', id)
       const newComment = {
         userID: userDoc.userID,
         username: userDoc.username,
         userIconUrl: userDoc.userIconUrl,
-        comment: commentInput,
+        comment: commentInput.trim(),
         commentTimestamp: serverTimestamp()
       }
       await addDoc(collection(routeRef, 'comments'), newComment)
-      toast.success('Comment submitted!', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
+      showToast('success', 'Comment submitted!')
       setCommentInput('')
     } else {
-      toast.warn('Sign in to leave your comment', {
-        position: 'top-right',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light'
-      })
-    }
-  }
-
-  const handleCommentEnterSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && commentInput.trim() !== '') {
-      handleCommentSubmit()
+      showToast('warn', 'Sign in to leave your comment.')
     }
   }
 
@@ -580,7 +446,6 @@ const RouteView = () => {
 
                 <div className='mb-4 flex items-center'>
                   <Link to={`/member/${routeDocData.userID}`} className='h-fit w-fit'>
-                    {/* need to use dynamic user icon */}
                     <img
                       className='h-10 w-10 rounded-full object-cover'
                       src={authorLatestIconUrl}
@@ -596,6 +461,13 @@ const RouteView = () => {
                   <p className='w-fit pl-4'>
                     {routeDocData.createTime &&
                       formatTimestamp(routeDocData.createTime as Timestamp)}
+                  </p>
+                </div>
+
+                <div className='flex items-center gap-2'>
+                  <p className='text-lg font-bold'>Route description:</p>
+                  <p>
+                    {routeDocData.routeDescription ? `${routeDocData.routeDescription}` : 'None'}
                   </p>
                 </div>
 
@@ -647,40 +519,10 @@ const RouteView = () => {
                         onClick={() => toggleVisibility(index)}
                       >
                         <div className='mb-1 flex items-center gap-2'>
-                          <img className='h-6 w-auto' src={GoogleMapPin} alt='Map pin' />
+                          <img className='h-6 w-auto' src={MarkerIcon} alt='Map pin' />
                           <p className='w-fit pr-2 text-lg font-bold'>{spot.spotTitle}</p>
                         </div>
-                        {spotsVisibility[index] ? (
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              d='M4.5 15.75l7.5-7.5 7.5 7.5'
-                            ></path>
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth='1.5'
-                            stroke='currentColor'
-                            className='h-6 w-6'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              d='M19 9l-7 7-7-7'
-                            ></path>
-                          </svg>
-                        )}
+                        <ShowOrHideArrowSVG isShown={spotsVisibility[index]} />
                         <div className='w-full border border-zinc-300' />
                       </div>
                       {spotsVisibility[index] && (
@@ -737,37 +579,7 @@ const RouteView = () => {
                     onClick={() => toggleCommentVisibility()}
                   >
                     <p className='text-lg font-bold'>Comment</p>
-                    {commentVisibility ? (
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth='1.5'
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M4.5 15.75l7.5-7.5 7.5 7.5'
-                        ></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth='1.5'
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M19 9l-7 7-7-7'
-                        ></path>
-                      </svg>
-                    )}
+                    <ShowOrHideArrowSVG isShown={commentVisibility} />
                     <div className='w-full border border-zinc-300' />
                   </div>
                   {commentVisibility && (
@@ -777,7 +589,6 @@ const RouteView = () => {
                         value={commentInput}
                         placeholder='Comment on this route'
                         onChange={(e) => handleCommentInput(e)}
-                        onKeyDown={(e) => handleCommentEnterSubmit(e)}
                       />
                       <button
                         className='mb-6 self-end rounded-xl bg-blue-300 pl-2 pr-2 font-bold'

@@ -8,10 +8,10 @@ import {
   where
 } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { db } from '../../auth/CloudStorage'
-import FilterSVG from '../../components/FilterSVG'
+import { db } from '../../auth/Firebase'
 import HeroHeader from '../../components/HeroHeader'
 import RouteCard from '../../components/RouteCard'
+import FilterSVG from '../../images/FilterSVG'
 import { useRouteCardStore } from '../../store/useRouteCard'
 import { useUserStore } from '../../store/useUser'
 

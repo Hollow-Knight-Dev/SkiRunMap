@@ -4,10 +4,6 @@ import { useUserStore } from '../../store/useUser'
 
 const ProtectedSignInRoute = () => {
   const { isSignIn, userID, isLoadedUserDoc, userDoc } = useUserStore()
-  // console.log('ProtectedSignInRoute isLoadedUserDoc:', isLoadedUserDoc)
-  // console.log('ProtectedSignInRoute isSignIn:', isSignIn)
-  // console.log('ProtectedSignInRoute userDoc:', userDoc)
-  // console.log('ProtectedSignInRoute userDoc.userFinishedInfo:', userDoc?.userFinishedInfo)
 
   if (isLoadedUserDoc && isSignIn && userDoc?.userFinishedInfo) {
     return <Navigate to={`/member/${userID}`} />

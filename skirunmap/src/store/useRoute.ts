@@ -30,6 +30,7 @@ export interface Route {
   routeTitle: string
   gpxUrl: string
   routeCoordinate: Coordinate
+  routeDescription: string
   tags: string[]
   snowBuddies: string[]
   isPublic: boolean
@@ -98,6 +99,7 @@ interface SpotStore {
   updateSpot: (index: number, spot: Spot) => void
   removeSpot: (index: number) => void
   alterSpot: (index: number, alteredSpot: Partial<Spot>) => void
+  setSpots: (spots: Spot[]) => void
 }
 
 export const useSpotStore = create<SpotStore>()((set) => ({
@@ -112,5 +114,6 @@ export const useSpotStore = create<SpotStore>()((set) => ({
   alterSpot: (index, alteredSpot) =>
     set((state) => ({
       spots: state.spots.map((spot, i) => (i === index ? { ...spot, ...alteredSpot } : spot))
-    }))
+    })),
+  setSpots: (newSpots: Spot[]) => set({ spots: newSpots })
 }))

@@ -1,44 +1,18 @@
-import { useEffect } from 'react'
-import { Navigate, Outlet, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useUserStore } from '../../store/useUser'
+import showToast from '../showToast'
 
 const ProtectedRoute: React.FC = () => {
-  const { userDoc, isLoadedPage, isSignIn } = useUserStore()
-  const navigate = useNavigate()
+  const { userDoc, isLoadedPage, isSignIn, isLoadedUserDoc } = useUserStore()
 
-  useEffect(() => {
-    console.log('ProtectedRoute isLoadedPage:', isLoadedPage)
-    console.log('ProtectedRoute isSignIn:', isSignIn)
-  }, [navigate])
-
-  if (isLoadedPage && !isSignIn) {
-    toast.warn(`Please sign in first`, {
-      position: 'top-right',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light'
-    })
+  if (isLoadedPage && !isSignIn && isLoadedUserDoc) {
+    showToast('warn', 'Please sign in first.')
     return <Navigate to='/signin' />
   } else if (isLoadedPage && isSignIn && userDoc.userFinishedInfo === false) {
-    toast.warn(`You haven't finish your profile`, {
-      position: 'top-right',
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light'
-    })
+    showToast('warn', "You haven't finish your profile.")
     return <Navigate to='/member-info' />
   }
-  return <Outlet /> // Outlet is used to render the child routes
+  return <Outlet />
 }
 
 export default ProtectedRoute
