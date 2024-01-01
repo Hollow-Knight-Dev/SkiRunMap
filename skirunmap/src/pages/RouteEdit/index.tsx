@@ -79,8 +79,6 @@ const EditRoute: React.FC = () => {
   }, [location])
 
   useEffect(() => {
-    // console.log('isSaveToLeave:', isSaveToLeave)
-    // console.log('blocker state', blocker)
     if (blocker.state === 'blocked' && isSaveToLeave) {
       blocker.reset()
     }
@@ -501,13 +499,11 @@ const EditRoute: React.FC = () => {
 
   const handleClearAllInputs = async () => {
     const deleteRef = ref(storage, `routes/${routeID}/${routeID}.gpx`)
-    await deleteObject(deleteRef)
-      .then(() => {
-        console.log(`Delete route document ${routeID}.gpx in Storage successfully`)
-      })
-      .catch((error): void => {
-        console.error('Fail to delete route document in Storage', error)
-      })
+    try {
+      await deleteObject(deleteRef)
+    } catch (error) {
+      console.error('Fail to delete route document in Storage', error)
+    }
   }
 
   const handleInitialisingForm = () => {
