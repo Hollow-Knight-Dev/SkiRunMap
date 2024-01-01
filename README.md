@@ -1,4 +1,4 @@
-# SkiRunMap
+# [SkiRunMap](https://skirunmap.web.app)
 
 A platform dedicated to guiding users to explore, and share routes and spots to the ski community.
 
@@ -23,7 +23,7 @@ A platform dedicated to guiding users to explore, and share routes and spots to 
 
 ## Demo
 
-#### \*Reminder: Please kindly zoom in or zoom out to view the following GIF with more comfortable visual experience.
+#### \*<ins>Reminder</ins>: Please kindly zoom in or zoom out to view the following GIF with more comfortable visual experience.
 
 ### Sign In Page
 
