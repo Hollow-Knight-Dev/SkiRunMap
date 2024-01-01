@@ -17,7 +17,7 @@ A platform dedicated to guiding users to explore, and share routes and spots to 
 ## User Flow
 ![Flowchart-sm](https://github.com/Hollow-Knight-Dev/SkiRunMap/assets/134847613/4cd7356e-a2e7-4234-bc03-d59edda3c619)
 
-## Demo
+## Demo (Reminder: Please kindly zoom in or zoom out to view the following GIF with more comfortable visual experience.)
 ### Sign In Page
 - Sign in with test account.
 ![SignIn (1)](https://github.com/Hollow-Knight-Dev/SkiRunMap/assets/134847613/293f4636-4920-43d3-b2bb-55ea16fbef70)
