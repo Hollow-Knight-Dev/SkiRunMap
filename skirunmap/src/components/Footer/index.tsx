@@ -9,7 +9,7 @@ const Footer = () => {
         </Link>
       </div>
       <div className='h-7 w-[2px] bg-zinc-300'></div>
-      <p className='h-fit w-80 text-center'>2024 SKIRUNMAP All Rights Reserved</p>
+      <p className='h-fit w-80 text-center'>&copy; 2024 SkiRunMap. All rights reserved.</p>
     </div>
   )
 }
