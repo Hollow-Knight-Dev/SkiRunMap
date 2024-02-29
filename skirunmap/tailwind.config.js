@@ -12,6 +12,13 @@ export default {
       fontFamily: {
         sans: ['Philosopher', 'Arial', 'sans-serif']
       }
+    },
+    screens: {
+      '2xl': { min: '1280px' },
+      xl: { min: '1024px', max: '1279px' },
+      lg: { min: '768px', max: '1023px' },
+      md: { min: '480px', max: '767px' },
+      sm: { max: '479px' }
     }
   },
   darkMode: 'class',

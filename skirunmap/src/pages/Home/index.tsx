@@ -35,7 +35,6 @@ const Home = () => {
   }
 
   useEffect(() => {
-    // console.log(filter)
     const filterOptions: Record<string, QueryOrderByConstraint | null> = {
       Newest: orderBy('createTime', 'desc'),
       'Most Likes': orderBy('likeCount', 'desc'),
@@ -103,11 +102,10 @@ const Home = () => {
   return (
     <div className='h-screen-64px flex w-full flex-col items-center'>
       <HeroHeader />
-      <div className='mt-4 flex w-4/5 flex-col items-center p-8'>
-        <div className='mb-4 flex w-[880px] flex-wrap items-center gap-2'>
+      <div className='mt-4 flex w-fit flex-col items-center p-8'>
+        <div className='mb-4 flex w-full flex-wrap items-center gap-2'>
           <p className='text-3xl font-bold'>{filter} Routes</p>
           <div className='flex items-center gap-2' onClick={handleFilterIconClick}>
-            {/* <p className='text-xl font-bold'>filter</p> */}
             <FilterSVG />
           </div>
           {hasFilter && (
@@ -137,7 +135,7 @@ const Home = () => {
             </div>
           )}
         </div>
-        <div className='flex h-fit w-full justify-center'>
+        <div className='flex h-fit w-fit justify-center'>
           <RouteCard data={allRoutes} />
         </div>
       </div>

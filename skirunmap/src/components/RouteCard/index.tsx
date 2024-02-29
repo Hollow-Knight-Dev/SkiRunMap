@@ -27,18 +27,8 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
     setIsLoaded(true)
   }, 500)
 
-  // useEffect(() => {
-  //   console.log('selectedImages:', selectedImages)
-  // }, [selectedImages])
-
-  // const handleImageBug = (index: number) => {
-  //   console.log(index)
-  // }
-
   return (
-    // <div className='h-screen-64px flex w-full flex-col flex-wrap gap-4'>
-    // <div className='flex w-auto flex-wrap gap-4'>
-    <div className='columns-4 space-y-4'>
+    <div className='columns-5 space-y-4 sm:columns-2 md:columns-2 lg:columns-3 xl:columns-4'>
       {data.map((route, index) => {
         let imageIndex = 0
         return (
@@ -68,7 +58,6 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                           onClick={() => {
                             navigate(`/route/${route.routeID}`)
                           }}
-                          // onClick={() => handleImageBug(imageIndex)}
                         />
                       ))
                     )}
@@ -111,7 +100,6 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                 </Skeleton>
                 <Skeleton isLoaded={isLoaded} className='rounded-xl'>
                   <div className='flex flex-wrap gap-2'>
-                    {/* <p>Tag: </p> */}
                     {route.tags.length > 0 ? (
                       route.tags.map((tag: string, index: number) => (
                         <Link
@@ -130,7 +118,6 @@ const RouteCard: React.FC<RouteCardDocData> = ({ data }) => {
                 </Skeleton>
                 <Skeleton isLoaded={isLoaded} className='rounded-xl'>
                   <div className='flex flex-wrap gap-1'>
-                    {/* <p>Spots: </p> */}
                     {route.spots.length > 0 ? (
                       route.spots?.map((spot: Spot, index: number) => (
                         <Link
