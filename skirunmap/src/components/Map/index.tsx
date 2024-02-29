@@ -26,9 +26,7 @@ const Map: React.FC<MapProps> = ({ gpxUrl, createMode }) => {
   }
 
   const { map, setMap, infoWindow, setInfoWindow } = useMapStore()
-
   const { routeCoordinate, setRouteCoordinate } = useRouteStore()
-
   const [gpxTrackPoint, setGpxTrackPoint] = useState<google.maps.LatLngLiteral[] | undefined>(
     undefined
   )
@@ -50,26 +48,13 @@ const Map: React.FC<MapProps> = ({ gpxUrl, createMode }) => {
     loadGoogleMapsApi()
   }, [gpxUrl])
 
-  // useEffect(() => {
-  //   console.log('route start coordinate: ', routeCoordinate)
-  // }, [routeCoordinate])
-
   const fetchGpxFile = async (filePath: string, Map: any) => {
     try {
       const response = await fetch(filePath)
-      // console.log(response)
       const gpxContent = await response.text()
-      // console.log(gpxContent)
       const parsedGpx = GPX.parse(gpxContent)
-      // console.log(typeof parsedGpx) // object
-      // console.log(parsedGpx)
-      // console.log(parsedGpx.$)
-      // console.log(parsedGpx.metadata)
-      // console.log(parsedGpx.wpt)
-      // console.log(parsedGpx.trk)
-
       const firstTrackPoint = parsedGpx.trk[0]?.trkseg[0]?.trkpt[0]
-      // console.log(firstTrackPoint)
+
       if (firstTrackPoint) {
         const center: google.maps.LatLngLiteral = {
           lat: parseFloat(firstTrackPoint.$.lat),
@@ -92,16 +77,6 @@ const Map: React.FC<MapProps> = ({ gpxUrl, createMode }) => {
           fullscreenControlOptions: {
             position: google.maps.ControlPosition.BOTTOM_RIGHT
           },
-          // heading: 320,
-          // tilt: 47.5,
-          // restriction: {
-          //   latLngBounds: {
-          //     north: 45.551483,
-          //     south: 24.396308,
-          //     east: 153.986672,
-          //     west: 122.93457
-          //   }
-          // },
           draggableCursor: 'pointer'
         })
         setMap(googleMap)
@@ -120,14 +95,10 @@ const Map: React.FC<MapProps> = ({ gpxUrl, createMode }) => {
         })
       })
       setGpxTrackPoint(trkptArray)
-      // console.log(typeof trkptArray)
-      // console.log(trkptArray)
     } catch (error) {
       console.error('Parsing gpx file error: ', error)
     }
   }
-
-  // const addMarker = (coordinate: google.maps.LatLngLiteral, icon: string, content: string) => {}
 
   useEffect(() => {
     if (
