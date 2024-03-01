@@ -436,6 +436,7 @@ const EditRoute: React.FC = () => {
       }
       showToast('success', 'Draft saved!')
       setIsSaveToLeave(true)
+      setGpxUrl('')
     }
   }
 
@@ -452,7 +453,6 @@ const EditRoute: React.FC = () => {
 
   const handleSubmit = async () => {
     if (routeCoordinate.lat !== undefined && routeCoordinate.lng !== undefined) {
-      setIsSaveToLeave(true)
       const data: Route = {
         userID: userID,
         username: userDoc.username,
@@ -473,6 +473,7 @@ const EditRoute: React.FC = () => {
         viewCount: 0
       }
       await setDoc(doc(db, 'routes', routeID), data)
+      setIsSaveToLeave(true)
 
       const userRef = doc(db, 'users', userID)
       const docSnap = await getDoc(userRef)
@@ -504,6 +505,8 @@ const EditRoute: React.FC = () => {
     } catch (error) {
       console.error('Fail to delete route document in Storage', error)
     }
+    setIsSaveToLeave(true)
+    setGpxUrl('')
   }
 
   const handleInitialisingForm = () => {
@@ -555,12 +558,11 @@ const EditRoute: React.FC = () => {
             onConfirm={() => {
               handleClearAllInputs()
               blocker.proceed()
-              blocker.reset()
             }}
             middleTitle='Save draft'
             onMiddleOption={() => {
-              blocker.reset()
               handleSaveDraft()
+              blocker.proceed()
             }}
             cancelTitle='Keep editing'
             onCancel={() => blocker.reset()}
