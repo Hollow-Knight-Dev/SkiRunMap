@@ -3,9 +3,9 @@ import { useUserStore } from '../../store/useUser'
 import showToast from '../showToast'
 
 const ProtectedRoute: React.FC = () => {
-  const { userDoc, isLoadedPage, isSignIn, isLoadedUserDoc } = useUserStore()
+  const { userDoc, isLoadedPage, isSignIn } = useUserStore()
 
-  if (isLoadedPage && !isSignIn && isLoadedUserDoc) {
+  if (isLoadedPage && !isSignIn) {
     showToast('warn', 'Please sign in first.')
     return <Navigate to='/signin' />
   } else if (isLoadedPage && isSignIn && userDoc.userFinishedInfo === false) {
